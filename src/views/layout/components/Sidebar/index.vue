@@ -29,8 +29,7 @@ export default {
       return !this.sidebar.opened
     }
   },
-  mounted: function(){
-    console.log(getters);
+  mounted() {
   }
 }
 </script>
