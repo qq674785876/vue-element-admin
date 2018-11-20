@@ -73,10 +73,11 @@ export default {
     size: 'Global Size'
   },
   login: {
-    title: 'Login Form',
+    title: '柴火内侧专家',
     logIn: 'Log in',
-    username: 'Username',
-    password: 'Password',
+    username: '请输入邮箱',
+    password: '请输入登陆密码',
+    pin: '请输入验证码',
     any: 'any',
     thirdparty: 'Or connect with',
     thirdpartyTips: 'Can not be simulated on local, so please combine you own business simulation! ! !'

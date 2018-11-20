@@ -73,10 +73,11 @@ export default {
     size: '布局大小'
   },
   login: {
-    title: '系统登录',
-    logIn: '登录',
-    username: '账号',
-    password: '密码',
+    title: '柴火内侧专家',
+    logIn: '登 录',
+    username: '请输入邮箱',
+    password: '请输入登陆密码',
+    pin: '请输入验证码',
     any: '随便填',
     thirdparty: '第三方登录',
     thirdpartyTips: '本地不能模拟，请结合自己业务进行模拟！！！'
