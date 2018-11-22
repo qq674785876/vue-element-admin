@@ -1,7 +1,7 @@
 <template>
   <div class="login-container">
 
-    <div v-if="showType === 'login'" class="login-box">
+    <div v-if="selectType === 'login'" class="login-box">
       <el-row>
         <el-col :md="12" :xs="0" class="login-logo-box">
           <el-carousel indicator-position="outside">
@@ -96,16 +96,9 @@
       </el-row>
     </div>
 
-    <div v-if="showType === 'register'" class="register-box"/>
-
-    <!--     <el-dialog :title="$t('login.thirdparty')" :visible.sync="showDialog" append-to-body>
-      {{ $t('login.thirdpartyTips') }}
-      <br>
-      <br>
-      <br>
-      <social-sign />
-    </el-dialog> -->
-
+    <div v-if="selectType === 'register'" class="register-box">
+      <component :is="currentRole"/>
+    </div>
   </div>
 </template>
 
@@ -114,11 +107,12 @@ import { isvalidUsername } from '@/utils/validate'
 import LangSelect from '@/components/LangSelect'
 import SocialSign from './socialsignin'
 import SIdentify from './identify'
+import register from './register'
 import img1 from '../../assets/images/login-logo.png'
 
 export default {
   name: 'Login',
-  components: { LangSelect, SocialSign, SIdentify },
+  components: { LangSelect, SocialSign, SIdentify, register },
   data() {
     const validateUsername = (rule, value, callback) => {
       if (!isvalidUsername(value)) {
@@ -149,6 +143,7 @@ export default {
       selectType: 'login',
       logoimgs: [img1],
       eyeClass: 'eye-close',
+      currentRole: 'register',
       loginForm: {
         username: '',
         password: '',
@@ -328,7 +323,7 @@ export default {
     }
     .copyright{
       font-size: 14px;
-      padding-top: 30px;
+      padding-top: 20px;
       color: #ccc;
     }
     .login-logo-box{
@@ -378,15 +373,16 @@ $light_gray:#333333;
   background-size: cover;
   background-repeat: no-repeat;
   overflow: auto;
-  .login-box{
+  .login-box,.register-box{
     background-color: #fff;
     position: absolute;
     top: 50%;
     left: 0;
     right: 0;
     width: 800px;
+    height: 540px;
     max-width: 100%;
-    padding: 35px 35px 40px 35px;
+    padding: 20px 35px 20px 35px;
     margin: 0 auto;
     border-radius: 10px;
     transform: translateY(-50%);
@@ -426,7 +422,7 @@ $light_gray:#333333;
       font-size: 22px;
       color: $light_gray;
       font-weight: bold;
-      margin: 20px 0 0 0;
+      margin: 40px 0 0 0;
     }
     .set-language {
       color: #333;
