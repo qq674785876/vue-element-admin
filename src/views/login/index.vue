@@ -45,7 +45,7 @@
                 auto-complete="on"
               />
               <span class="show-pwd" @click="showPwd">
-                <svg-icon icon-class="eye" />
+                <svg-icon :icon-class="eyeClass" />
               </span>
             </el-form-item>
 
@@ -59,7 +59,8 @@
                     v-model="loginForm.pin"
                     :placeholder="$t('login.pin')"
                     name="pin"
-                    type="text"
+                    type="tel"
+                    maxlength="4"
                     auto-complete="on"
                     @keyup.enter.native="handleLogin"
                   />
@@ -141,6 +142,7 @@ export default {
       checked: false,
       showType: 'login',
       selectType: 'login',
+      eyeClass: 'eye-close',
       loginForm: {
         username: '',
         password: '',
@@ -196,8 +198,10 @@ export default {
     showPwd() {
       if (this.passwordType === 'password') {
         this.passwordType = ''
+        this.eyeClass = 'eye'
       } else {
         this.passwordType = 'password'
+        this.eyeClass = 'eye-close'
       }
     },
     handleLogin() {
@@ -339,10 +343,9 @@ export default {
         border: 0px;
         -webkit-appearance: none;
         border-radius: 0px;
-        padding: 12px 5px 12px 15px;
         color: $light_gray;
         height: 30px;
-        caret-color: $cursor;
+        caret-color: #333;
         &:-webkit-autofill {
           -webkit-box-shadow: 0 0 0px 1000px $bg inset !important;
           -webkit-text-fill-color: $cursor !important;
