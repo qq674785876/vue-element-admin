@@ -6,7 +6,7 @@
         <el-col :md="12" :xs="0" class="login-logo-box">
           <el-carousel indicator-position="outside">
             <el-carousel-item v-for="index in 4" :key="index">
-              <img :src="logoimgs[index - 1]">
+              <img :src="logoimgs[0]">
             </el-carousel-item>
           </el-carousel>
         </el-col>
@@ -113,6 +113,7 @@ import { isvalidUsername } from '@/utils/validate'
 import LangSelect from '@/components/LangSelect'
 import SocialSign from './socialsignin'
 import SIdentify from './identify'
+import img1 from '../../assets/images/login-logo.png'
 
 export default {
   name: 'Login',
@@ -145,7 +146,7 @@ export default {
       checked: false,
       showType: 'login',
       selectType: 'login',
-      logoimgs: ['../src/assets/images/login-logo.png', '../src/assets/images/login-logo.png', '../src/assets/images/login-logo.png', '../src/assets/images/login-logo.png'],
+      logoimgs: [img1],
       loginForm: {
         username: '',
         password: '',
@@ -329,10 +330,9 @@ export default {
     .login-logo-box{
       margin-top: 80px;
       img{
-        position: absolute;
-        top: 50%;
         height: 300px;
-        margin-top: -150px;
+        margin: 0 auto;
+        display: block;
       }
     }
     .el-input {
@@ -371,7 +371,10 @@ $light_gray:#333333;
   position: fixed;
   height: 100%;
   width: 100%;
-  background-color: $bg;
+  background: url(../../assets/images/login-bg.jpg);
+  background-size: cover;
+  background-repeat: no-repeat;
+  overflow: auto;
   .login-box{
     background-color: #fff;
     position: absolute;
