@@ -3,11 +3,15 @@
 
     <div v-if="showType === 'login'" class="login-box">
       <el-row>
-        <el-col :lg="12" :md="12" :xs="0" class="login-logo-box">
-          <img src="../../assets/images/login-logo.png">
+        <el-col :md="12" :xs="0" class="login-logo-box">
+          <el-carousel indicator-position="outside">
+            <el-carousel-item v-for="index in 4" :key="index">
+              <img :src="logoimgs[index - 1]">
+            </el-carousel-item>
+          </el-carousel>
         </el-col>
-        <el-col :lg="2" :md="2" :xs="0" style="height: 1px;"/>
-        <el-col :lg="10" :md="10" :xs="24">
+        <el-col :md="2" :xs="0" style="height: 1px;"/>
+        <el-col :md="10" :xs="24">
           <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
             <div class="title-container">
               <h3 class="title">{{ $t('login.title') }}</h3>
@@ -143,6 +147,7 @@ export default {
       showType: 'login',
       selectType: 'login',
       eyeClass: 'eye-close',
+      logoimgs: ['../src/assets/images/login-logo.png', '../src/assets/images/login-logo.png', '../src/assets/images/login-logo.png', '../src/assets/images/login-logo.png'],
       loginForm: {
         username: '',
         password: '',
@@ -326,7 +331,7 @@ export default {
       color: #ccc;
     }
     .login-logo-box{
-      height: 1px;
+      margin-top: 80px;
       img{
         position: absolute;
         top: 50%;
