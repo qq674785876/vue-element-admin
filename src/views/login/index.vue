@@ -22,7 +22,7 @@
               &nbsp;
               <a :class="{active: selectType === 'login'}" href="javascript:;" @click="selectType = 'login'">登录</a>
               &emsp;
-              <a :class="{active: selectType === 'register'}" href="javascript:;" @click="selectType = 'register',currentRole = 'realName'">注册</a>
+              <a :class="{active: selectType === 'register'}" href="javascript:;" @click="selectType = 'register',currentRole = 'register'">注册</a>
             </div>
             <el-form-item prop="username">
               <span class="svg-container">
