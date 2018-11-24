@@ -97,7 +97,9 @@
     </div>
 
     <div v-if="selectType === 'register'" class="register-box">
-      <component :is="currentRole"/>
+      <h3 class="title">{{ $t('login.title') }}</h3>
+      <p>专业APP分发，一键上传，永久保存</p>
+      <component :is="currentRole" @setSelectType="setSelectType"/>
     </div>
   </div>
 </template>
@@ -107,12 +109,13 @@ import { isvalidUsername } from '@/utils/validate'
 import LangSelect from '@/components/LangSelect'
 import SocialSign from './socialsignin'
 import SIdentify from './identify'
-import register from './register'
+import Register from './register'
+import RealName from './realName'
 import img1 from '../../assets/images/login-logo.png'
 
 export default {
   name: 'Login',
-  components: { LangSelect, SocialSign, SIdentify, register },
+  components: { LangSelect, SocialSign, SIdentify, Register, RealName },
   data() {
     const validateUsername = (rule, value, callback) => {
       if (!isvalidUsername(value)) {
@@ -181,6 +184,9 @@ export default {
     // window.removeEventListener('hashchange', this.afterQRScan)
   },
   methods: {
+    setSelectType(role) {
+      this.currentRole = role.currentRole
+    },
     makeCode(o, l) {
       for (let i = 0; i < l; i++) {
         this.identifyCode += this.identifyCodes[
@@ -286,14 +292,24 @@ export default {
   /* Detail see https://github.com/PanJiaChen/vue-element-admin/pull/927 */
 
   $bg:#283443;
-  $light_gray:#333;
+  $light_gray:#ccc;
   $cursor: #fff;
+  $light_hei:#333;
 
   @supports (-webkit-mask: none) and (not (cater-color: $cursor)) {
     .login-container .el-input input{
       color: $cursor;
-      &::first-line {
-        color: $light_gray;
+      ::-webkit-input-placeholder { /* WebKit, Blink, Edge */
+        color:#ccc;
+      }
+      :-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+        color:#ccc;
+      }
+      ::-moz-placeholder { /* Mozilla Firefox 19+ */
+        color:#ccc;
+      }
+      :-ms-input-placeholder { /* Internet Explorer 10-11 */
+        color:#ccc;
       }
     }
   }
@@ -343,7 +359,7 @@ export default {
         border: 0px;
         -webkit-appearance: none;
         border-radius: 0px;
-        color: $light_gray;
+        color: $light_hei;
         height: 30px;
         caret-color: #333;
         &:-webkit-autofill {
@@ -380,7 +396,7 @@ $light_gray:#333333;
     left: 0;
     right: 0;
     width: 800px;
-    height: 540px;
+    min-height: 540px;
     max-width: 100%;
     padding: 20px 35px 20px 35px;
     margin: 0 auto;
@@ -390,6 +406,17 @@ $light_gray:#333333;
     -moz-transform: translateY(-50%);  /* Firefox */
     -webkit-transform: translateY(-50%); /* Safari 和 Chrome */
     -o-transform: translateY(-50%);
+    .title{
+      font-weight: 0;
+      font-size: 24px;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+    p{
+      font-size: 14px;
+      color: #ccc;
+      text-align: center;
+    }
     .login-nav{
       margin: 20px 0 10px;
       a{
