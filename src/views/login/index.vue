@@ -16,13 +16,13 @@
             <div class="title-container">
               <h3 class="title">{{ $t('login.title') }}</h3>
               <p>专业APP分发，一键上传，永久保存</p>
-              <lang-select class="set-language"/>
+              <!-- <lang-select class="set-language"/> -->
             </div>
             <div class="login-nav">
               &nbsp;
               <a :class="{active: selectType === 'login'}" href="javascript:;" @click="selectType = 'login'">登录</a>
               &emsp;
-              <a :class="{active: selectType === 'register'}" href="javascript:;" @click="selectType = 'register'">注册</a>
+              <a :class="{active: selectType === 'register'}" href="javascript:;" @click="selectType = 'register',currentRole = 'realName'">注册</a>
             </div>
             <el-form-item prop="username">
               <span class="svg-container">
@@ -84,7 +84,7 @@
                 <el-checkbox v-model="checked">记住密码</el-checkbox>
               </el-col>
               <el-col :span="12" align="right">
-                <a href="javascript:;" class="forget-psd">忘记密码？</a>
+                <a href="javascript:;" class="forget-psd" @click="goForgetPass()">忘记密码？</a>
               </el-col>
             </el-row>
 
@@ -97,9 +97,9 @@
     </div>
 
     <div v-if="selectType === 'register'" class="register-box">
-      <h3 class="title">{{ $t('login.title') }}</h3>
+      <h3 class="title" @click="selectType = 'login'">{{ $t('login.title') }}</h3>
       <p>专业APP分发，一键上传，永久保存</p>
-      <component :is="currentRole" @setSelectType="setSelectType"/>
+      <component :is="currentRole" @setSelectType="setSelectType" @getLogin="getLogin"/>
     </div>
   </div>
 </template>
@@ -111,11 +111,12 @@ import SocialSign from './socialsignin'
 import SIdentify from './identify'
 import Register from './register'
 import RealName from './realName'
+import ForgetPass from './forgetPass'
 import img1 from '../../assets/images/login-logo.png'
 
 export default {
   name: 'Login',
-  components: { LangSelect, SocialSign, SIdentify, Register, RealName },
+  components: { LangSelect, SocialSign, SIdentify, Register, RealName, ForgetPass },
   data() {
     const validateUsername = (rule, value, callback) => {
       if (!isvalidUsername(value)) {
@@ -147,6 +148,10 @@ export default {
       logoimgs: [img1],
       eyeClass: 'eye-close',
       currentRole: 'register',
+      registerForm: {
+        username: '',
+        password: ''
+      },
       loginForm: {
         username: '',
         password: '',
@@ -184,6 +189,10 @@ export default {
     // window.removeEventListener('hashchange', this.afterQRScan)
   },
   methods: {
+    goForgetPass() {
+      this.selectType = 'register'
+      this.currentRole = 'forgetPass'
+    },
     setSelectType(role) {
       this.currentRole = role.currentRole
     },
@@ -200,7 +209,6 @@ export default {
     refreshCode() {
       this.identifyCode = ''
       this.makeCode(this.identifyCodes, 4)
-      console.log(this.identifyCode)
     },
     showPwd() {
       if (this.passwordType === 'password') {
@@ -226,16 +234,19 @@ export default {
             // 清空Cookie
             self.clearCookie()
           }
-          this.$store.dispatch('LoginByUsername', this.loginForm).then(() => {
-            this.loading = false
-            this.$router.push({ path: this.redirect || '/' })
-          }).catch(() => {
-            this.loading = false
-          })
+          this.getLogin(this.loginForm)
         } else {
           console.log('error submit!!')
           return false
         }
+      })
+    },
+    getLogin(loginForm) {
+      this.$store.dispatch('LoginByUsername', loginForm).then(() => {
+        this.loading = false
+        this.$router.push({ path: this.redirect || '/' })
+      }).catch(() => {
+        this.loading = false
       })
     },
     afterQRScan() {
@@ -411,6 +422,7 @@ $light_gray:#333333;
       font-size: 24px;
       margin-bottom: 10px;
       text-align: center;
+      cursor: pointer;
     }
     p{
       font-size: 14px;
@@ -473,4 +485,21 @@ $light_gray:#333333;
     bottom: 28px;
   }
 }
+  @media screen and (max-width: 500px) {
+    .login-container{
+      background: #fff;
+      .login-box,.register-box {
+        top: 0;
+        border-radius: 0;
+        transform: none;
+        -ms-transform: none;   /* IE 9 */
+        -moz-transform: none;  /* Firefox */
+        -webkit-transform: none; /* Safari 和 Chrome */
+        -o-transform: none;
+        .login-nav{
+          padding-top: 40px;
+        }
+      }
+    }
+  }
 </style>

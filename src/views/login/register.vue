@@ -122,7 +122,6 @@ export default {
       }
     }
     const validatePass = function(rule, value, callback) {
-      console.log(_this)
       if (value === '') {
         callback(new Error('请再次输入密码'))
       } else if (value !== _this.registerForm.registerPass) {
@@ -168,6 +167,8 @@ export default {
       this.$refs.registerForm.validate(valid => {
         if (valid) {
           this.$emit('setSelectType', { currentRole: 'realName' })
+          this.$parent.registerForm.username = this.registerForm.username
+          this.$parent.registerForm.password = this.registerForm.registerPass
           alert('注册成功!')
         } else {
           console.log('error submit!!')
@@ -186,7 +187,6 @@ export default {
         alert('已发送验证码至邮箱！')
         _this.verifyCodeText = '重新获取 ' + time + 'S'
         timer = setInterval(function() {
-          console.log(time)
           if (time > 1) {
             time--
             _this.verifyCodeText = '重新获取 ' + time + 'S'
