@@ -104,3 +104,14 @@ export default {
   }
 }
 </script>
+
+<style rel="stylesheet/scss" lang="scss" >
+.el-menu-item:focus,.el-menu-item.is-active{
+    background-color: rgba(255,255,255,.3);
+}
+.el-menu-item:hover ,.el-submenu__title:hover{
+    outline: 0;
+    background-color: rgba(255,255,255,.3);
+}
+</style>
+

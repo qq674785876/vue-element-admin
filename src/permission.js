@@ -19,19 +19,25 @@ NProgress.configure({ showSpinner: false })// NProgress Configuration
 router.beforeEach((to, from, next) => {
   NProgress.start() // start progress bar
   const token = getToken()
-  console.log('token：' + token)
-  if (token) {
-    const roles = store.getters.roles
-    store.dispatch('GenerateRoutes', { roles }).then(() => { // 根据roles权限生成可访问的路由表
-      router.addRoutes(store.getters.addRouters) // 动态添加可访问路由表
-      next({ ...to, replace: true }) // hack方法 确保addRoutes已完成 ,set the replace: true so the navigation will not leave a history record
-    })
-    next()
-  } else {
+  console.log(token, to.path)
+  if (token !== undefined && token && token !== 'undefined') {
     if (to.path === '/login') {
+      console.log('进入login')
       next()
     } else {
-      console.log('测试')
+      const roles = store.getters.roles
+      store.dispatch('GenerateRoutes', { roles }).then(() => { // 根据roles权限生成可访问的路由表
+        router.addRoutes(store.getters.addRouters) // 动态添加可访问路由表
+        // next({ ...to, replace: true }) // hack方法 确保addRoutes已完成 ,set the replace: true so the navigation will not leave a history record
+      })
+      next()
+    }
+  } else {
+    if (to.path === '/login') {
+      console.log('进入login')
+      next()
+    } else {
+      console.log('进入login')
       next('/login')
       NProgress.done()
     }

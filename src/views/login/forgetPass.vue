@@ -99,10 +99,10 @@ export default {
     return {
       verifyCodeText: '获取验证码',
       forgetForm: {
-        email: '674785876@qq.com',
-        code: '111111',
-        password: '123456',
-        qrPassword: '123456'
+        email: '',
+        code: '',
+        password: '',
+        qrPassword: ''
       },
       forgetRules: {
         email: [{ required: true, trigger: 'blur', validator: validateUsername }],
@@ -128,7 +128,7 @@ export default {
                 })
                 return
               }
-              self.$parent.loginForm.username = this.forgetForm.email
+              self.$parent.loginForm.email = this.forgetForm.email
               self.$parent.loginForm.password = this.forgetForm.password
               self.$notify({
                 title: '修改成功',

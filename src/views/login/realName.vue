@@ -63,7 +63,7 @@
         </div>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="getLogin()">立即登陆</el-button>
+        <el-button :loading="loading" type="primary" @click="getLogin()">立即登陆</el-button>
       </span>
     </el-dialog>
   </div>
@@ -75,6 +75,7 @@ export default {
   name: 'RealName',
   data() {
     return {
+      loading: false,
       infos: [],
       dialogVisible: false
     }
@@ -88,6 +89,7 @@ export default {
       _this.dialogVisible = true
     },
     getLogin() {
+      this.loading = true
       this.$emit('getLogin', this.$parent.registerForm)
     }
   }
