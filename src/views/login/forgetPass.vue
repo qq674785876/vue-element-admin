@@ -1,5 +1,5 @@
 <template>
-  <div class="forgetPass-container">
+  <div class="password-container">
     <el-form ref="forgetForm" :model="forgetForm" :rules="forgetRules" auto-complete="off" label-position="left">
       <el-col :span="7" :xs="0" style="height: 1px;"/>
       <el-col :span="10" :xs="24" class="left-box">
@@ -8,22 +8,22 @@
           &emsp;
           <a href="javascript:;" @click="$parent.selectType = 'login'">登陆</a>
         </div>
-        <el-form-item prop="username">
+        <el-form-item prop="email">
           <el-input
-            v-model="forgetForm.username"
+            v-model="forgetForm.email"
             placeholder="邮箱"
-            name="username"
+            name="email"
             type="text"
             auto-complete="on"
           />
         </el-form-item>
-        <el-form-item prop="pin">
+        <el-form-item prop="code">
           <el-input
-            v-model="forgetForm.pin"
+            v-model="forgetForm.code"
             placeholder="验证码"
-            name="pin"
+            name="code"
             type="tel"
-            maxlength="4"
+            maxlength="6"
             auto-complete="off"
             style="width: 140px;"
             @keyup.enter.native="handleLogin"
@@ -32,19 +32,19 @@
         </el-form-item>
         <el-form-item prop="registerPass">
           <el-input
-            v-model="forgetForm.forgetPass"
+            v-model="forgetForm.password"
             type="password"
             placeholder="新的密码"
-            name="forgetPass"
+            name="password"
             auto-complete="on"
           />
         </el-form-item>
         <el-form-item prop="qrRegisterPass">
           <el-input
-            v-model="forgetForm.qrForgetPass"
+            v-model="forgetForm.qrPassword"
             type="password"
             placeholder="再次输入密码"
-            name="qrForgetPass"
+            name="qrPassword"
             auto-complete="on"
           />
         </el-form-item>
@@ -59,9 +59,10 @@
 
 <script>
 import { validateEmail } from '@/utils/validate'
+import { findPass, sendMail } from '@/api/login'
 
 export default {
-  name: 'ForgetPass',
+  name: 'Password',
   data() {
     const _this = this
     const validateUsername = (rule, value, callback) => {
@@ -74,7 +75,7 @@ export default {
     const validatePass = function(rule, value, callback) {
       if (value === '') {
         callback(new Error('请再次输入密码'))
-      } else if (value !== _this.forgetForm.forgetPass) {
+      } else if (value !== _this.forgetForm.password) {
         callback(new Error('两次输入密码不一致!'))
       } else {
         callback()
@@ -88,45 +89,60 @@ export default {
       }
     }
 
-    const validatepin = (rule, value, callback) => {
-      if (value !== this.identifyCode) {
-        callback(new Error('验证码错误'))
+    const validatecode = (rule, value, callback) => {
+      if (value.length < 6) {
+        callback(new Error('验证码长度为6位'))
       } else {
         callback()
       }
     }
     return {
-      identifyCode: '1111',
       verifyCodeText: '获取验证码',
       forgetForm: {
-        username: '674785876@qq.com',
-        pin: '1111',
-        forgetPass: '123456',
-        qrForgetPass: '123456'
+        email: '674785876@qq.com',
+        code: '111111',
+        password: '123456',
+        qrPassword: '123456'
       },
       forgetRules: {
-        username: [{ required: true, trigger: 'blur', validator: validateUsername }],
-        forgetPass: [{ required: true, trigger: 'blur', validator: validatePassword }],
-        qrForgetPass: [{ required: true, trigger: 'blur', validator: validatePass }],
-        pin: [{ required: true, trigger: 'blur', validator: validatepin }]
+        email: [{ required: true, trigger: 'blur', validator: validateUsername }],
+        password: [{ required: true, trigger: 'blur', validator: validatePassword }],
+        qrPassword: [{ required: true, trigger: 'blur', validator: validatePass }],
+        code: [{ required: true, trigger: 'blur', validator: validatecode }]
       }
     }
   },
   methods: {
     sure() {
-      const _this = this
-      _this.$refs.forgetForm.validate(valid => {
+      const self = this
+      self.$refs.forgetForm.validate(valid => {
         if (valid) {
-          _this.$parent.loginForm.username = this.forgetForm.username
-          _this.$parent.loginForm.password = this.forgetForm.forgetPass
-          _this.$notify({
-            title: '修改成功',
-            message: '密码修改成功!',
-            type: 'success'
+          return new Promise((resolve, reject) => {
+            findPass(self.forgetForm).then(response => {
+              const data = response.data
+              if (data.error !== 0) {
+                self.$notify({
+                  title: '修改失败',
+                  message: data.reason,
+                  type: 'error'
+                })
+                return
+              }
+              self.$parent.loginForm.username = this.forgetForm.email
+              self.$parent.loginForm.password = this.forgetForm.password
+              self.$notify({
+                title: '修改成功',
+                message: '密码修改成功!',
+                type: 'success'
+              })
+              setTimeout(function() {
+                self.$parent.selectType = 'login'
+              }, 1000)
+              resolve()
+            }).catch(error => {
+              reject(error)
+            })
           })
-          setTimeout(function() {
-            _this.$parent.selectType = 'login'
-          }, 1000)
         } else {
           console.log('error submit!!')
           return false
@@ -136,23 +152,43 @@ export default {
     getVerifyCode() {
       let timer = null
       let time = 60
-      const _this = this
-      if (!validateEmail(this.forgetForm.username)) {
+      const self = this
+      if (!validateEmail(this.forgetForm.email)) {
         return
       }
       if (this.verifyCodeText === '获取验证码') {
-        alert('已发送验证码至邮箱！')
-        _this.verifyCodeText = '重新获取 ' + time + 'S'
-        timer = setInterval(function() {
-          if (time > 1) {
-            time--
-            _this.verifyCodeText = '重新获取 ' + time + 'S'
-          } else {
-            clearInterval(timer)
-            timer = null
-            _this.verifyCodeText = '获取验证码'
-          }
-        }, 1000)
+        return new Promise((resolve, reject) => {
+          sendMail(self.forgetForm.email, 1).then(response => {
+            const data = response.data
+            if (data.error !== 0) {
+              self.$notify({
+                title: '发送失败',
+                message: data.reason,
+                type: 'error'
+              })
+              return
+            }
+            self.$notify({
+              title: '发送成功',
+              message: '已发送验证码至邮箱！',
+              type: 'success'
+            })
+            self.verifyCodeText = '重新获取 ' + time + 'S'
+            timer = setInterval(function() {
+              if (time > 1) {
+                time--
+                self.verifyCodeText = '重新获取 ' + time + 'S'
+              } else {
+                clearInterval(timer)
+                timer = null
+                self.verifyCodeText = '获取验证码'
+              }
+            }, 1000)
+            resolve()
+          }).catch(error => {
+            reject(error)
+          })
+        })
       } else {
         return
       }
@@ -163,7 +199,7 @@ export default {
 
 <style rel="stylesheet/scss" lang="scss">
 $themeColor: #4f93fe;
-.forgetPass-container{
+.password-container{
   .el-form{
     padding-top: 50px;
     .el-input__inner{

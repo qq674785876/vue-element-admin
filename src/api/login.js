@@ -1,12 +1,42 @@
 import request from '@/utils/request'
 
-export function loginByUsername(username, password) {
+export function loginByUsername(email, password) {
   const data = {
-    username,
+    email,
     password
   }
   return request({
     url: '/v1/login',
+    method: 'post',
+    data
+  })
+}
+
+export function register(obj) {
+  const data = obj
+  return request({
+    url: '/v1/register',
+    method: 'post',
+    data
+  })
+}
+
+export function findPass(obj) {
+  const data = obj
+  return request({
+    url: '/v1/find',
+    method: 'post',
+    data
+  })
+}
+
+export function sendMail(email, find) {
+  const data = {
+    email,
+    find
+  }
+  return request({
+    url: '/v1/sendMail',
     method: 'post',
     data
   })

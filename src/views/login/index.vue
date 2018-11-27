@@ -105,7 +105,9 @@
 </template>
 
 <script>
-import { isvalidUsername } from '@/utils/validate'
+import { validateEmail } from '@/utils/validate'
+import { loginByUsername } from '@/api/login'
+import { setToken } from '@/utils/auth'
 import LangSelect from '@/components/LangSelect'
 import SocialSign from './socialsignin'
 import SIdentify from './identify'
@@ -119,7 +121,7 @@ export default {
   components: { LangSelect, SocialSign, SIdentify, Register, RealName, ForgetPass },
   data() {
     const validateUsername = (rule, value, callback) => {
-      if (!isvalidUsername(value)) {
+      if (!validateEmail(value)) {
         callback(new Error('请输入正确邮箱'))
       } else {
         callback()
@@ -242,11 +244,33 @@ export default {
       })
     },
     getLogin(loginForm) {
-      this.$store.dispatch('LoginByUsername', loginForm).then(() => {
-        this.loading = false
-        this.$router.push({ path: this.redirect || '/' })
-      }).catch(() => {
-        this.loading = false
+      // this.$store.dispatch('LoginByUsername', loginForm).then(() => {
+      //   this.loading = false
+      //   this.$router.push({ path: this.redirect || '/' })
+      // }).catch(() => {
+      //   this.loading = false
+      // })
+      const self = this
+      return new Promise((resolve, reject) => {
+        loginByUsername(loginForm.username, loginForm.password).then(response => {
+          self.loading = false
+          const data = response.data
+          if (data.error !== 0) {
+            self.$notify({
+              title: '登陆失败',
+              message: data.reason,
+              type: 'error'
+            })
+            return
+          }
+          setToken(data.token)
+          self.$router.push({ path: self.redirect || '/' })
+          // commit('SET_TOKEN', data.token)
+          // setToken(response.data.token)
+          resolve()
+        }).catch(error => {
+          reject(error)
+        })
       })
     },
     afterQRScan() {

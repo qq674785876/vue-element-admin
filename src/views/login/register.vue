@@ -10,55 +10,55 @@
         <el-row class="form-box">
           <el-form ref="registerForm" :model="registerForm" :rules="registerRules" auto-complete="off" label-position="left">
             <el-col :span="10" :xs="24" class="left-box">
-              <el-form-item prop="username">
+              <el-form-item prop="email">
                 <span class="svg-container">
                   <svg-icon icon-class="user" />
                 </span>
                 <el-input
-                  v-model="registerForm.username"
+                  v-model="registerForm.email"
                   placeholder="注册邮箱"
-                  name="username"
+                  name="email"
                   type="text"
                   auto-complete="on"
                 />
               </el-form-item>
-              <el-form-item prop="pin">
+              <el-form-item prop="code">
                 <span class="svg-container">
                   <svg-icon icon-class="lock" />
                 </span>
                 <el-input
-                  v-model="registerForm.pin"
+                  v-model="registerForm.code"
                   placeholder="请输入验证码"
-                  name="pin"
+                  name="code"
                   type="tel"
-                  maxlength="4"
+                  maxlength="6"
                   auto-complete="off"
                   style="width: 140px;"
                   @keyup.enter.native="handleLogin"
                 />
                 <el-button size="mini" style="padding: 7px 5px;float: right;" @click="getVerifyCode">{{ verifyCodeText }}</el-button>
               </el-form-item>
-              <el-form-item prop="registerPass">
+              <el-form-item prop="password">
                 <span class="svg-container">
                   <svg-icon icon-class="password" />
                 </span>
                 <el-input
-                  v-model="registerForm.registerPass"
+                  v-model="registerForm.password"
                   type="password"
                   placeholder="登录密码"
-                  name="registerPass"
+                  name="password"
                   auto-complete="on"
                 />
               </el-form-item>
-              <el-form-item prop="qrRegisterPass">
+              <el-form-item prop="qrPassword">
                 <span class="svg-container">
                   <svg-icon icon-class="password" />
                 </span>
                 <el-input
-                  v-model="registerForm.qrRegisterPass"
+                  v-model="registerForm.qrPassword"
                   type="password"
                   placeholder="确认密码"
-                  name="qrRegisterPass"
+                  name="qrPassword"
                   auto-complete="on"
                 />
               </el-form-item>
@@ -81,23 +81,23 @@
                   auto-complete="on"
                 />
               </el-form-item>
-              <el-form-item prop="qq" label="QQ:">
+              <el-form-item prop="imNumber" label="QQ:">
                 <el-input
-                  v-model="registerForm.qq"
-                  name="qq"
+                  v-model="registerForm.imNumber"
+                  name="imNumber"
                   type="text"
                   auto-complete="on"
                 />
               </el-form-item>
-              <el-form-item prop="position" label="职位:">
+              <el-form-item prop="job" label="职位:">
                 <el-input
-                  v-model="registerForm.position"
-                  name="position"
+                  v-model="registerForm.job"
+                  name="job"
                   type="text"
                   auto-complete="on"
                 />
               </el-form-item>
-              <el-button type="primary" size="mini" @click="next()">下一步</el-button>
+              <el-button :loading="loading" type="primary" size="mini" @click="next()">下一步</el-button>
             </el-col>
           </el-form>
         </el-row>
@@ -109,6 +109,7 @@
 <script>
 // import openWindow from '@/utils/openWindow'
 import { validateEmail } from '@/utils/validate'
+import { register, sendMail } from '@/api/login'
 
 export default {
   name: 'Register',
@@ -124,7 +125,7 @@ export default {
     const validatePass = function(rule, value, callback) {
       if (value === '') {
         callback(new Error('请再次输入密码'))
-      } else if (value !== _this.registerForm.registerPass) {
+      } else if (value !== _this.registerForm.password) {
         callback(new Error('两次输入密码不一致!'))
       } else {
         callback()
@@ -138,38 +139,67 @@ export default {
       }
     }
 
-    const validatepin = (rule, value, callback) => {
-      if (value !== this.identifyCode) {
-        callback(new Error('验证码错误'))
+    const validatecode = (rule, value, callback) => {
+      if (value.length < 6) {
+        callback(new Error('验证长度为6位'))
       } else {
         callback()
       }
     }
     return {
-      identifyCode: '1111',
+      loading: false,
       verifyCodeText: '获取验证码',
       registerForm: {
-        username: '674785876@qq.com',
-        pin: '1111',
-        registerPass: '123456',
-        qrRegisterPass: '123456'
+        email: '674785876@qq.com',
+        code: '111111',
+        password: '123456',
+        qrPassword: '123456',
+        wechat: '',
+        imNumber: '',
+        company: '',
+        job: ''
       },
       registerRules: {
-        username: [{ required: true, trigger: 'blur', validator: validateUsername }],
-        registerPass: [{ required: true, trigger: 'blur', validator: validatePassword }],
-        qrRegisterPass: [{ required: true, trigger: 'blur', validator: validatePass }],
-        pin: [{ required: true, trigger: 'blur', validator: validatepin }]
+        email: [{ required: true, trigger: 'blur', validator: validateUsername }],
+        password: [{ required: true, trigger: 'blur', validator: validatePassword }],
+        qrPassword: [{ required: true, trigger: 'blur', validator: validatePass }],
+        code: [{ required: true, trigger: 'blur', validator: validatecode }]
       }
     }
   },
   methods: {
     next() {
-      this.$refs.registerForm.validate(valid => {
+      const self = this
+      self.loading = true
+      self.$refs.registerForm.validate(valid => {
         if (valid) {
-          this.$emit('setSelectType', { currentRole: 'realName' })
-          this.$parent.registerForm.username = this.registerForm.username
-          this.$parent.registerForm.password = this.registerForm.registerPass
-          alert('注册成功!')
+          self.$parent.registerForm.email = self.registerForm.email
+          self.$parent.registerForm.password = self.registerForm.password
+          return new Promise((resolve, reject) => {
+            register(self.registerForm).then(response => {
+              self.loading = false
+              const data = response.data
+              if (data.error !== 0) {
+                self.$notify({
+                  title: '注册失败',
+                  message: data.reason,
+                  type: 'error'
+                })
+                return
+              }
+              self.$notify({
+                title: '成功',
+                message: '注册成功！',
+                type: 'success'
+              })
+              setTimeout(function() {
+                self.$emit('setSelectType', { currentRole: 'realName' })
+              }, 1000)
+              resolve()
+            }).catch(error => {
+              reject(error)
+            })
+          })
         } else {
           console.log('error submit!!')
           return false
@@ -179,23 +209,43 @@ export default {
     getVerifyCode() {
       let timer = null
       let time = 60
-      const _this = this
-      if (!validateEmail(this.registerForm.username)) {
+      const self = this
+      if (!validateEmail(this.registerForm.email)) {
         return
       }
       if (this.verifyCodeText === '获取验证码') {
-        alert('已发送验证码至邮箱！')
-        _this.verifyCodeText = '重新获取 ' + time + 'S'
-        timer = setInterval(function() {
-          if (time > 1) {
-            time--
-            _this.verifyCodeText = '重新获取 ' + time + 'S'
-          } else {
-            clearInterval(timer)
-            timer = null
-            _this.verifyCodeText = '获取验证码'
-          }
-        }, 1000)
+        return new Promise((resolve, reject) => {
+          sendMail(self.registerForm.email, 0).then(response => {
+            const data = response.data
+            if (data.error !== 0) {
+              self.$notify({
+                title: '发送失败',
+                message: data.reason,
+                type: 'error'
+              })
+              return
+            }
+            self.$notify({
+              title: '发送成功',
+              message: '已发送验证码至邮箱！',
+              type: 'success'
+            })
+            self.verifyCodeText = '重新获取 ' + time + 'S'
+            timer = setInterval(function() {
+              if (time > 1) {
+                time--
+                self.verifyCodeText = '重新获取 ' + time + 'S'
+              } else {
+                clearInterval(timer)
+                timer = null
+                self.verifyCodeText = '获取验证码'
+              }
+            }, 1000)
+            resolve()
+          }).catch(error => {
+            reject(error)
+          })
+        })
       } else {
         return
       }

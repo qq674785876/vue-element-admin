@@ -88,7 +88,6 @@ export default {
       _this.dialogVisible = true
     },
     getLogin() {
-      this.$parent.registerForm.username = 'admin'
       this.$emit('getLogin', this.$parent.registerForm)
     }
   }
