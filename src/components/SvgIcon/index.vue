@@ -34,10 +34,15 @@ export default {
 
 <style scoped>
 .svg-icon {
-  width: 2em;
-  height: 2em;
-  vertical-align: -0.65em;
+  width: 1em;
+  height: 1em;
+  vertical-align: -0.15em;
   fill: currentColor;
   overflow: hidden;
+}
+.sidebar-container .svg-icon{
+  width: 1.4em !important;
+  height: 1.4em !important;
+  vertical-align: -0.33em;
 }
 </style>

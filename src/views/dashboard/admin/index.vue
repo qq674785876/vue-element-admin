@@ -25,15 +25,15 @@ export default {
   data() {
     return {
       exhibition: [{
-        bg: '/src/assets/images/login-bg.jpg',
+        bg: '../../../static/images/login-bg.jpg',
         title: '内测托管',
         tips: '一键上传应用，扫描二维码下载'
       }, {
-        bg: '/src/assets/images/login-bg.jpg',
+        bg: '../../../static/images/login-bg.jpg',
         title: '应用合并',
         tips: '扫描同一个二维码，根据设备类型自动下载对应的IOS或Android应用'
       }, {
-        bg: '/src/assets/images/login-bg.jpg',
+        bg: '../../../static/images/login-bg.jpg',
         title: '应用合并',
         tips: '实名认证保证每个上传者在一个安全的环境中进行应用开发'
       }]

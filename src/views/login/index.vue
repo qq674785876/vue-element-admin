@@ -114,7 +114,7 @@ import SIdentify from './identify'
 import Register from './register'
 import RealName from './realName'
 import ForgetPass from './forgetPass'
-import img1 from '../../assets/images/login-logo.png'
+import img1 from '../../../static/images/login-logo.png'
 
 export default {
   name: 'Login',
@@ -423,7 +423,7 @@ $light_gray:#333333;
   position: fixed;
   height: 100%;
   width: 100%;
-  background: url(/src/assets/images/login-bg.jpg);
+  background: url(../../../static/images/login-bg.jpg);
   background-size: cover;
   background-repeat: no-repeat;
   overflow: auto;

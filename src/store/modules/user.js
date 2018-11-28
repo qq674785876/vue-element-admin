@@ -8,7 +8,7 @@ const user = {
     code: '',
     token: getToken(),
     name: getName(),
-    avatar: '/src/assets/images/login-logo.png',
+    avatar: '../../../static/images/login-logo.png',
     introduction: '',
     roles: ['admin'],
     setting: {
