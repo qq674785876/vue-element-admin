@@ -1,5 +1,5 @@
 import { loginByUsername, logout, getUserInfo } from '@/api/login'
-import { getToken, setToken, removeToken } from '@/utils/auth'
+import { getToken, setToken, removeToken, getName } from '@/utils/auth'
 
 const user = {
   state: {
@@ -7,8 +7,8 @@ const user = {
     status: '',
     code: '',
     token: getToken(),
-    name: '',
-    avatar: '',
+    name: getName(),
+    avatar: '/src/assets/images/login-logo.png',
     introduction: '',
     roles: ['admin'],
     setting: {

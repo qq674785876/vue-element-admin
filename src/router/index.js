@@ -71,7 +71,43 @@ export const constantRouterMap = [
         path: 'dashboard',
         component: () => import('@/views/dashboard/index'),
         name: 'Dashboard',
-        meta: { title: 'dashboard', icon: 'dashboard', noCache: true }
+        meta: { title: 'dashboard', icon: 'index', noCache: true }
+      }
+    ]
+  },
+  {
+    path: '/app',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/app/index'),
+        name: 'App',
+        meta: { title: '应用管理', icon: 'app', noCache: true }
+      }
+    ]
+  },
+  {
+    path: '/set',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/set/index'),
+        name: 'Set',
+        meta: { title: '通知设置', icon: 'set', noCache: true }
+      }
+    ]
+  },
+  {
+    path: '/icon',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/svg-icons/index'),
+        name: 'Icons',
+        meta: { title: 'icons', icon: 'icon', noCache: true }
       }
     ]
   }
@@ -112,19 +148,6 @@ export const asyncRouterMap = [
           title: 'directivePermission'
           // if do not set roles, means: this page does not require permission
         }
-      }
-    ]
-  },
-
-  {
-    path: '/icon',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/svg-icons/index'),
-        name: 'Icons',
-        meta: { title: 'icons', icon: 'icon', noCache: true }
       }
     ]
   },

@@ -107,7 +107,7 @@
 <script>
 import { validateEmail } from '@/utils/validate'
 import { loginByUsername } from '@/api/login'
-import { setToken } from '@/utils/auth'
+import { setToken, setName } from '@/utils/auth'
 import LangSelect from '@/components/LangSelect'
 import SocialSign from './socialsignin'
 import SIdentify from './identify'
@@ -264,7 +264,9 @@ export default {
             })
             return
           }
+          // this.$store.commit('SET_NAME', result.email)
           setToken(result.token)
+          setName(result.email)
           self.$router.push({ path: self.redirect || '/' })
           // commit('SET_TOKEN', data.token)
           // setToken(response.data.token)
@@ -421,7 +423,7 @@ $light_gray:#333333;
   position: fixed;
   height: 100%;
   width: 100%;
-  background: url(../../assets/images/login-bg.jpg);
+  background: url(/src/assets/images/login-bg.jpg);
   background-size: cover;
   background-repeat: no-repeat;
   overflow: auto;

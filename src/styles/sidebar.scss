@@ -10,7 +10,7 @@
   .sidebar-container {
     transition: width 0.28s;
     width: 220px !important;
-    height: 100%;
+    max-height: 100%;
     position: fixed;
     font-size: 0px;
     top: 0;
@@ -25,7 +25,10 @@
     .scrollbar-wrapper {
       overflow-x: hidden!important;
       .el-scrollbar__view {
-        height: auto;
+        height: 100%;
+        min-height: 100%;
+        background: url(/src/assets/images/login-bg.jpg) 5% 0;
+        overflow: auto;
       }
     }
     .el-scrollbar__bar.is-vertical{
@@ -40,12 +43,16 @@
       overflow: hidden;
     }
     .svg-icon {
-      margin-right: 16px;
+      margin-right: 10px;
     }
     .el-menu {
       border: none;
-      height: 100%;
+      height: calc(100% - 275px);
+      overflow: auto;
+      position: relative;
+      top: 140px;
       width: 100% !important;
+      background-color: transparent;
     }
     .is-active > .el-submenu__title{
         color: #f4f4f5!important;
@@ -53,13 +60,20 @@
   }
   .hideSidebar {
     .sidebar-container {
-      width: 36px !important;
+      width: 60px !important;
+      text-align: center;
+    }
+    .el-menu{
+      top: 80px;
+    }
+    .topTips,.user-info-box{
+      display: none;
     }
     .main-container {
-      margin-left: 36px;
+      margin-left: 60px;
     }
     .submenu-title-noDropdown {
-      padding-left: 10px !important;
+      /*padding-left: 10px !important;*/
       position: relative;
       .el-tooltip {
         padding: 0 10px !important;
@@ -87,6 +101,9 @@
         }
       }
     }
+  }
+  .el-menu-item{
+    padding-left: 50px !important;
   }
   .sidebar-container .nest-menu .el-submenu>.el-submenu__title,
   .sidebar-container .el-submenu .el-menu-item {

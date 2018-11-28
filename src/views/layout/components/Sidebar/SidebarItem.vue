@@ -9,7 +9,7 @@
       </app-link>
     </template>
 
-    <el-submenu v-else ref="submenu" :index="resolvePath(item.path)">
+    <!-- <el-submenu v-else ref="submenu" :index="resolvePath(item.path)">
       <template slot="title">
         <item v-if="item.meta" :icon="item.meta.icon" :title="generateTitle(item.meta.title)" />
       </template>
@@ -29,7 +29,7 @@
           </el-menu-item>
         </app-link>
       </template>
-    </el-submenu>
+    </el-submenu> -->
 
   </div>
 </template>
@@ -112,6 +112,10 @@ export default {
 .el-menu-item:hover ,.el-submenu__title:hover{
     outline: 0;
     background-color: rgba(255,255,255,.3);
+}
+.el-menu-item > span{
+  border-left: 1px solid #fff;
+  padding-left: 10px;
 }
 </style>
 
