@@ -145,11 +145,12 @@ export default {
       identifyCodes: '1234567890',
       identifyCode: '',
       checked: false,
-      showType: 'login',
+      // selectType: 'register',
+      // currentRole: 'realName',
       selectType: 'login',
+      currentRole: 'login',
       logoimgs: [img1],
       eyeClass: 'eye-close',
-      currentRole: 'register',
       registerForm: {
         email: '',
         password: ''
@@ -423,7 +424,7 @@ $light_gray:#333333;
   position: fixed;
   height: 100%;
   width: 100%;
-  background: url(../../../static/images/login-bg.jpg);
+  background: url(/static/images/login-bg.jpg);
   background-size: cover;
   background-repeat: no-repeat;
   overflow: auto;

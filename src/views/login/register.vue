@@ -110,6 +110,7 @@
 // import openWindow from '@/utils/openWindow'
 import { validateEmail } from '@/utils/validate'
 import { register, sendMail } from '@/api/login'
+import { setToken, setName } from '@/utils/auth'
 
 export default {
   name: 'Register',
@@ -170,15 +171,16 @@ export default {
   methods: {
     next() {
       const self = this
-      self.loading = true
       self.$refs.registerForm.validate(valid => {
         if (valid) {
+          self.loading = true
           self.$parent.registerForm.email = self.registerForm.email
           self.$parent.registerForm.password = self.registerForm.password
           return new Promise((resolve, reject) => {
             register(self.registerForm).then(response => {
               self.loading = false
               const data = response.data
+              const result = data.result
               if (data.error !== 0) {
                 self.$notify({
                   title: '注册失败',
@@ -192,6 +194,8 @@ export default {
                 message: '注册成功！',
                 type: 'success'
               })
+              setToken(result.token)
+              setName(result.email)
               setTimeout(function() {
                 self.$emit('setSelectType', { currentRole: 'realName' })
               }, 1000)

@@ -1,4 +1,5 @@
 import request from '@/utils/request'
+import { getToken } from '@/utils/auth'
 
 export function loginByUsername(email, password) {
   const data = {
@@ -54,6 +55,26 @@ export function getUserInfo(token) {
     url: '/user/info',
     method: 'get',
     params: { token }
+  })
+}
+
+export function imageUpload(image) {
+  const data = image
+  return request({
+    url: '/v1/imageUpload',
+    method: 'post',
+    headers: { 'Content-Type': 'multipart/form-data' },
+    data
+  })
+}
+
+export function getRealName(obj) {
+  const data = obj
+  return request({
+    url: '/v1/realName',
+    method: 'post',
+    headers: { 'token': getToken() },
+    data
   })
 }
 

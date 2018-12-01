@@ -10,27 +10,48 @@
         <el-row class="info-box">
           <el-col :span="7" :xs="24">
             <div class="img-box">
-              <span class="svg-container">
-                <svg-icon icon-class="add" />
-              </span>
+              <el-upload
+                :action="uploadApi"
+                :show-file-list="false"
+                :before-upload="frontUpload"
+                class="avatar-uploader">
+                <img v-if="imageUrl_front" :src="imageUrl_front" class="avatar">
+                <span class="svg-container">
+                  <svg-icon icon-class="add" />
+                </span>
+              </el-upload>
             </div>
             <p class="tips">上传身份证正面</p>
           </el-col>
           <el-col :span="1" :xs="0" style="height: 1px;"/>
           <el-col :span="7" :xs="24">
             <div class="img-box">
-              <span class="svg-container">
-                <svg-icon icon-class="add" />
-              </span>
+              <el-upload
+                :action="uploadApi"
+                :show-file-list="false"
+                :before-upload="contraryUpload"
+                class="avatar-uploader">
+                <img v-if="imageUrl_contrary" :src="imageUrl_contrary" class="avatar">
+                <span class="svg-container">
+                  <svg-icon icon-class="add" />
+                </span>
+              </el-upload>
             </div>
             <p class="tips">上传身份证反面</p>
           </el-col>
           <el-col :span="1" :xs="0" style="height: 1px;"/>
           <el-col :span="7" :xs="24">
             <div class="img-box">
-              <span class="svg-container">
-                <svg-icon icon-class="add" />
-              </span>
+              <el-upload
+                :action="uploadApi"
+                :show-file-list="false"
+                :before-upload="handUpload"
+                class="avatar-uploader">
+                <img v-if="imageUrl_hand" :src="imageUrl_hand" class="avatar">
+                <span class="svg-container">
+                  <svg-icon icon-class="add" />
+                </span>
+              </el-upload>
             </div>
             <p class="tips">上传手持身份证正面</p>
           </el-col>
@@ -70,6 +91,8 @@
 </template>
 
 <script>
+import { imageUpload } from '@/api/login'
+import { getRealName } from '@/api/login'
 
 export default {
   name: 'RealName',
@@ -77,20 +100,132 @@ export default {
     return {
       loading: false,
       infos: [],
+      uploadApi: process.env.BASE_API + '/v1/imageUpload',
+      imageUrl_front: '',
+      imageUrl_contrary: '',
+      imageUrl_hand: '',
       dialogVisible: false
     }
   },
   methods: {
     finish(flag) {
-      if (flag) {
-        console.log(1)
-      }
       const _this = this
-      _this.dialogVisible = true
+      if (flag) {
+        if (!_this.imageUrl_front) {
+          _this.$notify({
+            title: '错误信息',
+            message: '请上传身份证正面照片!',
+            type: 'error'
+          })
+        } else if (!_this.imageUrl_contrary) {
+          _this.$notify({
+            title: '错误信息',
+            message: '请上传身份证反面照片!',
+            type: 'error'
+          })
+        } else if (!_this.imageUrl_hand) {
+          _this.$notify({
+            title: '错误信息',
+            message: '请上传手持身份证正面照片!',
+            type: 'error'
+          })
+        } else {
+          getRealName({
+            front: _this.imageUrl_front,
+            contrary: _this.imageUrl_contrary,
+            hand: _this.imageUrl_hand
+          }).then(response => {
+            const data = response.data
+            if (data.error !== 0) {
+              _this.$notify({
+                title: '实名失败',
+                message: data.reason,
+                type: 'error'
+              })
+              return
+            }
+            _this.dialogVisible = true
+          }).catch(error => {
+            console.log(error)
+          })
+        }
+      } else {
+        _this.dialogVisible = true
+      }
     },
     getLogin() {
       this.loading = true
       this.$emit('getLogin', this.$parent.registerForm)
+    },
+    isImgFlag(file) {
+      const _this = this
+      const isJPG = file.type === 'image/jpeg'
+      const isGIF = file.type === 'image/gif'
+      const isPNG = file.type === 'image/png'
+      const isBMP = file.type === 'image/bmp'
+      const isLt2M = file.size / 1024 / 1024 < 2
+
+      if (!isJPG && !isGIF && !isPNG && !isBMP) {
+        return _this.$notify({
+          title: '格式错误',
+          message: '上传图片必须是JPG/GIF/PNG/BMP格式!',
+          type: 'error'
+        })
+      }
+
+      if (!isLt2M) {
+        return _this.$notify({
+          title: '格式错误',
+          message: '上传图片必须是JPG/GIF/PNG/BMP格式!',
+          type: 'error'
+        })
+      }
+
+      return true
+    },
+    uploadImg(file, type) {
+      const _this = this
+      const formData = new FormData()
+      formData.append('image', file) // 传文件
+      imageUpload(formData).then(response => {
+        const data = response.data
+        const result = data.result
+        if (data.error !== 0) {
+          _this.$notify({
+            title: '上传失败',
+            message: data.reason,
+            type: 'error'
+          })
+          return
+        }
+        _this[type] = result.viewUrl
+      }).catch(error => {
+        console.log(error)
+      })
+    },
+    frontUpload(file) {
+      const _this = this
+
+      _this.uploadImg(file, 'imageUrl_front')
+      // return isLt2M;
+      // return isJPG && isLt2M;
+      return false
+    },
+    contraryUpload(file) {
+      const _this = this
+
+      _this.uploadImg(file, 'imageUrl_contrary')
+      // return isLt2M;
+      // return isJPG && isLt2M;
+      return false
+    },
+    handUpload(file) {
+      const _this = this
+
+      _this.uploadImg(file, 'imageUrl_hand')
+      // return isLt2M;
+      // return isJPG && isLt2M;
+      return false
     }
   }
 }
@@ -129,6 +264,10 @@ $themeColor: #4f93fe;
       line-height: 120px;
       background-color: #4f93fe;
       text-align: center;
+      img{
+        width: 100%;
+        height: 100%;
+      }
       .svg-container{
         font-size: 30px;
         cursor: pointer;
