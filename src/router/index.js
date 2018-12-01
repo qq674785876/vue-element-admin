@@ -105,7 +105,8 @@ export const constantRouterMap = [
         meta: { title: '通知设置', icon: 'set', noCache: true }
       }
     ]
-  }
+  },
+  { path: '*', redirect: '/404', hidden: true }
   // {
   //   path: '/icon',
   //   component: Layout,
@@ -127,6 +128,11 @@ export default new Router({
 })
 
 export const asyncRouterMap = [
+  // // /** When your routing table is too long, you can split it into small modules**/
+  // componentsRouter,
+  // chartsRouter,
+  // nestedRouter,
+  // tableRouter,
   // {
   //   path: '/permission',
   //   component: Layout,
@@ -158,13 +164,6 @@ export const asyncRouterMap = [
   //     }
   //   ]
   // },
-
-  // // /** When your routing table is too long, you can split it into small modules**/
-  // componentsRouter,
-  // chartsRouter,
-  // nestedRouter,
-  // tableRouter,
-
   // {
   //   path: '/example',
   //   component: Layout,
