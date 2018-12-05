@@ -109,7 +109,7 @@
 <script>
 // import openWindow from '@/utils/openWindow'
 import { validateEmail } from '@/utils/validate'
-import { register, sendMail } from '@/api/login'
+import { register, sendMail } from '@/api/index'
 import { setToken, setName } from '@/utils/auth'
 
 export default {

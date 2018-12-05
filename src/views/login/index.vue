@@ -106,7 +106,7 @@
 
 <script>
 import { validateEmail } from '@/utils/validate'
-import { loginByUsername } from '@/api/login'
+import { loginByUsername } from '@/api/index'
 import { setToken, setName } from '@/utils/auth'
 import LangSelect from '@/components/LangSelect'
 import SocialSign from './socialsignin'

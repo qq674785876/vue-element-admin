@@ -58,7 +58,7 @@
           <div class="el-upload__text">点击或拖拽<br >上传您的应用</div>
         </el-upload>
       </el-col>
-      <el-col :span="19" :xs="24">
+      <el-col :span="20" :xs="24">
         <div class="app-box">
           <el-card v-for="(list, index) in applist" :key="index" :class="{'pTop': index > 3}" shadow="always" class="app-list">
             <div :class="list.type" class="app-type">
@@ -84,16 +84,20 @@
         </div>
       </el-col>
     </el-row>
+    <iframe-loading :loading-src="loadingSrc" :progress-bar="progressBar"/>
   </div>
 </template>
 
 <script>
+import IframeLoading from '@/components/Loading/index'
 
 export default {
   name: 'App',
-  components: {},
+  components: { IframeLoading },
   data() {
     return {
+      progressBar: 0,
+      loadingSrc: '/static/SvgLoading/index.html',
       appType: 'IOS',
       searchKey: '',
       applist: [{
@@ -133,6 +137,12 @@ export default {
         version: '1.0.5（Build 5）'
       }]
     }
+  },
+  created() {
+    // const _this = this
+    // setInterval(function(){
+    //   _this.progressBar++
+    // },1000)
   },
   methods: {
     uploadBefore(file) {
@@ -213,12 +223,8 @@ export default {
     }
   }
   .app-box{
-    height: 75vh;
+    height: calc(100vh - 180px);
     overflow: auto;
-    .pTop{
-      position: relative;
-      top: 2.5vh;
-    }
     .app-list{
       width: 12%;
       min-width: 240px;
@@ -227,6 +233,7 @@ export default {
       float: left;
       margin-left: 30px;
       position: relative;
+      margin-bottom: 2.5vh;
       .app-type{
         position: absolute;
         background-color: #666;

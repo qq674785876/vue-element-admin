@@ -78,3 +78,13 @@ export function getRealName(obj) {
   })
 }
 
+export function appUpload(file) {
+  const data = file
+  return request({
+    url: '/v1/appUpload',
+    method: 'post',
+    headers: { 'token': getToken() },
+    data
+  })
+}
+
