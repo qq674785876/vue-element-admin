@@ -83,13 +83,13 @@
         </el-tab-pane>
         <el-tab-pane name="tap3" label="应用合并">
           <el-row class="app-merge">
-            <el-col :span="6" class="left">
+            <el-col :span="6" :xs="24" class="left">
               <p class="left-title">选择已有的应用进行合并</p>
               <div class="app-mini-box">
                 <img v-for="(img, index) in appMini" :src="img" :key="index">
               </div>
             </el-col>
-            <el-col :span="12" :offset="2" class="right">
+            <el-col :span="12" :xs="24" :offset="2" class="right">
               <p>输入需要合并的应用的短链接</p>
               <el-input
                 v-model="searchKey"
@@ -483,6 +483,53 @@ export default {
         }
       }
     }
+  }
+}
+.mobile{
+  .app-detail-box{
+    .el-input{
+      width: 100% !important;
+    }
+    .app-version-list{
+    }
+    .app-merge{
+      .left{
+        border-right: 0;
+      }
+      .el-input{
+        width: 80% !important;
+      }
+    }
+  }
+  .app-detail-container .app-detail-box .chart-box .top .el-button-group{
+    padding-top: 15px;
+  }
+  .app-detail-container .app-detail-box .chart-box.position-distribution .el-table{
+    display: none;
+  }
+  .chart-container{
+    height: 300px;
+  }
+  .el-dialog{
+    margin-top: 10vh !important;
+    width: 100% !important;
+  }
+  .app-detail-container .preview-cont{
+    width: 100% !important;
+  }
+  .app-detail-container .top-app-info .app-img{
+    display: block;
+    margin: 0 auto;
+  }
+  .app-detail-container .top-app-info .app-btn-box{
+    text-align: center;
+    padding-top: 30px;
+  }
+  .app-detail-container .top-app-info .app-info{
+    padding-top: 30px;
+  }
+  .app-detail-container .top-app-info div {
+    float: none;
   }
 }
 </style>

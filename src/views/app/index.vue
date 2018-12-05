@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <el-row class="searchAndInfo">
-      <el-col :span="10">
+      <el-col :span="10" :xs="24">
         <el-radio-group v-model="appType">
           <el-radio-button label="IOS">
             <span class="svg-container">
@@ -20,7 +20,7 @@
           <i slot="prefix" class="el-input__icon el-icon-search"/>
         </el-input>
       </el-col>
-      <el-col :span="14" class="top-info-box">
+      <el-col :span="14" :xs="24" class="top-info-box">
         <ul>
           <li>
             <p>可上传APP数</p>
@@ -48,7 +48,7 @@
       </el-col>
     </el-row>
     <el-row :gutter="20" class="app-content">
-      <el-col :span="4">
+      <el-col :span="4" :xs="24">
         <el-upload
           class="upload-demo"
           drag
@@ -58,7 +58,7 @@
           <div class="el-upload__text">点击或拖拽<br >上传您的应用</div>
         </el-upload>
       </el-col>
-      <el-col :span="19">
+      <el-col :span="19" :xs="24">
         <div class="app-box">
           <el-card v-for="(list, index) in applist" :key="index" :class="{'pTop': index > 3}" shadow="always" class="app-list">
             <div :class="list.type" class="app-type">
@@ -149,6 +149,8 @@ export default {
   .svg-container.android{
   }
   .el-input{
+    position: relative;
+    top: 1px;
     margin-left: 50px;
     width: 200px;
   }
@@ -281,6 +283,27 @@ export default {
         text-align: right;
       }
     }
+  }
+}
+.mobile {
+  .top-info-box{
+    display: none;
+  }
+  .el-input{
+    margin-left: 0;
+  }
+  .app-box{
+    height: calc(100vh - 300px);
+    overflow: auto;
+    .app-list{
+      margin-left: 0;
+      margin-bottom: 10px;
+      width: 100%;
+      min-width: none;
+    }
+  }
+  .el-upload .el-upload-dragger{
+    height: 120px;
   }
 }
 </style>

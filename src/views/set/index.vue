@@ -54,17 +54,23 @@
         <div class="module-list">
           <p class="title">实名信息</p>
           <el-row class="realName-box">
-            <el-col :span="12">
+            <el-col :span="8" :xs="24">
               <div class="img-box">
                 <img :src="personalInfo.frontImg">
               </div>
               <p>身份证正面</p>
             </el-col>
-            <el-col :span="12">
+            <el-col :span="8" :xs="24">
               <div class="img-box">
                 <img :src="personalInfo.contraryImg">
               </div>
               <p>身份证反面</p>
+            </el-col>
+            <el-col :span="8" :xs="24">
+              <div class="img-box">
+                <img :src="personalInfo.handImg">
+              </div>
+              <p>手持身份证正面</p>
             </el-col>
           </el-row>
         </div>
@@ -129,7 +135,8 @@ export default {
       total: 9,
       personalInfo: {
         frontImg: '',
-        contraryImg: ''
+        contraryImg: '',
+        handImg: ''
       },
       noticeList: [{
         time: '2018-05-03 14:20:30',
@@ -223,5 +230,23 @@ export default {
 			}
 		}
 	}
+}
+.mobile{
+  .module-list{
+    .btn-box{
+      .el-button{
+        margin-right: 0 !important;
+      }
+    }
+    .info-box{
+      a{
+        margin-left: 0 !important;
+        display: block;
+      }
+    }
+  }
+  .set-container .personal-info .module-list .realName-box .img-box img{
+    width: 100%;
+  }
 }
 </style>
