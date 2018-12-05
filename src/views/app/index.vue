@@ -58,10 +58,14 @@
     <el-row :gutter="20" class="app-content">
       <el-col :span="4" :xs="24">
         <el-upload
+          :headers="headers"
+          :action="uploadApi"
+          :show-file-list="false"
+          :on-progress="uploadProgress"
+          :on-success="uploadSuccess"
+          :before-upload="uploadApp"
           class="upload-demo"
-          drag
-          action="https://jsonplaceholder.typicode.com/posts/"
-          multiple>
+          drag>
           <i class="el-icon-upload"/>
           <div class="el-upload__text">点击或拖拽<br >上传您的应用</div>
         </el-upload>
@@ -92,12 +96,21 @@
         </div>
       </el-col>
     </el-row>
-    <component :is="currentRole" :dialog-visible="dialogVisible" :preview-src="previewSrc" :preview-url="previewUrl" :upload-time="uploadTime" @handleClose="handleClose" @submitUpload="submitUpload"/>
-    <iframe-loading v-if="isLoading" :loading-src="loadingSrc" :progress-bar="progressBar"/>
+    <component
+      :is="currentRole"
+      :dialog-visible="dialogVisible"
+      :preview-src="previewSrc"
+      :preview-url="previewUrl"
+      :upload-time="uploadTime"
+      @handleClose="handleClose"
+      @submitUpload="submitUpload"/>
+    <iframe-loading v-if="isLoading" :loading-src="loadingSrc" :progress-bar="uploadPercent"/>
   </div>
 </template>
 
 <script>
+// import { appUpload } from '@/api/index'
+import { getToken } from '@/utils/auth'
 import IframeLoading from '@/components/Loading/index'
 import Preview from './preview'
 import Upload from './upload'
@@ -109,10 +122,14 @@ export default {
     return {
       currentRole: 'preview',
       dialogVisible: false,
+      uploadPercent: 0,
       previewSrc: '',
       previewUrl: 'http://www.baidu.com/123',
       uploadTime: '2018-03-02 23:32:23',
-      progressBar: 0,
+      headers: {
+        'token': getToken()
+      },
+      uploadApi: process.env.BASE_API + '/v1/appUpload',
       isLoading: false,
       loadingSrc: '/static/SvgLoading/index.html',
       appType: 'IOS',
@@ -162,6 +179,24 @@ export default {
     // },1000)
   },
   methods: {
+    uploadSuccess() {
+      const _this = this
+      _this.isLoading = false
+      _this.uploadPercent = 0
+      _this.$notify({
+        title: '上传成功',
+        message: '文件上传成功',
+        type: 'success'
+      })
+      setTimeout(function() {
+        _this.currentRole = 'upload'
+        _this.dialogVisible = true
+      }, 600)
+    },
+    uploadProgress(event, file, fileList) {
+      this.isLoading = true
+      this.uploadPercent = file.percentage.toFixed(0)
+    },
     uploadBefore(file) {
       console.log(file)
     },
@@ -178,6 +213,34 @@ export default {
     },
     submitUpload() {
 
+    },
+    uploadApp(file) {
+      // const _this = this
+      // const formData = new FormData()
+      // formData.append('app', file) // 传文件
+      // onUploadProgress: progressEvent => {
+      //   var complete = (progressEvent.loaded / progressEvent.total * 100 | 0)
+      //   console.log(complete)//进度值
+      // }
+      // appUpload(formData, function(progressEvent){
+      //   var complete = (progressEvent.loaded / progressEvent.total * 100 | 0)
+      //   console.log(complete)//进度值
+      // }).then(response => {
+      //   const data = response.data
+      //   const result = data.result
+      //   if (data.error !== 0) {
+      //     _this.$notify({
+      //       title: '上传失败',
+      //       message: data.reason,
+      //       type: 'error'
+      //     })
+      //     return
+      //   }
+      // }).catch(error => {
+      //   console.log(error)
+      // })
+
+      // return false
     }
   }
 }

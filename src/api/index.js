@@ -78,12 +78,17 @@ export function getRealName(obj) {
   })
 }
 
-export function appUpload(file) {
+export function appUpload(file, onUploadProgress) {
   const data = file
   return request({
     url: '/v1/appUpload',
     method: 'post',
-    headers: { 'token': getToken() },
+    // onprogress: onprogress,
+    // onUploadProgress: onUploadProgress,
+    headers: {
+      'token': getToken(),
+      'Content-Type': 'multipart/form-data'
+    },
     data
   })
 }
