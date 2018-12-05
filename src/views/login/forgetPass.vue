@@ -59,7 +59,7 @@
 
 <script>
 import { validateEmail } from '@/utils/validate'
-import { findPass, sendMail } from '@/api/login'
+import { findPass, sendMail } from '@/api/index'
 
 export default {
   name: 'Password',

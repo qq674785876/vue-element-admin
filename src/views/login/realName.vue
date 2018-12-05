@@ -91,8 +91,7 @@
 </template>
 
 <script>
-import { imageUpload } from '@/api/login'
-import { getRealName } from '@/api/login'
+import { imageUpload, getRealName } from '@/api/index'
 
 export default {
   name: 'RealName',
