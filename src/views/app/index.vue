@@ -84,16 +84,20 @@
         </div>
       </el-col>
     </el-row>
+    <iframe-loading :loading-src="loadingSrc" :progress-bar="progressBar"/>
   </div>
 </template>
 
 <script>
+import IframeLoading from '@/components/Loading/index'
 
 export default {
   name: 'App',
-  components: {},
+  components: { IframeLoading },
   data() {
     return {
+      progressBar: 0,
+      loadingSrc: '/static/SvgLoading/index.html',
       appType: 'IOS',
       searchKey: '',
       applist: [{
@@ -133,6 +137,12 @@ export default {
         version: '1.0.5（Build 5）'
       }]
     }
+  },
+  created() {
+    // const _this = this
+    // setInterval(function(){
+    //   _this.progressBar++
+    // },1000)
   },
   methods: {
     uploadBefore(file) {
