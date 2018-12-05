@@ -107,7 +107,7 @@
 <script>
 import { validateEmail } from '@/utils/validate'
 import { loginByUsername } from '@/api/index'
-import { setToken, setName } from '@/utils/auth'
+import { setToken, setName, setUserInfo } from '@/utils/auth'
 import LangSelect from '@/components/LangSelect'
 import SocialSign from './socialsignin'
 import SIdentify from './identify'
@@ -197,6 +197,7 @@ export default {
       this.currentRole = 'forgetPass'
     },
     setSelectType(role) {
+      if (role.selectType) this.selectType = role.selectType
       this.currentRole = role.currentRole
     },
     makeCode(o, l) {
@@ -265,7 +266,8 @@ export default {
             })
             return
           }
-          // this.$store.commit('SET_NAME', result.email)
+          // this.$store.commit('SET_USERINFO', result)
+          setUserInfo(result)
           setToken(result.token)
           setName(result.email)
           self.$router.push({ path: self.redirect || '/' })

@@ -9,8 +9,8 @@
         <p class="app-info-cont">最新版本：<span class="app-text">{{ appInfo.version }}</span></p>
       </div>
       <div class="app-btn-box">
-        <el-button size="mini" icon="el-icon-upload" round @click="dialogVisible = true">上传新版本</el-button>
-        <el-button type="primary" size="mini" icon="el-icon-view" round @click="previewVisible = true">预览</el-button>
+        <el-button size="mini" icon="el-icon-upload" round>上传新版本</el-button>
+        <el-button type="primary" size="mini" icon="el-icon-view" round @click="getPreview">预览</el-button>
       </div>
     </div>
     <div class="app-detail-box">
@@ -28,11 +28,27 @@
             <div class="list-cont">
               <p class="title">{{ list.name }}</p>
               <p class="date">{{ list.date }}</p>
-              <p class="tips">{{ list.tips }}</p>
+              <p v-if="!list.isEdit" class="tips">{{ list.tips }}</p>
+              <el-row v-else class="edit-box">
+                <el-input v-model="list.tips" type="textarea" placeholder="请输入更新日志"/>
+                <el-button-group style="padding-top: 5px;">
+                  <el-button type="primary" size="mini" @click="list.isEdit = false">取消</el-button>
+                  <el-button type="primary" size="mini" @click="saveEait">保存</el-button>
+                </el-button-group>
+              </el-row>
               <div class="btn-box">
-                <el-button size="mini" round>下载</el-button>
-                <el-button size="mini" round>预览</el-button>
-                <el-button size="mini" round>上线</el-button>
+                <el-tooltip content="编辑更新日志" placement="top-start">
+                  <el-button size="mini" round @click="list.isEdit = true"><i class="el-icon-edit"/></el-button>
+                </el-tooltip>
+                <el-tooltip content="下载源文件" placement="top-start">
+                  <el-button size="mini" round><i class="el-icon-download"/></el-button>
+                </el-tooltip>
+                <el-tooltip content="预览" placement="top-start">
+                  <el-button size="mini" round @click="getPreview"><i class="el-icon-view"/></el-button>
+                </el-tooltip>
+                <el-tooltip content="上线" placement="top-start">
+                  <el-button size="mini" round><i class="el-icon-upload2"/></el-button>
+                </el-tooltip>
               </div>
             </div>
           </div>
@@ -130,40 +146,23 @@
         </el-tab-pane>
       </el-tabs>
     </div>
-    <component :is="currentRole" :dialog-visible="dialogVisible" :dialog-title="dialogTitle"/>
-    <el-dialog
-      :visible.sync="previewVisible"
-      :before-close="previewClose"
-      width="45%">
-      <div class="preview-cont">
-        <img :src="previewSrc">
-        <p class="name">TEST001</p>
-        <p class="tips">扫描二维码下载</p>
-        <p class="tips">或用手机浏览器输入这个网址：{{ previewUrl }}</p>
-        <el-button type="primary" style="width: 180px;margin: 15px 0;" round>下载安装</el-button>
-      </div>
-      <div class="preview-cont-2">
-        <p class="tips">1.0.5（Build 5） - 51.9KB</p>
-        <p class="tips">更新于：{{ uploadTime }}</p>
-      </div>
-    </el-dialog>
+    <component :is="currentRole" :dialog-visible="dialogVisible" :preview-src="previewSrc" :preview-url="previewUrl" :upload-time="uploadTime" @handleClose="handleClose"/>
   </div>
 </template>
 
 <script>
 import Chart from './chart'
 import MapChart from './mapChart'
+import Preview from './preview'
 import Upload from './upload'
 
 export default {
   name: 'Detail',
-  components: { Chart, MapChart, Upload },
+  components: { Chart, MapChart, Preview, Upload },
   data() {
     return {
-      currentRole: 'upload',
-      dialogTitle: '上传新版本',
+      currentRole: 'preview',
       dialogVisible: false,
-      previewVisible: false,
       previewSrc: '',
       previewUrl: 'http://www.baidu.com/123',
       uploadTime: '2018-03-02 23:32:23',
@@ -183,23 +182,28 @@ export default {
       appVersionList: [{
         name: '5.3.2.01（Build1213）',
         date: '2018.11.11 11:11',
-        tips: '编辑日志：这是测试用的第二个版本'
+        tips: '编辑日志：这是测试用的第二个版本',
+        isEdit: false
       }, {
         name: '5.3.2.01（Build101013）',
         date: '2018.10.10 13:13',
-        tips: '编辑日志：这是测试用的第二个版本'
+        tips: '编辑日志：这是测试用的第二个版本',
+        isEdit: false
       }, {
         name: '5.3.2.01（Build101013）',
         date: '2018.10.10 13:13',
-        tips: '编辑日志：这是测试用的第二个版本'
+        tips: '编辑日志：这是测试用的第二个版本',
+        isEdit: false
       }, {
         name: '5.3.2.01（Build101013）',
         date: '2018.10.10 13:13',
-        tips: '编辑日志：这是测试用的第二个版本'
+        tips: '编辑日志：这是测试用的第二个版本',
+        isEdit: false
       }, {
         name: '5.3.2.01（Build101013）',
         date: '2018.10.10 13:13',
-        tips: '编辑日志：这是测试用的第二个版本'
+        tips: '编辑日志：这是测试用的第二个版本',
+        isEdit: false
       }],
       basicInfo: {
         appId: 'dsafsafasdas212dsad23',
@@ -236,7 +240,7 @@ export default {
       }]
     }
   },
-  created() {
+  mounted() {
   },
   methods: {
     switchTaps(el) {
@@ -245,14 +249,25 @@ export default {
         this.$refs.mapChart.resize()
       }
     },
-    previewClose() {
-      this.previewVisible = false
+    handleClose() {
+      this.dialogVisible = false
+    },
+    saveEait() {
+
+    },
+    getPreview() {
+      this.currentRole = 'preview'
+      this.dialogVisible = true
+    },
+    getUpload() {
+      this.currentRole = 'upload'
+      this.dialogVisible = true
     }
   }
 }
 </script>
 
-<style rel="stylesheet/scss" lang="scss" >
+<style rel="stylesheet/scss" lang="scss">
 .app-detail-container {
   padding: 20px;
   .el-checkbox{
@@ -260,34 +275,6 @@ export default {
   }
   .agreement-text{
     padding: 15px;
-  }
-  .preview-cont{
-    width: 500px;
-    margin: 0 auto;
-    text-align: center;
-    padding-bottom: 30px;
-    border-bottom: 1px solid #eee;
-    img{
-      height: 120px;
-      width: 120px;
-    }
-    .name{
-      font-size: 20px;
-      padding: 10px 0;
-      color: #333;
-    }
-    .tips{
-      font-size: 12px;
-      color: #666;
-    }
-  }
-  .preview-cont-2{
-    padding-top: 30px;
-    text-align: center;
-    .tips{
-      font-size: 12px;
-      color: #666;
-    }
   }
   .top-app-info{
     background-color: #fff;
@@ -321,6 +308,7 @@ export default {
       .app-info-cont{
         font-size: 14px;
         color: #666;
+        padding-bottom: 5px;
         span{
           padding-left: 20px;
           color: #000;
@@ -345,6 +333,12 @@ export default {
       padding-bottom: 30px;
       border-left: 1px dotted #ccc;
       position: relative;
+      .btn-box{
+        padding-top: 10px;
+      }
+      .el-button{
+        margin-left: 0;
+      }
       .list-cont{
         position: relative;
         top: -10px;
@@ -383,6 +377,10 @@ export default {
       }
       .el-input{
         width: 500px;
+      }
+      .edit-box{
+        width: 500px;
+        text-align: right;
       }
     }
     //基本信息
@@ -490,6 +488,9 @@ export default {
     .el-input{
       width: 100% !important;
     }
+    .edit-box{
+      width: 100% !important;
+    }
     .app-version-list{
     }
     .app-merge{
@@ -521,7 +522,7 @@ export default {
     display: block;
     margin: 0 auto;
   }
-  .app-detail-container .top-app-info .app-btn-box{
+  .app-container .app-box .app-list .app-btn-box{
     text-align: center;
     padding-top: 30px;
   }

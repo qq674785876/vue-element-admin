@@ -7,19 +7,19 @@
           <el-row class="info-box">
             <el-col :span="12">
               <span class="name">微信：</span>
-              {{ 15927888888 }}
+              {{ userInfo.wechat }}
             </el-col>
             <el-col :span="12">
               <span class="name">QQ：</span>
-              {{ 15927888888 }}
+              {{ userInfo.imNumber }}
             </el-col>
             <el-col :span="12">
               <span class="name">公司：</span>
-              {{ 15927888888 }}
+              {{ userInfo.company }}
             </el-col>
             <el-col :span="12">
               <span class="name">职位：</span>
-              {{ 15927888888 }}
+              {{ userInfo.job }}
             </el-col>
           </el-row>
           <div class="btn-box" align="right">
@@ -31,7 +31,7 @@
           <el-row class="info-box">
             <el-col :span="12">
               <span class="name">密码：</span>
-              {{ 15927888888 }}
+              {{ '******' }}
               <a href="javascript:;" style="margin-left: 15px;color: blue;">修改</a>
             </el-col>
             <el-col :span="12">
@@ -46,7 +46,7 @@
             </el-col>
             <el-col :span="12">
               <span class="name">绑定邮箱：</span>
-              {{ 15927888888 }}
+              {{ userInfo.email }}
               <a href="javascript:;" style="margin-left: 15px;color: blue;">修改</a>
             </el-col>
           </el-row>
@@ -133,6 +133,7 @@ export default {
       currentPage: 1,
       pageSize: 10,
       total: 9,
+      userInfo: this.$store.getters.userInfo,
       personalInfo: {
         frontImg: '',
         contraryImg: '',
@@ -176,6 +177,9 @@ export default {
         status: 0
       }]
     }
+  },
+  mounted() {
+    console.log(this.userInfo)
   },
   methods: {
     handleSelectionChange() {

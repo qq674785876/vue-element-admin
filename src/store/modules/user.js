@@ -1,9 +1,10 @@
-import { loginByUsername, logout, getUserInfo } from '@/api/index'
-import { getToken, setToken, removeToken, getName } from '@/utils/auth'
+import { loginByUsername, logout } from '@/api/index'
+import { getToken, setToken, removeToken, getName, getUserInfo } from '@/utils/auth'
 
 const user = {
   state: {
     user: '',
+    userInfo: getUserInfo(),
     status: '',
     code: '',
     token: getToken(),
@@ -17,6 +18,9 @@ const user = {
   },
 
   mutations: {
+    SET_USERINFO: (state, info) => {
+      state.userInfo = info
+    },
     SET_CODE: (state, code) => {
       state.code = code
     },
@@ -60,29 +64,29 @@ const user = {
     },
 
     // 获取用户信息
-    GetUserInfo({ commit, state }) {
-      return new Promise((resolve, reject) => {
-        getUserInfo(state.token).then(response => {
-          if (!response.data) { // 由于mockjs 不支持自定义状态码只能这样hack
-            reject('error')
-          }
-          const data = response.data
+    // GetUserInfo({ commit, state }) {
+    //   return new Promise((resolve, reject) => {
+    //     getUserInfo(state.token).then(response => {
+    //       if (!response.data) { // 由于mockjs 不支持自定义状态码只能这样hack
+    //         reject('error')
+    //       }
+    //       const data = response.data
 
-          if (data.roles && data.roles.length > 0) { // 验证返回的roles是否是一个非空数组
-            commit('SET_ROLES', data.roles)
-          } else {
-            reject('getInfo: roles must be a non-null array !')
-          }
+    //       if (data.roles && data.roles.length > 0) { // 验证返回的roles是否是一个非空数组
+    //         commit('SET_ROLES', data.roles)
+    //       } else {
+    //         reject('getInfo: roles must be a non-null array !')
+    //       }
 
-          commit('SET_NAME', data.name)
-          commit('SET_AVATAR', data.avatar)
-          commit('SET_INTRODUCTION', data.introduction)
-          resolve(response)
-        }).catch(error => {
-          reject(error)
-        })
-      })
-    },
+    //       commit('SET_NAME', data.name)
+    //       commit('SET_AVATAR', data.avatar)
+    //       commit('SET_INTRODUCTION', data.introduction)
+    //       resolve(response)
+    //     }).catch(error => {
+    //       reject(error)
+    //     })
+    //   })
+    // },
 
     // 第三方验证登录
     // LoginByThirdparty({ commit, state }, code) {

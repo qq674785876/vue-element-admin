@@ -23,19 +23,27 @@
       <el-col :span="14" :xs="24" class="top-info-box">
         <ul>
           <li>
-            <p>可上传APP数</p>
+            <el-tooltip content="Top Left 提示文字" placement="top-start">
+              <p>可上传APP数<i class="el-icon-question"/></p>
+            </el-tooltip>
             <p><span>0</span></p>
           </li>
           <li>
-            <p>今日免费下载点数</p>
+            <el-tooltip content="Top Left 提示文字" placement="top-start">
+              <p>今日免费下载点数<i class="el-icon-question"/></p>
+            </el-tooltip>
             <p><span>0</span></p>
           </li>
           <li>
-            <p>剩余付费下载点数</p>
+            <el-tooltip content="Top Left 提示文字" placement="top-start">
+              <p>剩余付费下载点数<i class="el-icon-question"/></p>
+            </el-tooltip>
             <p><span>84</span></p>
           </li>
           <li class="shop">
-            <p>购买点数包</p>
+            <el-tooltip content="Top Left 提示文字" placement="top-start">
+              <p>购买点数包<i class="el-icon-question"/></p>
+            </el-tooltip>
             <p>
               <el-button round>
                 <span class="svg-container">
@@ -77,26 +85,35 @@
               <router-link :to="'/app/detail/' + list.id">
                 <el-button size="mini" icon="el-icon-edit" round>管理</el-button>
               </router-link>
-              <el-button size="mini" icon="el-icon-view" round>预览</el-button>
+              <el-button size="mini" icon="el-icon-view" round @click="getPreview">预览</el-button>
               <el-button size="mini" icon="el-icon-delete" circle/>
             </div>
           </el-card>
         </div>
       </el-col>
     </el-row>
-    <iframe-loading :loading-src="loadingSrc" :progress-bar="progressBar"/>
+    <component :is="currentRole" :dialog-visible="dialogVisible" :preview-src="previewSrc" :preview-url="previewUrl" :upload-time="uploadTime" @handleClose="handleClose" @submitUpload="submitUpload"/>
+    <iframe-loading v-if="isLoading" :loading-src="loadingSrc" :progress-bar="progressBar"/>
   </div>
 </template>
 
 <script>
 import IframeLoading from '@/components/Loading/index'
+import Preview from './preview'
+import Upload from './upload'
 
 export default {
   name: 'App',
-  components: { IframeLoading },
+  components: { IframeLoading, Preview, Upload },
   data() {
     return {
+      currentRole: 'preview',
+      dialogVisible: false,
+      previewSrc: '',
+      previewUrl: 'http://www.baidu.com/123',
+      uploadTime: '2018-03-02 23:32:23',
       progressBar: 0,
+      isLoading: false,
       loadingSrc: '/static/SvgLoading/index.html',
       appType: 'IOS',
       searchKey: '',
@@ -138,7 +155,7 @@ export default {
       }]
     }
   },
-  created() {
+  mounted() {
     // const _this = this
     // setInterval(function(){
     //   _this.progressBar++
@@ -147,6 +164,20 @@ export default {
   methods: {
     uploadBefore(file) {
       console.log(file)
+    },
+    handleClose() {
+      this.dialogVisible = false
+    },
+    getPreview() {
+      this.currentRole = 'preview'
+      this.dialogVisible = true
+    },
+    getUpload() {
+      this.currentRole = 'upload'
+      this.dialogVisible = true
+    },
+    submitUpload() {
+
     }
   }
 }
@@ -157,6 +188,10 @@ export default {
   height: calc(100vh - 85px);
   overflow: hidden;
   .svg-container.android{
+  }
+  .el-icon-question{
+    color: #666;
+    padding-left: 2px;
   }
   .el-input{
     position: relative;
@@ -279,6 +314,7 @@ export default {
         .app-info-cont{
           font-size: 14px;
           color: #666;
+          padding-bottom: 8px;
           span{
             padding-left: 20px;
             color: #000;
@@ -286,8 +322,10 @@ export default {
         }
       }
       .app-btn-box{
-        padding-top: 45px;
         text-align: right;
+        position: absolute;
+        bottom: 15px;
+        right: 10px;
       }
     }
   }

@@ -97,12 +97,56 @@
                   auto-complete="on"
                 />
               </el-form-item>
-              <el-button :loading="loading" type="primary" size="mini" @click="next()">下一步</el-button>
+              <el-checkbox v-model="checked">已阅读</el-checkbox><span style="color: blue;cursor: pointer;font-size: 14px;" @click="dialogVisible = true">《应用上传协议》</span>
+              <el-button-group>
+                <el-button type="primary" size="mini" @click="goLogin()">返回</el-button>
+                <el-button :loading="loading" type="primary" size="mini" @click="next()">下一步</el-button>
+              </el-button-group>
             </el-col>
           </el-form>
         </el-row>
       </el-row>
     </div>
+    <el-dialog
+      :title="dialogTitle"
+      :visible.sync="dialogVisible"
+      :modal-append-to-body="false"
+      width="40%">
+      <div class="app-agreement">
+        <div class="agreement-text">
+          dasasa sas asas asas asasa sasas asas asasas asas asas asasa sasa sasa sasd asda sdasd
+        </div>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="checked = true,dialogVisible = false">已阅读</el-button>
+      </span>
+    </el-dialog>
+    <el-dialog
+      :visible.sync="LoginDialogVisible"
+      :append-to-body="true"
+      :modal-append-to-body="false"
+      :close-on-click-modal="false"
+      width="340px"
+      class="realName-dialog"
+      center>
+      <div class="dialogBox">
+        <div class="dialogBg"/>
+        <div class="dialogCont">
+          <h1>
+            <p>恭喜您</p>
+            <p>注册成功</p>
+          </h1>
+          <div class="tips-box">
+            <p class="loading">等待人工审核...</p>
+            <p class="tips">审核完成即可上传您的应用</p>
+          </div>
+        </div>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button :loading="loginLoading" type="primary" @click="getLogin()">立即登陆</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -149,6 +193,11 @@ export default {
     }
     return {
       loading: false,
+      loginLoading: false,
+      checked: false,
+      LoginDialogVisible: false,
+      dialogTitle: '应用上传协议',
+      dialogVisible: false,
       verifyCodeText: '获取验证码',
       registerForm: {
         email: '',
@@ -171,6 +220,14 @@ export default {
   methods: {
     next() {
       const self = this
+      if (!self.checked) {
+        self.$notify({
+          title: '提示',
+          message: '请先阅读应用上传协议！',
+          type: 'error'
+        })
+        return
+      }
       self.$refs.registerForm.validate(valid => {
         if (valid) {
           self.loading = true
@@ -196,9 +253,13 @@ export default {
               })
               setToken(result.token)
               setName(result.email)
-              setTimeout(function() {
-                self.$emit('setSelectType', { currentRole: 'realName' })
-              }, 1000)
+              if (result.realName === 1) {
+                setTimeout(function() {
+                  self.$emit('setSelectType', { currentRole: 'realName' })
+                }, 1000)
+              } else {
+                self.LoginDialogVisible = true
+              }
               resolve()
             }).catch(error => {
               reject(error)
@@ -209,6 +270,14 @@ export default {
           return false
         }
       })
+    },
+    goLogin() {
+      const self = this
+      self.$emit('setSelectType', { currentRole: 'login', selectType: 'login' })
+    },
+    getLogin() {
+      this.loginLoading = true
+      this.$emit('getLogin', this.$parent.registerForm)
     },
     getVerifyCode() {
       let timer = null
@@ -312,7 +381,10 @@ $themeColor: #4f93fe;
       }
       .el-button{
         display: block;
-        margin: 30px auto 0;
+        margin: 20px auto 0;
+      }
+      .el-button-group{
+        float: right;
       }
     }
   }
