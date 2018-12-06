@@ -9,7 +9,15 @@
         <p class="app-info-cont">最新版本：<span class="app-text">{{ appInfo.version }}</span></p>
       </div>
       <div class="app-btn-box">
-        <el-button size="mini" icon="el-icon-upload" round>上传新版本</el-button>
+        <el-upload
+          :headers="headers"
+          :action="uploadApi"
+          :show-file-list="false"
+          :on-progress="uploadProgress"
+          :on-success="uploadSuccess"
+          :before-upload="uploadApp">
+          <el-button size="mini" icon="el-icon-upload" round style="margin-right: 10px;">上传新版本</el-button>
+        </el-upload>
         <el-button type="primary" size="mini" icon="el-icon-view" round @click="getPreview">预览</el-button>
       </div>
     </div>
@@ -141,11 +149,14 @@
       </el-tabs>
     </div>
     <component :is="currentRole" :dialog-visible="dialogVisible" :preview-src="previewSrc" :preview-url="previewUrl" :upload-time="uploadTime" @handleClose="handleClose"/>
+    <iframe-loading v-if="isLoading" :loading-src="loadingSrc" :progress-bar="uploadPercent"/>
   </div>
 </template>
 
 <script>
 import { getAppInfo, appVersionRemark } from '@/api/index'
+import IframeLoading from '@/components/Loading/index'
+import { mapGetters } from 'vuex'
 import Chart from './chart'
 import MapChart from './mapChart'
 import Preview from './preview'
@@ -153,9 +164,16 @@ import Upload from './upload'
 
 export default {
   name: 'Detail',
-  components: { Chart, MapChart, Preview, Upload },
+  components: { Chart, MapChart, Preview, Upload, IframeLoading },
   data() {
     return {
+      headers: {
+        'token': ''
+      },
+      uploadApi: process.env.BASE_API + '/v1/appUpload',
+      isLoading: false,
+      uploadPercent: 0,
+      loadingSrc: '/static/SvgLoading/index.html',
       loading: false,
       saveLoading: false,
       currentRole: 'preview',
@@ -215,10 +233,38 @@ export default {
       }]
     }
   },
+  computed: {
+    ...mapGetters([
+      'token'
+    ])
+  },
   mounted() {
+    this.headers.token = this.token
     this.getAppInfo()
   },
   methods: {
+    uploadApp(file) {
+      // const _this = this
+      // return false
+    },
+    uploadSuccess() {
+      const _this = this
+      _this.isLoading = false
+      _this.uploadPercent = 0
+      _this.$notify({
+        title: '上传成功',
+        message: '文件上传成功',
+        type: 'success'
+      })
+      setTimeout(function() {
+        _this.currentRole = 'upload'
+        _this.dialogVisible = true
+      }, 600)
+    },
+    uploadProgress(event, file, fileList) {
+      this.isLoading = true
+      this.uploadPercent = file.percentage.toFixed(0)
+    },
     switchTaps(el) {
       if (el.name === 'tap4') {
         this.$refs.chart.resize()

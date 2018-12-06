@@ -210,9 +210,6 @@ export default {
       this.isLoading = true
       this.uploadPercent = file.percentage.toFixed(0)
     },
-    uploadBefore(file) {
-      console.log(file)
-    },
     handleClose() {
       this.dialogVisible = false
     },
