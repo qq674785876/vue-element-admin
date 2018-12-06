@@ -154,7 +154,7 @@
 // import openWindow from '@/utils/openWindow'
 import { validateEmail } from '@/utils/validate'
 import { register, sendMail } from '@/api/index'
-import { setToken, setName } from '@/utils/auth'
+import { setUserInfo } from '@/utils/auth'
 
 export default {
   name: 'Register',
@@ -251,8 +251,8 @@ export default {
                 message: '注册成功！',
                 type: 'success'
               })
-              setToken(result.token)
-              setName(result.email)
+              self.$store.commit('SET_USERINFO', result)
+              setUserInfo(result)
               if (result.realName === 1) {
                 setTimeout(function() {
                   self.$emit('setSelectType', { currentRole: 'realName' })

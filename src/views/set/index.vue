@@ -125,6 +125,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'Set',
@@ -133,7 +134,6 @@ export default {
       currentPage: 1,
       pageSize: 10,
       total: 9,
-      userInfo: this.$store.getters.userInfo,
       personalInfo: {
         frontImg: '',
         contraryImg: '',
@@ -178,8 +178,14 @@ export default {
       }]
     }
   },
+  computed() {
+    return {
+      ...mapGetters([
+        'token'
+      ])
+    }
+  },
   mounted() {
-    console.log(this.userInfo)
   },
   methods: {
     handleSelectionChange() {

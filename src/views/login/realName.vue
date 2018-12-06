@@ -263,9 +263,11 @@ $themeColor: #4f93fe;
       line-height: 120px;
       background-color: #4f93fe;
       text-align: center;
+      position: relative;
       img{
         width: 100%;
         height: 100%;
+        position: absolute;
       }
       .svg-container{
         font-size: 30px;

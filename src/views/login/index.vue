@@ -107,7 +107,7 @@
 <script>
 import { validateEmail } from '@/utils/validate'
 import { loginByUsername } from '@/api/index'
-import { setToken, setName, setUserInfo } from '@/utils/auth'
+import { setUserInfo } from '@/utils/auth'
 import LangSelect from '@/components/LangSelect'
 import SocialSign from './socialsignin'
 import SIdentify from './identify'
@@ -266,10 +266,10 @@ export default {
             })
             return
           }
-          // this.$store.commit('SET_USERINFO', result)
+          this.$store.commit('SET_USERINFO', result)
           setUserInfo(result)
-          setToken(result.token)
-          setName(result.email)
+          // setToken(result.token)
+          // setName(result.email)
           self.$router.push({ path: self.redirect || '/' })
           // commit('SET_TOKEN', data.token)
           // setToken(response.data.token)

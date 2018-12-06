@@ -5,7 +5,7 @@
     </el-row>
     <el-row class="user-info-box">
       <div :style="{'background': 'url('+ avatar +') center center'}" class="user-head"/>
-      <p class="user-name">{{ name }}</p>
+      <p class="user-name">{{ userInfo.email }}</p>
       <a href="javascript:;" class="user-set">账号设置</a>
     </el-row>
     <el-menu
@@ -35,7 +35,7 @@ export default {
   computed: {
     ...mapGetters([
       'avatar',
-      'name',
+      'userInfo',
       'permission_routers',
       'sidebar'
     ]),

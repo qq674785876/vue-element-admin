@@ -1,5 +1,5 @@
 import { loginByUsername, logout } from '@/api/index'
-import { getToken, setToken, removeToken, getName, getUserInfo } from '@/utils/auth'
+import { setToken, removeAllCookie, getUserInfo } from '@/utils/auth'
 
 const user = {
   state: {
@@ -7,8 +7,8 @@ const user = {
     userInfo: getUserInfo(),
     status: '',
     code: '',
-    token: getToken(),
-    name: getName(),
+    token: getUserInfo().token,
+    name: getUserInfo().email,
     avatar: '../../../static/images/login-logo.png',
     introduction: '',
     roles: ['admin'],
@@ -106,9 +106,9 @@ const user = {
     LogOut({ commit, state }) {
       return new Promise((resolve, reject) => {
         logout(state.token).then(() => {
-          commit('SET_TOKEN', '')
+          commit('SET_USERINFO', '')
           commit('SET_ROLES', [])
-          removeToken()
+          removeAllCookie()
           resolve()
         }).catch(error => {
           reject(error)
@@ -120,7 +120,6 @@ const user = {
     FedLogOut({ commit }) {
       return new Promise(resolve => {
         commit('SET_TOKEN', '')
-        removeToken()
         resolve()
       })
     },

@@ -110,7 +110,7 @@
 
 <script>
 // import { appUpload } from '@/api/index'
-import { getToken } from '@/utils/auth'
+import { mapGetters } from 'vuex'
 import IframeLoading from '@/components/Loading/index'
 import Preview from './preview'
 import Upload from './upload'
@@ -127,7 +127,7 @@ export default {
       previewUrl: 'http://www.baidu.com/123',
       uploadTime: '2018-03-02 23:32:23',
       headers: {
-        'token': getToken()
+        'token': ''
       },
       uploadApi: process.env.BASE_API + '/v1/appUpload',
       isLoading: false,
@@ -172,11 +172,19 @@ export default {
       }]
     }
   },
+  computed() {
+    return {
+      ...mapGetters([
+        'token'
+      ])
+    }
+  },
   mounted() {
     // const _this = this
     // setInterval(function(){
     //   _this.progressBar++
     // },1000)
+    this.headers.token = this.token
   },
   methods: {
     uploadSuccess() {

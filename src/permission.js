@@ -3,7 +3,7 @@ import store from './store'
 // import { Message } from 'element-ui'
 import NProgress from 'nprogress' // progress bar
 import 'nprogress/nprogress.css'// progress bar style
-import { getToken } from '@/utils/auth' // getToken from cookie
+import { getUserInfo } from '@/utils/auth' // getToken from cookie
 
 NProgress.configure({ showSpinner: false })// NProgress Configuration
 
@@ -18,9 +18,8 @@ NProgress.configure({ showSpinner: false })// NProgress Configuration
 
 router.beforeEach((to, from, next) => {
   NProgress.start() // start progress bar
-  const token = getToken()
-  console.log(token, to.path)
-  if (token !== undefined && token && token !== 'undefined') {
+  const userInfo = getUserInfo()
+  if (userInfo !== undefined && userInfo && userInfo !== 'undefined' && userInfo !== '') {
     if (to.path === '/login') {
       console.log('进入login')
       next()

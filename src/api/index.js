@@ -1,5 +1,7 @@
 import request from '@/utils/request'
-import { getToken } from '@/utils/auth'
+import { getUserInfo } from '@/utils/auth'
+
+const userInfo = getUserInfo()
 
 export function loginByUsername(email, password) {
   const data = {
@@ -50,13 +52,13 @@ export function logout() {
   })
 }
 
-export function getUserInfo(token) {
-  return request({
-    url: '/user/info',
-    method: 'get',
-    params: { token }
-  })
-}
+// export function getUserInfo(token) {
+//   return request({
+//     url: '/user/info',
+//     method: 'get',
+//     params: { token }
+//   })
+// }
 
 export function imageUpload(image) {
   const data = image
@@ -73,7 +75,7 @@ export function getRealName(obj) {
   return request({
     url: '/v1/realName',
     method: 'post',
-    headers: { 'token': getToken() },
+    headers: { 'token': userInfo.token },
     data
   })
 }
@@ -86,7 +88,7 @@ export function appUpload(file, onUploadProgress) {
     // onprogress: onprogress,
     // onUploadProgress: onUploadProgress,
     headers: {
-      'token': getToken(),
+      'token': userInfo.token,
       'Content-Type': 'multipart/form-data'
     },
     data
