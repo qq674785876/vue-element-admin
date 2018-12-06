@@ -1,8 +1,6 @@
 import request from '@/utils/request'
 import { getUserInfo } from '@/utils/auth'
 
-const userInfo = getUserInfo()
-
 export function loginByUsername(email, password) {
   const data = {
     email,
@@ -75,7 +73,7 @@ export function getRealName(obj) {
   return request({
     url: '/v1/realName',
     method: 'post',
-    headers: { 'token': userInfo.token },
+    headers: { 'token': getUserInfo().token },
     data
   })
 }
@@ -88,7 +86,7 @@ export function appUpload(file, onUploadProgress) {
     // onprogress: onprogress,
     // onUploadProgress: onUploadProgress,
     headers: {
-      'token': userInfo.token,
+      'token': getUserInfo().token,
       'Content-Type': 'multipart/form-data'
     },
     data

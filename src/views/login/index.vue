@@ -73,7 +73,8 @@
               <el-col :span="10">
                 <div class="code" @click="refreshCode">
                   <div class="code-num" oncopy="return false;">
-                    {{ identifyCode }}
+                    <!-- {{ identifyCode }} -->
+                    <s-identify :identify-code="identifyCode"/>
                   </div>
                 </div>
               </el-col>
@@ -357,14 +358,19 @@ export default {
 
   /* reset element-ui css */
   .login-container {
+    .s-canvas{
+      canvas{
+        width: 100%;
+        height: 100%;
+      }
+    }
     .code{
       cursor: pointer;
-      width: 60%;
-      height: 30px;
-      line-height: 30px;
+      width: 70%;
+      height: 40px;
+      line-height: 40px;
       margin: 0 auto;
       margin-top: 8px;
-      background-color: #ccc;
       text-align: center;
       color: #fff;
     }

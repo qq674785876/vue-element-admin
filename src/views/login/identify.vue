@@ -33,15 +33,15 @@ export default{
     },
     colorMax: {
       type: Number,
-      default: 160
+      default: 0
     },
     lineColorMin: {
       type: Number,
-      default: 40
+      default: 0
     },
     lineColorMax: {
       type: Number,
-      default: 180
+      default: 0
     },
     dotColorMin: {
       type: Number,
@@ -49,7 +49,7 @@ export default{
     },
     dotColorMax: {
       type: Number,
-      default: 255
+      default: 0
     },
     contentWidth: {
       type: Number,
