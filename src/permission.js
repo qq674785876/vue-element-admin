@@ -19,6 +19,7 @@ NProgress.configure({ showSpinner: false })// NProgress Configuration
 router.beforeEach((to, from, next) => {
   NProgress.start() // start progress bar
   const userInfo = getUserInfo()
+  console.log(to.path)
   if (userInfo !== undefined && userInfo && userInfo !== 'undefined' && userInfo !== '') {
     if (to.path === '/login') {
       console.log('进入login')

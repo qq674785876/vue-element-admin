@@ -1,11 +1,11 @@
 <template>
-  <div class="app-detail-container">
+  <div v-loading="loading" class="app-detail-container" element-loading-text="拼命加载中">
     <div class="top-app-info">
       <div class="app-img"/>
       <div class="app-info">
-        <p class="app-title">{{ appInfo.name }}</p>
+        <p class="app-title">{{ appInfo.appName }}</p>
         <p class="app-info-cont">应用大小：<span class="app-text">{{ appInfo.size }}</span></p>
-        <p class="app-info-cont">应用标识：<span class="app-text">{{ appInfo.tips }}</span></p>
+        <p class="app-info-cont">应用标识：<span class="app-text">{{ appInfo.package }}</span></p>
         <p class="app-info-cont">最新版本：<span class="app-text">{{ appInfo.version }}</span></p>
       </div>
       <div class="app-btn-box">
@@ -19,22 +19,22 @@
           <div class="app-version-list">
             <div class="list-cont">
               <p class="title">版本更新</p>
-              <el-input v-model="appUrl" placeholder="请输入内容">
+              <el-input v-model="basicInfo.appUrl" placeholder="请输入内容">
                 <template slot="prepend">商店地址</template>
               </el-input>
             </div>
           </div>
-          <div v-for="(list , index) in appVersionList" :key="index" class="app-version-list">
+          <div v-for="(list , index) in basicInfo.versionList" :key="index" class="app-version-list">
             <div class="list-cont">
-              <p class="title">{{ list.name }}</p>
-              <p class="date">{{ list.date }}</p>
-              <p v-if="!list.isEdit" class="tips">{{ list.tips }}</p>
+              <p class="title">{{ list.version }}</p>
+              <p class="date">{{ list.createTime }}</p>
+              <p v-if="!list.isEdit" class="tips">{{ list.remark }}</p>
               <el-row v-else class="edit-box">
-                <el-input v-model="list.tips" type="textarea" placeholder="请输入更新日志"/>
-                <el-button-group style="padding-top: 5px;">
-                  <el-button type="primary" size="mini" @click="list.isEdit = false">取消</el-button>
-                  <el-button type="primary" size="mini" @click="saveEait">保存</el-button>
-                </el-button-group>
+                <el-input v-model="list.remark" type="textarea" placeholder="请输入更新日志"/>
+                <el-row style="padding-top: 5px">
+                  <el-button size="mini" @click="list.isEdit = false">取消</el-button>
+                  <el-button :loading="saveLoading" type="primary" size="mini" @click="saveEait(list.apkId, list.remark, index)">保存</el-button>
+                </el-row>
               </el-row>
               <div class="btn-box">
                 <el-tooltip content="编辑更新日志" placement="top-start">
@@ -68,31 +68,25 @@
             </div>
             <div class="url">
               <span class="title">短链接</span>
-              <el-input v-model="basicInfo.shortUrl" placeholder="请输入短链接">
-                <template slot="prepend">{{ basicInfo.host }}</template>
+              <el-input v-model="basicInfo.sortUrl" placeholder="请输入短链接">
+                <template slot="prepend">{{ basicInfo.baseUrl }}</template>
               </el-input>
             </div>
             <div>
               <span class="title">应用图标</span>
-              <img :src="basicInfo.appImg" class="app-img">
+              <img :src="basicInfo.appIcon" class="app-img">
             </div>
             <div class="tips">
               <span class="title">应用描述</span>
               <el-input
-                v-model="basicInfo.appTips"
+                v-model="basicInfo.describe"
                 size="mini"
                 placeholder="请输入应用描述"/>
             </div>
             <div>
               <span class="title">应用截图</span>
               <div class="appScreenshot">
-                <img v-for="(img, index) in basicInfo.appScreenshot" :src="img" :key="index">
-              </div>
-            </div>
-            <div>
-              <span class="title">应用商店截图</span>
-              <div class="appScreenshot">
-                <img v-for="(img, index) in basicInfo.appShopScreenshot" :src="img" :key="index">
+                <img v-for="(img, index) in basicInfo.appImage" :src="img" :key="index">
               </div>
             </div>
           </div>
@@ -151,6 +145,7 @@
 </template>
 
 <script>
+import { getAppInfo, appVersionRemark } from '@/api/index'
 import Chart from './chart'
 import MapChart from './mapChart'
 import Preview from './preview'
@@ -161,6 +156,8 @@ export default {
   components: { Chart, MapChart, Preview, Upload },
   data() {
     return {
+      loading: false,
+      saveLoading: false,
       currentRole: 'preview',
       dialogVisible: false,
       previewSrc: '',
@@ -168,52 +165,30 @@ export default {
       uploadTime: '2018-03-02 23:32:23',
       file: '',
       checked: false,
-      appUrl: 'http://www.baidu.com/',
       searchKey: '',
       activeName: 'tap1',
       appInfo: {
-        id: this.$route.params.id,
-        type: 'ios',
-        name: 'TEST03',
+        appId: this.$route.params.id,
+        platform: ['android', 'ios'],
+        appName: 'TEST01',
         size: '51.90MB',
-        tips: 'COM.APP.COM',
+        package: 'COM.APP.COM',
         version: '1.0.5（Build 5）'
       },
-      appVersionList: [{
-        name: '5.3.2.01（Build1213）',
-        date: '2018.11.11 11:11',
-        tips: '编辑日志：这是测试用的第二个版本',
-        isEdit: false
-      }, {
-        name: '5.3.2.01（Build101013）',
-        date: '2018.10.10 13:13',
-        tips: '编辑日志：这是测试用的第二个版本',
-        isEdit: false
-      }, {
-        name: '5.3.2.01（Build101013）',
-        date: '2018.10.10 13:13',
-        tips: '编辑日志：这是测试用的第二个版本',
-        isEdit: false
-      }, {
-        name: '5.3.2.01（Build101013）',
-        date: '2018.10.10 13:13',
-        tips: '编辑日志：这是测试用的第二个版本',
-        isEdit: false
-      }, {
-        name: '5.3.2.01（Build101013）',
-        date: '2018.10.10 13:13',
-        tips: '编辑日志：这是测试用的第二个版本',
-        isEdit: false
-      }],
       basicInfo: {
-        appId: 'dsafsafasdas212dsad23',
-        appName: '修改应用名称',
-        host: 'http://www.baidu.com/',
-        shortUrl: 'detail',
-        appImg: '',
-        appTips: '应用描述',
-        appScreenshot: ['', '', ''],
-        appShopScreenshot: ['', '']
+        // appIcon: "http://api.ublog.top/uploads/tmp/d4c7b67c1c7c259c538be2d8704e3e46/res/mipmap-hdpi-v4/ic_launcher.png",
+        // appId: "ZWE4OC8ySmJ3NWNkZHBPK0MyTk51Y0RhNE9La2VhYjNqQUYyTVl6Zg==",
+        // appImage: [],
+        // appName: "任车行",
+        // appUrl: "http://api.ublog.top/g/38670862be59a2ead55124c5d14e8530",
+        // appkey: "38670862be59a2ead55124c5d14e8530",
+        // baseUrl: "http://api.ublog.top/g/",
+        // describe: "",
+        // package: "com.mapgoo.diruite",
+        // size: "10.02MB",
+        // sortUrl: "Kam5428",
+        // state: 0,
+        // version: "4.2.1.44.1128"
       },
       appMini: ['', '', '', '', '', '', '', '', '', '', ''],
       lineChartData: {
@@ -241,6 +216,7 @@ export default {
     }
   },
   mounted() {
+    this.getAppInfo()
   },
   methods: {
     switchTaps(el) {
@@ -252,8 +228,8 @@ export default {
     handleClose() {
       this.dialogVisible = false
     },
-    saveEait() {
-
+    saveEait(apkId, remark, index) {
+      this.appVersionRemark(apkId, remark, index)
     },
     getPreview() {
       this.currentRole = 'preview'
@@ -262,6 +238,58 @@ export default {
     getUpload() {
       this.currentRole = 'upload'
       this.dialogVisible = true
+    },
+    getAppInfo() {
+      const _this = this
+      _this.loading = true
+      getAppInfo({
+        appId: _this.appInfo.appId
+      }).then(res => {
+        _this.loading = false
+        const data = res.data
+        const result = data.result
+        if (data.error !== 0) {
+          _this.$notify({
+            title: '查询失败',
+            message: data.reason,
+            type: 'error'
+          })
+          return
+        }
+        for (var i = 0; i < result.versionList.length; i++) {
+          result.versionList[i].isEdit = false
+        }
+        _this.basicInfo = result
+      }).catch(error => {
+        console.log(error)
+      })
+    },
+    appVersionRemark(apkId, remark, index) {
+      const _this = this
+      _this.saveLoading = true
+      appVersionRemark({
+        apkId: apkId,
+        remark: remark
+      }).then(res => {
+        _this.saveLoading = false
+        const data = res.data
+        if (data.error !== 0) {
+          _this.$notify({
+            title: '查询失败',
+            message: data.reason,
+            type: 'error'
+          })
+          return
+        }
+        _this.$notify({
+          title: '修改成功',
+          message: '修改更新日志成功',
+          type: 'success'
+        })
+        _this.basicInfo.versionList[index].isEdit = false
+      }).catch(error => {
+        console.log(error)
+      })
     }
   }
 }
@@ -376,10 +404,10 @@ export default {
         top: 0;
       }
       .el-input{
-        width: 500px;
+        width: 600px;
       }
       .edit-box{
-        width: 500px;
+        width: 600px;
         text-align: right;
       }
     }

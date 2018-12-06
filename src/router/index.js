@@ -86,7 +86,7 @@ export const constantRouterMap = [
         meta: { title: '应用管理', icon: 'app', noCache: true }
       },
       {
-        path: 'detail/:id(\\d+)',
+        path: 'detail/:id',
         component: () => import('@/views/app/detail'),
         name: 'Detail',
         meta: { title: '应用详情', noCache: true },

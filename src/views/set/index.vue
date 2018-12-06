@@ -1,5 +1,5 @@
 <template>
-  <div class="set-container">
+  <div v-loading="loading" class="set-container" element-loading-text="拼命加载中">
     <el-tabs type="border-card" class="card-box">
       <el-tab-pane label="个人信息" class="personal-info">
         <div class="module-list">
@@ -36,12 +36,12 @@
             </el-col>
             <el-col :span="12">
               <span class="name">套餐：</span>
-              {{ 15927888888 }}
+              {{ userInfo.packageName }}
               <a href="javascript:;" style="margin-left: 15px;color: blue;">修改</a>
             </el-col>
             <el-col :span="12">
               <span class="name">绑定手机：</span>
-              {{ 15927888888 }}
+              {{ userInfo.mobile }}
               <a href="javascript:;" style="margin-left: 15px;color: blue;">修改</a>
             </el-col>
             <el-col :span="12">
@@ -56,19 +56,19 @@
           <el-row class="realName-box">
             <el-col :span="8" :xs="24">
               <div class="img-box">
-                <img :src="personalInfo.frontImg">
+                <img :src="userInfo.front">
               </div>
               <p>身份证正面</p>
             </el-col>
             <el-col :span="8" :xs="24">
               <div class="img-box">
-                <img :src="personalInfo.contraryImg">
+                <img :src="userInfo.contrary">
               </div>
               <p>身份证反面</p>
             </el-col>
             <el-col :span="8" :xs="24">
               <div class="img-box">
-                <img :src="personalInfo.handImg">
+                <img :src="userInfo.hand">
               </div>
               <p>手持身份证正面</p>
             </el-col>
@@ -125,15 +125,18 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { getUserDetails } from '@/api/index'
+// import { mapGetters } from 'vuex'
 
 export default {
   name: 'Set',
   data() {
     return {
+      loading: false,
       currentPage: 1,
       pageSize: 10,
       total: 9,
+      userInfo: {},
       personalInfo: {
         frontImg: '',
         contraryImg: '',
@@ -178,14 +181,35 @@ export default {
       }]
     }
   },
-  computed: {
-    ...mapGetters([
-      'token'
-    ])
-  },
+  // computed: {
+  //   ...mapGetters([
+  //     'userInfo'
+  //   ])
+  // },
   mounted() {
+    this.getUserDetails()
   },
   methods: {
+    getUserDetails() {
+      const _this = this
+      _this.loading = true
+      getUserDetails().then(res => {
+        _this.loading = false
+        const data = res.data
+        const result = data.result
+        if (data.error !== 0) {
+          _this.$notify({
+            title: '查询失败',
+            message: data.reason,
+            type: 'error'
+          })
+          return
+        }
+        _this.userInfo = result
+      }).catch(error => {
+        console.log(error)
+      })
+    },
     handleSelectionChange() {
       console.log(1)
     },

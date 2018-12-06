@@ -50,13 +50,13 @@ export function logout() {
   })
 }
 
-// export function getUserInfo(token) {
-//   return request({
-//     url: '/user/info',
-//     method: 'get',
-//     params: { token }
-//   })
-// }
+export function getUserDetails(token) {
+  return request({
+    url: '/v1/userInfo',
+    method: 'get',
+    headers: { 'token': getUserInfo().token }
+  })
+}
 
 export function imageUpload(image) {
   const data = image
@@ -93,13 +93,42 @@ export function appUpload(file, onUploadProgress) {
   })
 }
 
+export function appDelete(obj) {
+  const data = obj
+  return request({
+    url: '/v1/appList',
+    method: 'post',
+    headers: { 'token': getUserInfo().token },
+    data
+  })
+}
+
 export function getAppList(obj) {
   const data = obj
   return request({
     url: '/v1/appList',
     method: 'get',
     headers: { 'token': getUserInfo().token },
-    data
+    params: data
   })
 }
 
+export function getAppInfo(obj) {
+  const data = obj
+  return request({
+    url: '/v1/appInfo',
+    method: 'get',
+    headers: { 'token': getUserInfo().token },
+    params: data
+  })
+}
+
+export function appVersionRemark(obj) {
+  const data = obj
+  return request({
+    url: '/v1/appVersionRemark',
+    method: 'post',
+    headers: { 'token': getUserInfo().token },
+    data
+  })
+}
