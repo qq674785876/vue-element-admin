@@ -70,7 +70,7 @@
           <div class="el-upload__text">点击或拖拽<br >上传您的应用</div>
         </el-upload>
       </el-col>
-      <el-col :span="20" :xs="24">
+      <el-col :span="20" :xs="24" :loading="loading">
         <div class="app-box">
           <el-card v-for="(list, index) in applist" :key="index" :class="{'pTop': index > 3}" shadow="always" class="app-list">
             <div :class="list.type" class="app-type">
@@ -109,7 +109,7 @@
 </template>
 
 <script>
-// import { appUpload } from '@/api/index'
+import { getAppList } from '@/api/index'
 import { mapGetters } from 'vuex'
 import IframeLoading from '@/components/Loading/index'
 import Preview from './preview'
@@ -117,9 +117,10 @@ import Upload from './upload'
 
 export default {
   name: 'App',
-  components: { IframeLoading, Preview, Upload },
+  components: { IframeLoading, Preview, Upload, getAppList },
   data() {
     return {
+      loading: true,
       currentRole: 'preview',
       dialogVisible: false,
       uploadPercent: 0,
@@ -172,12 +173,10 @@ export default {
       }]
     }
   },
-  computed() {
-    return {
-      ...mapGetters([
-        'token'
-      ])
-    }
+  computed: {
+    ...mapGetters([
+      'token'
+    ])
   },
   mounted() {
     // const _this = this
@@ -187,6 +186,27 @@ export default {
     this.headers.token = this.token
   },
   methods: {
+    getAppList() {
+      const _this = this
+      getAppList({
+        appName: _this.searchKey,
+        platform: _this.appType,
+        pageNum: 1,
+        pageSize: 10
+      }).then(response => {
+        const data = response.data
+        if (data.error !== 0) {
+          _this.$notify({
+            title: '实名失败',
+            message: data.reason,
+            type: 'error'
+          })
+          return
+        }
+      }).catch(error => {
+        console.log(error)
+      })
+    },
     uploadSuccess() {
       const _this = this
       _this.isLoading = false

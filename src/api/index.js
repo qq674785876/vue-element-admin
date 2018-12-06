@@ -93,3 +93,13 @@ export function appUpload(file, onUploadProgress) {
   })
 }
 
+export function getAppList(obj) {
+  const data = obj
+  return request({
+    url: '/v1/appList',
+    method: 'get',
+    headers: { 'token': getUserInfo().token },
+    data
+  })
+}
+

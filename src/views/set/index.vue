@@ -178,12 +178,10 @@ export default {
       }]
     }
   },
-  computed() {
-    return {
-      ...mapGetters([
-        'token'
-      ])
-    }
+  computed: {
+    ...mapGetters([
+      'token'
+    ])
   },
   mounted() {
   },
