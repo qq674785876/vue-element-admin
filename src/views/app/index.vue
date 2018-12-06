@@ -140,14 +140,7 @@ export default {
       loadingSrc: '/static/SvgLoading/index.html',
       appType: 'android',
       searchKey: '',
-      applist: [{
-        appId: '1',
-        platform: ['android', 'ios'],
-        appName: 'TEST01',
-        size: '51.90MB',
-        package: 'COM.APP.COM',
-        version: '1.0.5（Build 5）'
-      }]
+      applist: []
     }
   },
   computed: {

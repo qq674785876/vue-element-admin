@@ -22,7 +22,7 @@ export function removeToken() {
 }
 
 export function setUserInfo(userInfo) {
-  return Cookies.set(UserInfo, JSON.stringify(userInfo))
+  return Cookies.set(UserInfo, JSON.stringify(userInfo), { expires: 1 })
 }
 
 export function getUserInfo() {

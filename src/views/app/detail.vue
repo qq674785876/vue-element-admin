@@ -48,13 +48,13 @@
                 <el-tooltip content="编辑更新日志" placement="top-start">
                   <el-button size="mini" round @click="list.isEdit = true"><i class="el-icon-edit"/></el-button>
                 </el-tooltip>
-                <el-tooltip content="下载源文件" placement="top-start">
-                  <el-button size="mini" round><i class="el-icon-download"/></el-button>
-                </el-tooltip>
                 <el-tooltip content="预览" placement="top-start">
                   <el-button size="mini" round @click="getPreview"><i class="el-icon-view"/></el-button>
                 </el-tooltip>
-                <el-tooltip content="上线" placement="top-start">
+                <el-tooltip v-if="list.state === 1" content="下线" placement="top-start">
+                  <el-button size="mini" round><i class="el-icon-download"/></el-button>
+                </el-tooltip>
+                <el-tooltip v-else content="上线" placement="top-start">
                   <el-button size="mini" round><i class="el-icon-upload2"/></el-button>
                 </el-tooltip>
               </div>
