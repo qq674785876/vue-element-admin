@@ -27,26 +27,26 @@
             <el-tooltip content="Top Left 提示文字" placement="top-start">
               <p>可上传APP数<i class="el-icon-question"/></p>
             </el-tooltip>
-            <p><span>0</span></p>
+            <p><span>{{ userInfo.upload }}</span></p>
           </li>
           <li>
             <el-tooltip content="Top Left 提示文字" placement="top-start">
               <p>今日免费下载点数<i class="el-icon-question"/></p>
             </el-tooltip>
-            <p><span>0</span></p>
+            <p><span>{{ userInfo.download }}</span></p>
           </li>
           <li>
             <el-tooltip content="Top Left 提示文字" placement="top-start">
               <p>剩余付费下载点数<i class="el-icon-question"/></p>
             </el-tooltip>
-            <p><span>84</span></p>
+            <p><span>{{ userInfo.surplus }}</span></p>
           </li>
           <li class="shop">
             <el-tooltip content="Top Left 提示文字" placement="top-start">
               <p>购买点数包<i class="el-icon-question"/></p>
             </el-tooltip>
             <p>
-              <el-button round>
+              <el-button round @click="getPackage">
                 <span class="svg-container">
                   <svg-icon icon-class="shop" />
                 </span>
@@ -87,7 +87,11 @@
             <div class="app-info">
               <p class="app-title">{{ list.appName }}</p>
               <p class="app-info-cont">应用大小：<span class="app-text">{{ list.size }}</span></p>
-              <p class="app-info-cont">应用标识：<span class="app-text">{{ list.package }}</span></p>
+              <p class="app-info-cont">应用标识：
+                <el-tooltip :content="list.package" placement="top-start">
+                  <span class="app-text">{{ list.package }}</span>
+                </el-tooltip>
+              </p>
               <p class="app-info-cont">最新版本：<span class="app-text">{{ list.version }}</span></p>
             </div>
             <div class="app-btn-box">
@@ -95,7 +99,7 @@
                 <el-button size="mini" icon="el-icon-edit" round>管理</el-button>
               </router-link>
               <el-button size="mini" icon="el-icon-view" round @click="getPreview">预览</el-button>
-              <el-button size="mini" icon="el-icon-delete" circle/>
+              <el-button size="mini" icon="el-icon-delete" circle @click="appDelete(list.appId)"/>
             </div>
           </el-card>
         </div>
@@ -103,30 +107,33 @@
     </el-row>
     <component
       :is="currentRole"
+      :dialog-title="dialogTitle"
       :dialog-visible="dialogVisible"
       :preview-src="previewSrc"
       :preview-url="previewUrl"
       :upload-time="uploadTime"
       @handleClose="handleClose"
       @submitUpload="submitUpload"/>
-    <iframe-loading v-if="isLoading" :loading-src="loadingSrc" :progress-bar="uploadPercent"/>
+    <iframe-loading v-show="isLoading" :loading-src="loadingSrc" :progress-bar="uploadPercent"/>
   </div>
 </template>
 
 <script>
-import { getAppList } from '@/api/index'
+import { getAppList, appDelete, getUserDetails } from '@/api/index'
 import { mapGetters } from 'vuex'
 import IframeLoading from '@/components/Loading/index'
 import Preview from './preview'
-import Upload from './upload'
+import Package from './package'
 
 export default {
   name: 'App',
-  components: { IframeLoading, Preview, Upload, getAppList },
+  components: { IframeLoading, Preview, Package, getAppList, appDelete },
   data() {
     return {
       loading: false,
       currentRole: 'preview',
+      userInfo: {},
+      dialogTitle: '',
       dialogVisible: false,
       uploadPercent: 0,
       previewSrc: '',
@@ -155,8 +162,63 @@ export default {
     // },1000)
     this.headers.token = this.token
     this.getAppList()
+    this.getUserDetails()
   },
   methods: {
+    getUserDetails() {
+      const _this = this
+      _this.loading = true
+      getUserDetails().then(res => {
+        _this.loading = false
+        const data = res.data
+        const result = data.result
+        if (data.error !== 0) {
+          _this.$notify({
+            title: '查询失败',
+            message: data.reason,
+            type: 'error'
+          })
+          return
+        }
+        _this.userInfo = result
+      }).catch(error => {
+        console.log(error)
+      })
+    },
+    appDelete(appId) {
+      const _this = this
+      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        _this.loading = true
+        appDelete({
+          appId: appId
+        }).then(res => {
+          _this.loading = false
+          const data = res.data
+          if (data.error !== 0) {
+            _this.$notify({
+              title: '查询失败',
+              message: data.reason,
+              type: 'error'
+            })
+            return
+          }
+          _this.$notify({
+            title: '删除成功',
+            message: '应用删除成功！',
+            type: 'success'
+          })
+          _this.getAppList()
+        }).catch(error => {
+          console.log(error)
+        })
+      }).catch(() => {
+
+      })
+    },
     goUrl(to, go, a) {
       console.log(to, go, a)
     },
@@ -194,14 +256,11 @@ export default {
         message: '文件上传成功',
         type: 'success'
       })
-      setTimeout(function() {
-        _this.currentRole = 'upload'
-        _this.dialogVisible = true
-      }, 600)
+      _this.getAppList()
     },
     uploadProgress(event, file, fileList) {
       this.isLoading = true
-      this.uploadPercent = file.percentage.toFixed(0)
+      this.uploadPercent = Number(file.percentage.toFixed(0))
     },
     handleClose() {
       this.dialogVisible = false
@@ -210,8 +269,9 @@ export default {
       this.currentRole = 'preview'
       this.dialogVisible = true
     },
-    getUpload() {
-      this.currentRole = 'upload'
+    getPackage() {
+      this.currentRole = 'package'
+      this.dialogTitle = '购买套餐'
       this.dialogVisible = true
     },
     submitUpload() {
@@ -394,6 +454,12 @@ export default {
           color: #666;
           padding-bottom: 12px;
           span{
+            width: 64%;
+            float: right;
+            display: inline-block;
+            overflow:hidden;
+            text-overflow:ellipsis;
+            white-space:nowrap;
             color: #000;
           }
         }

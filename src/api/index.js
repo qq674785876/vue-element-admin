@@ -96,7 +96,7 @@ export function appUpload(file, onUploadProgress) {
 export function appDelete(obj) {
   const data = obj
   return request({
-    url: '/v1/appList',
+    url: '/v1/appDelete',
     method: 'post',
     headers: { 'token': getUserInfo().token },
     data

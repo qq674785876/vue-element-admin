@@ -13,8 +13,8 @@ export default {
   props: {
     // route object
     progressBar: {
-      type: String,
-      required: true
+      type: Number,
+      default: 0
     },
     loadingSrc: {
       type: String,

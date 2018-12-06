@@ -71,7 +71,6 @@
               <span class="title">应用名称</span>
               <el-input
                 v-model="basicInfo.appName"
-                size="mini"
                 placeholder="请输入应用名称"/>
             </div>
             <div class="url">
@@ -88,7 +87,6 @@
               <span class="title">应用描述</span>
               <el-input
                 v-model="basicInfo.describe"
-                size="mini"
                 placeholder="请输入应用描述"/>
             </div>
             <div>
@@ -149,7 +147,7 @@
       </el-tabs>
     </div>
     <component :is="currentRole" :dialog-visible="dialogVisible" :preview-src="previewSrc" :preview-url="previewUrl" :upload-time="uploadTime" @handleClose="handleClose"/>
-    <iframe-loading v-if="isLoading" :loading-src="loadingSrc" :progress-bar="uploadPercent"/>
+    <iframe-loading v-show="isLoading" :loading-src="loadingSrc" :progress-bar="uploadPercent"/>
   </div>
 </template>
 
@@ -256,14 +254,10 @@ export default {
         message: '文件上传成功',
         type: 'success'
       })
-      setTimeout(function() {
-        _this.currentRole = 'upload'
-        _this.dialogVisible = true
-      }, 600)
     },
     uploadProgress(event, file, fileList) {
       this.isLoading = true
-      this.uploadPercent = file.percentage.toFixed(0)
+      this.uploadPercent = Number(file.percentage.toFixed(0))
     },
     switchTaps(el) {
       if (el.name === 'tap4') {
