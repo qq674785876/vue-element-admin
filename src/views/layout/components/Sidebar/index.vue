@@ -6,7 +6,9 @@
     <el-row class="user-info-box">
       <div :style="{'background': 'url('+ avatar +') center center'}" class="user-head"/>
       <p class="user-name">{{ userInfo.email }}</p>
-      <a href="javascript:;" class="user-set">账号设置</a>
+      <router-link :to="'/set/index'">
+        <a href="javascript:;" class="user-set">账号设置</a>
+      </router-link>
     </el-row>
     <el-menu
       :show-timeout="200"

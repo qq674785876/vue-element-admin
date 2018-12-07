@@ -31,9 +31,7 @@
                 <template slot="prepend">商店地址</template>
               </el-input>
               <el-button type="primary" @click="appUrlUpdate">
-                <span class="svg-container">
-                  <svg-icon icon-class="save" />
-                </span>
+                <i class="el-icon-edit-outline"/>保存
               </el-button>
             </div>
           </div>
@@ -363,6 +361,7 @@ export default {
         message: '文件上传成功',
         type: 'success'
       })
+      _this.getAppInfo()
     },
     uploadProgress(event, file, fileList) {
       this.isLoading = true

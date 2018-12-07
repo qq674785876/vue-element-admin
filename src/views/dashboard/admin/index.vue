@@ -45,17 +45,25 @@
         </div>
       </el-col>
     </el-row>
+    <component
+      :is="currentRole"
+      :dialog-visible="dialogVisible"
+      @handleClose="handleClose"/>
   </div>
 </template>
 
 <script>
+import Message from '@/views/message'
 
 export default {
   name: 'DashboardAdmin',
   components: {
+    Message
   },
   data() {
     return {
+      currentRole: 'message',
+      dialogVisible: false,
       gradientColor: '#ccc',
       exhibition: [{
         bgColor: 'rgb(5, 171, 191)',
@@ -80,13 +88,62 @@ export default {
       return this.$store.state.app.device
     }
   },
+  mounted() {
+    this.sendMessage()
+    this.dialogVisible = true
+  },
   methods: {
-
+    sendMessage() {
+      const h = this.$createElement
+      this.notify = this.$notify({
+        dangerouslyUseHTMLString: true,
+        message: h('div', {
+          attrs: { 'class': 'message-notice-box' }
+        }, [
+          h('div', {
+            attrs: { 'class': 'header' }
+          }),
+          h('div', {
+            attrs: { 'class': 'cont-box' }
+          }, [
+            h('h1', null, '开启消息通知'),
+            h('p', null, '特惠活动，账号信息，到账通知')
+          ]),
+          h('div', {
+            attrs: { 'class': 'btn-box' }
+          }, [
+            h('a', {
+              attrs: { 'href': 'javascript:;' },
+              on: {
+                click: this.clickBtn
+              }
+            }, '知道了')
+          ])
+        ]),
+        // message: '<div class="message-notice-box">' +
+        //   '<div class="header"></div>' +
+        //   '<div class="cont-box">' +
+        //   '<h1>开启消息通知</h1>' +
+        //   '<p>特惠活动，账号信息，到账通知</p>' +
+        //   '</div>' +
+        //   '<div class="btn-box"><a href="javascript:;" @click="close">知道了</a></div>' +
+        //   '</div>',
+        position: 'bottom-right',
+        duration: 0,
+        customClass: 'zz-message-notice'
+      })
+    },
+    clickBtn() {
+      this.notify.close()
+    },
+    handleClose() {
+      this.dialogVisible = false
+    }
   }
 }
 </script>
 
-<style rel="stylesheet/scss" lang="scss" scoped>
+<style rel="stylesheet/scss" lang="scss">
 .dashboard-editor-container{
   height: calc(100vh - 85px);
   overflow: auto;
@@ -109,6 +166,54 @@ export default {
       .title{
         font-size: 26px;
       }
+    }
+  }
+}
+.zz-message-notice{
+  width: auto;
+  padding: 0;
+  border: 0;
+  .el-notification__group{
+    margin: 0;
+    .el-notification__closeBtn{
+      display: none;
+    }
+  }
+  .message-notice-box{
+    width: 180px;
+    height: 160px;
+    .header{
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 80px;
+      width: 100%;
+      background: url('/static/images/message.jpg');
+      .svg-container{
+        font-size: 30px;
+        color: #fff;
+      }
+    }
+    .cont-box{
+      margin-top: 80px;
+      height: 120px;
+      text-align: center;
+      padding: 0 20px;
+      h1{
+        font-size: 18px;
+        padding-top: 15px;
+      }
+      p{
+        font-size: 12px;
+        color: #ccc;
+      }
+    }
+    .btn-box{
+      border-top: 1px solid #eee;
+      height: 40px;
+      line-height: 40px;
+      text-align: center;
+      color: blue;
     }
   }
 }

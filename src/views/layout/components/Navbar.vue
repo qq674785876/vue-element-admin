@@ -22,7 +22,7 @@
           <theme-picker class="theme-switch right-menu-item"/>
         </el-tooltip>
       </template> -->
-      <el-button type="primary" size="mini" @click="logout">退出登陆</el-button>
+      <el-button type="primary" size="mini" style="margin-right: 15px;" @click="logout">安全登出</el-button>
       <!--       <el-dropdown class="avatar-container right-menu-item" trigger="click">
         <div class="avatar-wrapper">
           <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar">

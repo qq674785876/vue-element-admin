@@ -42,7 +42,7 @@
             <el-col :span="12">
               <span class="name">套餐：</span>
               <span>{{ userInfo.packageName ? userInfo.mobile : '未购买套餐' }}</span>
-              <a href="javascript:;" style="margin-left: 15px;color: blue;" class="el-icon-edit" @click="dialogVisible = true">修改</a>
+              <a href="javascript:;" style="margin-left: 15px;color: blue;" class="el-icon-goods" @click="dialogVisible = true">购买</a>
             </el-col>
             <el-col :span="12">
               <span class="name">绑定手机：</span>
