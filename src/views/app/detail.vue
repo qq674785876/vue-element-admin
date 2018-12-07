@@ -27,9 +27,14 @@
           <div class="app-version-list">
             <div class="list-cont">
               <p class="title">版本更新</p>
-              <el-input v-model="basicInfo.appUrl" placeholder="请输入内容">
+              <el-input v-model="basicInfo.appUrl" placeholder="请输入内容" @keyup.enter.native="appUrlUpdate">
                 <template slot="prepend">商店地址</template>
               </el-input>
+              <el-button type="primary" @click="appUrlUpdate">
+                <span class="svg-container">
+                  <svg-icon icon-class="save" />
+                </span>
+              </el-button>
             </div>
           </div>
           <div v-for="(list , index) in basicInfo.versionList" :key="index" class="app-version-list">
@@ -63,9 +68,10 @@
         </el-tab-pane>
         <el-tab-pane name="tap2" label="基本信息">
           <div class="basic-info">
+            <el-button class="updateApp" type="primary" size="mini" @click="appUpdate">更新应用信息</el-button>
             <div>
               <span class="title">应用ID</span>
-              {{ basicInfo.appId }}
+              {{ basicInfo.appkey }}
             </div>
             <div>
               <span class="title">应用名称</span>
@@ -81,7 +87,16 @@
             </div>
             <div>
               <span class="title">应用图标</span>
-              <img :src="basicInfo.appIcon" class="app-img">
+              <el-upload
+                :show-file-list="false"
+                :before-upload="contraryUpload"
+                action="http://test.com/"
+                class="avatar-uploader">
+                <img v-if="basicInfo.editAppIcon" :src="basicInfo.editAppIcon" class="app-img">
+                <span class="svg-container">
+                  <svg-icon icon-class="add" />
+                </span>
+              </el-upload>
             </div>
             <div class="tips">
               <span class="title">应用描述</span>
@@ -92,7 +107,20 @@
             <div>
               <span class="title">应用截图</span>
               <div class="appScreenshot">
-                <img v-for="(img, index) in basicInfo.appImage" :src="img" :key="index">
+                <el-card v-for="(img, index) in basicInfo.appImage" :key="index" shadow="hover">
+                  <img :src="img">
+                  <div class="img-set-box">
+                    <i class="el-icon-zoom-in" @click="handlePictureCardPreview(img)"/>
+                    <i class="el-icon-close" @click="handleRemove(index)"/>
+                  </div>
+                </el-card>
+                <el-upload
+                  :before-upload="appImageUpload"
+                  class="avatar-uploader"
+                  action="https://jsonplaceholder.typicode.com/posts/"
+                  list-type="picture">
+                  <i class="el-icon-plus"/>
+                </el-upload>
               </div>
             </div>
           </div>
@@ -102,16 +130,21 @@
             <el-col :span="6" :xs="24" class="left">
               <p class="left-title">选择已有的应用进行合并</p>
               <div class="app-mini-box">
-                <img v-for="(img, index) in appMini" :src="img" :key="index">
+                <img v-for="(appList, index) in appMini" :src="appList.appIcon" :key="index" :class="{active: selectAppIndex === index}" @click="selectApp(index)">
               </div>
             </el-col>
             <el-col :span="12" :xs="24" :offset="2" class="right">
-              <p>输入需要合并的应用的短链接</p>
               <el-input
-                v-model="searchKey"
-                placeholder="输入名称搜索">
-                <i slot="prefix" class="el-input__icon el-icon-search"/>
+                v-model="mergeSortUrl"
+                placeholder="输入需要合并的应用短链接">
+                <template slot="prepend">应用短链接</template>
               </el-input>
+              <el-button type="primary" @click="appMerge">
+                <span class="svg-container">
+                  <svg-icon icon-class="merge" />
+                </span>
+                应用合并
+              </el-button>
             </el-col>
           </el-row>
         </el-tab-pane>
@@ -148,11 +181,14 @@
     </div>
     <component :is="currentRole" :dialog-visible="dialogVisible" :app-id="appId" @handleClose="handleClose"/>
     <iframe-loading v-show="isLoading" :loading-src="loadingSrc" :progress-bar="uploadPercent"/>
+    <el-dialog :visible.sync="dialogImageVisible">
+      <img :src="dialogImageUrl" width="100%" alt="">
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { getAppInfo, appVersionRemark, appStateUpdate } from '@/api/index'
+import { getAppInfo, appVersionRemark, appStateUpdate, appUrlUpdate, appUpdate, imageUpload, userApp } from '@/api/index'
 import IframeLoading from '@/components/Loading/index'
 import { mapGetters } from 'vuex'
 import Chart from './chart'
@@ -168,6 +204,9 @@ export default {
       headers: {
         'token': ''
       },
+      selectAppIndex: null,
+      dialogImageVisible: false,
+      dialogImageUrl: '',
       uploadApi: process.env.BASE_API + '/v1/appUpload',
       isLoading: false,
       uploadPercent: 0,
@@ -178,7 +217,7 @@ export default {
       dialogVisible: false,
       file: '',
       checked: false,
-      searchKey: '',
+      mergeSortUrl: '',
       activeName: 'tap1',
       appId: this.$route.params.id,
       basicInfo: {
@@ -231,6 +270,86 @@ export default {
     this.getAppInfo()
   },
   methods: {
+    appMerge() {
+
+    },
+    selectApp(index) {
+      const _this = this
+      _this.selectAppIndex = index
+      _this.mergeSortUrl = _this.appMini[index].sortUrl
+    },
+    userApp() {
+      const _this = this
+      userApp({
+        appId: _this.basicInfo.appId
+      }).then(res => {
+        const data = res.data
+        const result = data.result
+        if (data.error !== 0) {
+          return
+        }
+        _this.appMini = result
+      }).catch(error => {
+        console.log(error)
+      })
+    },
+    appUpdate() {
+      const _this = this
+      _this.loading = true
+      appUpdate({
+        appId: _this.basicInfo.appId,
+        appName: _this.basicInfo.appName,
+        sortUrl: _this.basicInfo.sortUrl,
+        appIcon: _this.basicInfo.editAppIcon,
+        describe: _this.basicInfo.describe,
+        appImage: _this.basicInfo.appImageStr
+      }).then(res => {
+        _this.loading = false
+        const data = res.data
+        if (data.error !== 0) {
+          _this.$notify({
+            title: '操作失败',
+            message: data.reason,
+            type: 'error'
+          })
+          return
+        }
+        _this.$notify({
+          title: '操作成功',
+          message: '应用信息修改成功！',
+          type: 'success'
+        })
+        _this.basicInfo.appIcon = _this.basicInfo.editAppIcon
+      }).catch(error => {
+        console.log(error)
+      })
+    },
+    appUrlUpdate() {
+      const _this = this
+      _this.loading = true
+      appUrlUpdate({
+        appId: _this.basicInfo.appId,
+        appUrl: _this.basicInfo.appUrl
+      }).then(res => {
+        _this.loading = false
+        const data = res.data
+        if (data.error !== 0) {
+          _this.$notify({
+            title: '操作失败',
+            message: data.reason,
+            type: 'error'
+          })
+          return
+        }
+        _this.$notify({
+          title: '操作成功',
+          message: '修改商店地址成功！',
+          type: 'success'
+        })
+      }).catch(error => {
+        console.log(error)
+      })
+    },
     uploadApp(file) {
       // const _this = this
       // return false
@@ -324,7 +443,10 @@ export default {
         for (var i = 0; i < result.versionList.length; i++) {
           result.versionList[i].isEdit = false
         }
+        result.editAppIcon = result.appIcon
+        result.appImageStr = result.appImage.join(',')
         _this.basicInfo = result
+        _this.userApp()
       }).catch(error => {
         console.log(error)
       })
@@ -355,6 +477,97 @@ export default {
       }).catch(error => {
         console.log(error)
       })
+    },
+    uploadImg(file, fct) {
+      const _this = this
+
+      const formData = new FormData()
+      formData.append('image', file) // 传文件
+      imageUpload(formData).then(response => {
+        const data = response.data
+        const result = data.result
+        if (data.error !== 0) {
+          _this.$notify({
+            title: '上传失败',
+            message: data.reason,
+            type: 'error'
+          })
+          return
+        }
+        if (fct) fct(result)
+      }).catch(error => {
+        console.log(error)
+      })
+    },
+    contraryUpload(file) {
+      const _this = this
+      // return isLt2M;
+      // return isJPG && isLt2M;
+
+      if (_this.isImgFlag(file)) {
+        _this.uploadImg(file, (result) => {
+          _this.basicInfo.editAppIcon = result.viewUrl
+        })
+      }
+
+      return false
+    },
+    appImageUpload(file) {
+      const _this = this
+      // return isLt2M;
+      // return isJPG && isLt2M;
+
+      if (_this.isImgFlag(file)) {
+        _this.uploadImg(file, (result) => {
+          _this.basicInfo.appImage.push(result.viewUrl)
+          _this.basicInfo.appImageStr = _this.basicInfo.appImage.join(',')
+        })
+      }
+
+      return false
+    },
+    isImgFlag(file) {
+      const _this = this
+      const isJPG = file.type === 'image/jpeg'
+      const isGIF = file.type === 'image/gif'
+      const isPNG = file.type === 'image/png'
+      const isBMP = file.type === 'image/bmp'
+      const isLt2M = file.size / 1024 / 1024 < 2
+
+      if (!isJPG && !isGIF && !isPNG && !isBMP) {
+        _this.$notify({
+          title: '格式错误',
+          message: '上传图片必须是JPG/GIF/PNG/BMP格式!',
+          type: 'error'
+        })
+        return false
+      }
+
+      if (!isLt2M) {
+        _this.$notify({
+          title: '格式错误',
+          message: '上传图片必须是JPG/GIF/PNG/BMP格式!',
+          type: 'error'
+        })
+        return false
+      }
+
+      return true
+    },
+    handleRemove(delIndex) {
+      var temArray = []
+      for (var i = 0; i < this.basicInfo.appImage.length; i++) {
+        if (i !== delIndex) {
+          temArray.push(this.basicInfo.appImage[i])
+        }
+      }
+      this.basicInfo.appImage = temArray
+      this.basicInfo.appImageStr = temArray.join(',')
+      console.log(temArray)
+    },
+    handlePictureCardPreview(img) {
+      this.dialogImageUrl = img
+      this.dialogImageVisible = true
     }
   }
 }
@@ -420,6 +633,7 @@ export default {
       height: calc(100vh - 340px);
       overflow: auto;
       padding-top: 30px;
+      position: relative;
     }
     //版本信息
     .app-version-list{
@@ -516,9 +730,69 @@ export default {
           margin-top: 30px;
           height: 80px;
           width: 80px;
+          border-radius: 10px;
+          background-size: cover;
         }
         .appScreenshot{
           padding: 30px 0;
+          min-height: 200px;
+          .avatar-uploader{
+            display: inline-block;
+            position: relative;
+          }
+          .avatar-uploader .el-upload {
+            border: 1px dashed #d9d9d9;
+            border-radius: 6px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+          }
+          .avatar-uploader .el-upload:hover {
+            border-color: #409EFF;
+          }
+          .avatar-uploader-icon {
+            font-size: 28px;
+            color: #8c939d;
+            width: 178px;
+            height: 178px;
+            line-height: 178px;
+            text-align: center;
+          }
+          .avatar {
+            width: 178px;
+            height: 178px;
+            display: block;
+          }
+          .el-icon-plus{
+            font-size: 120px;
+            color: #ccc;
+          }
+          .el-card{
+            display: inline-block;
+            width: 160px;
+            position: relative;
+            .img-set-box{
+              position: absolute;
+              display: none;
+              top:0;
+              left: 0;
+              height: 100%;
+              width: 100%;
+              background-color: rgba(0,0,0,.3);
+              i{
+                margin: 0 10px;
+                font-size: 50px;
+                line-height: 250px;
+                color: #fff;
+                cursor: pointer;
+              }
+            }
+            &:hover{
+              .img-set-box{
+                display:block;
+              }
+            }
+          }
           img{
             margin-left: 15px;
             width: 120px;
@@ -539,11 +813,15 @@ export default {
           text-align: center;
         }
         .app-mini-box{
+          cursor: pointer;
           img{
             height: 80px;
             width: 80px;
             margin-left: 15px;
             border-radius: 10px;
+            &.active{
+              border: 2px solid rgb(0,0,255);
+            }
           }
         }
       }

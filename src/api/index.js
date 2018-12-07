@@ -126,6 +126,16 @@ export function getAppList(obj) {
   })
 }
 
+export function userApp(obj) {
+  const data = obj
+  return request({
+    url: '/v1/userApp',
+    method: 'get',
+    headers: { 'token': getUserInfo().token },
+    params: data
+  })
+}
+
 export function getAppInfo(obj) {
   const data = obj
   return request({
@@ -140,6 +150,26 @@ export function appStateUpdate(obj) {
   const data = obj
   return request({
     url: '/v1/appStateUpdate',
+    method: 'post',
+    headers: { 'token': getUserInfo().token },
+    params: data
+  })
+}
+
+export function appUrlUpdate(obj) {
+  const data = obj
+  return request({
+    url: '/v1/appUrlUpdate',
+    method: 'post',
+    headers: { 'token': getUserInfo().token },
+    params: data
+  })
+}
+
+export function appUpdate(obj) {
+  const data = obj
+  return request({
+    url: '/v1/appUpdate',
     method: 'post',
     headers: { 'token': getUserInfo().token },
     params: data

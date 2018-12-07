@@ -1,7 +1,18 @@
 <template>
   <div class="dashboard-editor-container">
     <el-row v-if="device==='mobile'" class="exhibition-box">
-      <el-col v-for="(list, index) in exhibition" :span="24" :style="{'background-color': list.bgColor }" :key="index" class="exhibition-list">
+      <el-col
+        v-for="(list, index) in exhibition"
+        :span="24"
+        :style="{
+          'background': list.bgColor,
+          'background': '-webkit-linear-gradient(left top, ' + gradientColor + ' , ' + list.bgColor + ')',
+          'background': '-o-linear-gradient(bottom right, ' + gradientColor + ', ' + list.bgColor + ')',
+          'background': '-moz-linear-gradient(bottom right, ' + gradientColor + ', ' + list.bgColor + ')',
+          'background': 'linear-gradient(to bottom right, ' + gradientColor + ' , ' + list.bgColor + ')',
+        }"
+        :key="index"
+        class="exhibition-list">
         <div class="exhibition-cont">
           <span class="svg-container">
             <svg-icon :icon-class="list.svgClass" />
@@ -13,7 +24,18 @@
     </el-row>
 
     <el-row v-if="device!=='mobile'" class="exhibition-box" type="flex" justify="space-around">
-      <el-col v-for="(list, index) in exhibition" :span="5" :style="{'background-color': list.bgColor }" :key="index" class="exhibition-list">
+      <el-col
+        v-for="(list, index) in exhibition"
+        :span="5"
+        :style="{
+          'background': list.bgColor,
+          'background': '-webkit-linear-gradient(left top, ' + gradientColor + ' , ' + list.bgColor + ')',
+          'background': '-o-linear-gradient(bottom right, ' + gradientColor + ', ' + list.bgColor + ')',
+          'background': '-moz-linear-gradient(bottom right, ' + gradientColor + ', ' + list.bgColor + ')',
+          'background': 'linear-gradient(to bottom right, ' + gradientColor + ' , ' + list.bgColor + ')',
+        }"
+        :key="index"
+        class="exhibition-list">
         <div class="exhibition-cont">
           <span class="svg-container">
             <svg-icon :icon-class="list.svgClass" />
@@ -34,6 +56,7 @@ export default {
   },
   data() {
     return {
+      gradientColor: '#ccc',
       exhibition: [{
         bgColor: 'rgb(5, 171, 191)',
         title: '内测托管',
