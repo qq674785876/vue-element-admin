@@ -1,6 +1,8 @@
 import request from '@/utils/request'
 import { getUserInfo } from '@/utils/auth'
 
+// 用户相关
+
 export function loginByUsername(email, password) {
   const data = {
     email,
@@ -58,6 +60,15 @@ export function getUserDetails(token) {
   })
 }
 
+export function userUpdate(data) {
+  return request({
+    url: '/v1/userUpdate',
+    method: 'post',
+    headers: { 'token': getUserInfo().token },
+    data
+  })
+}
+
 export function imageUpload(image) {
   const data = image
   return request({
@@ -77,6 +88,8 @@ export function getRealName(obj) {
     data
   })
 }
+
+// app相关
 
 export function appUpload(file, onUploadProgress) {
   const data = file
@@ -118,6 +131,16 @@ export function getAppInfo(obj) {
   return request({
     url: '/v1/appInfo',
     method: 'get',
+    headers: { 'token': getUserInfo().token },
+    params: data
+  })
+}
+
+export function appStateUpdate(obj) {
+  const data = obj
+  return request({
+    url: '/v1/appStateUpdate',
+    method: 'post',
     headers: { 'token': getUserInfo().token },
     params: data
   })

@@ -1,12 +1,12 @@
 <template>
   <div v-loading="loading" class="app-detail-container" element-loading-text="拼命加载中">
     <div class="top-app-info">
-      <div class="app-img"/>
+      <div :style="{ 'background-image': 'url(' + basicInfo.appIcon + ')' }" class="app-img"/>
       <div class="app-info">
-        <p class="app-title">{{ appInfo.appName }}</p>
-        <p class="app-info-cont">应用大小：<span class="app-text">{{ appInfo.size }}</span></p>
-        <p class="app-info-cont">应用标识：<span class="app-text">{{ appInfo.package }}</span></p>
-        <p class="app-info-cont">最新版本：<span class="app-text">{{ appInfo.version }}</span></p>
+        <p class="app-title">{{ basicInfo.appName }}</p>
+        <p class="app-info-cont">应用大小：<span class="app-text">{{ basicInfo.size }}</span></p>
+        <p class="app-info-cont">应用标识：<span class="app-text">{{ basicInfo.package }}</span></p>
+        <p class="app-info-cont">最新版本：<span class="app-text">{{ basicInfo.version }}</span></p>
       </div>
       <div class="app-btn-box">
         <el-upload
@@ -52,10 +52,10 @@
                   <el-button size="mini" round @click="getPreview"><i class="el-icon-view"/></el-button>
                 </el-tooltip>
                 <el-tooltip v-if="list.state === 1" content="下线" placement="top-start">
-                  <el-button size="mini" round><i class="el-icon-download"/></el-button>
+                  <el-button size="mini" round><i class="el-icon-download" @click="appStateUpdate(list.apkId, 0, '下线')"/></el-button>
                 </el-tooltip>
                 <el-tooltip v-else content="上线" placement="top-start">
-                  <el-button size="mini" round><i class="el-icon-upload2"/></el-button>
+                  <el-button size="mini" round><i class="el-icon-upload2" @click="appStateUpdate(list.apkId, 1, '上线')"/></el-button>
                 </el-tooltip>
               </div>
             </div>
@@ -146,13 +146,13 @@
         </el-tab-pane>
       </el-tabs>
     </div>
-    <component :is="currentRole" :dialog-visible="dialogVisible" :preview-src="previewSrc" :preview-url="previewUrl" :upload-time="uploadTime" @handleClose="handleClose"/>
+    <component :is="currentRole" :dialog-visible="dialogVisible" :app-id="appId" @handleClose="handleClose"/>
     <iframe-loading v-show="isLoading" :loading-src="loadingSrc" :progress-bar="uploadPercent"/>
   </div>
 </template>
 
 <script>
-import { getAppInfo, appVersionRemark } from '@/api/index'
+import { getAppInfo, appVersionRemark, appStateUpdate } from '@/api/index'
 import IframeLoading from '@/components/Loading/index'
 import { mapGetters } from 'vuex'
 import Chart from './chart'
@@ -176,21 +176,11 @@ export default {
       saveLoading: false,
       currentRole: 'preview',
       dialogVisible: false,
-      previewSrc: '',
-      previewUrl: 'http://www.baidu.com/123',
-      uploadTime: '2018-03-02 23:32:23',
       file: '',
       checked: false,
       searchKey: '',
       activeName: 'tap1',
-      appInfo: {
-        appId: this.$route.params.id,
-        platform: ['android', 'ios'],
-        appName: 'TEST01',
-        size: '51.90MB',
-        package: 'COM.APP.COM',
-        version: '1.0.5（Build 5）'
-      },
+      appId: this.$route.params.id,
       basicInfo: {
         // appIcon: "http://api.ublog.top/uploads/tmp/d4c7b67c1c7c259c538be2d8704e3e46/res/mipmap-hdpi-v4/ic_launcher.png",
         // appId: "ZWE4OC8ySmJ3NWNkZHBPK0MyTk51Y0RhNE9La2VhYjNqQUYyTVl6Zg==",
@@ -279,11 +269,46 @@ export default {
       this.currentRole = 'upload'
       this.dialogVisible = true
     },
+    appStateUpdate(apkId, state, text) {
+      const _this = this
+      _this.$confirm('确定' + text + '该版本？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        _this.loading = true
+        appStateUpdate({
+          apkId: apkId,
+          state: state
+        }).then(res => {
+          _this.loading = false
+          const data = res.data
+          if (data.error !== 0) {
+            _this.$notify({
+              title: '操作失败',
+              message: data.reason,
+              type: 'error'
+            })
+            return
+          }
+          _this.$notify({
+            title: '操作成功',
+            message: text + '成功',
+            type: 'success'
+          })
+          _this.getAppInfo()
+        }).catch(error => {
+          console.log(error)
+        })
+      }).catch(() => {
+
+      })
+    },
     getAppInfo() {
       const _this = this
       _this.loading = true
       getAppInfo({
-        appId: _this.appInfo.appId
+        appId: _this.appId
       }).then(res => {
         _this.loading = false
         const data = res.data
@@ -362,6 +387,7 @@ export default {
       width: 100px;
       background-color: blue;
       border-radius: 20px;
+      background-size: cover;
     }
     .app-info{
       padding-left: 50px;
@@ -590,15 +616,23 @@ export default {
     display: block;
     margin: 0 auto;
   }
-  .app-container .app-box .app-list .app-btn-box{
-    text-align: center;
-    padding-top: 30px;
-  }
   .app-detail-container .top-app-info .app-info{
     padding-top: 30px;
   }
-  .app-detail-container .top-app-info div {
-    float: none;
+  .app-detail-container .top-app-info  {
+    .app-info-cont{
+      padding-bottom: 10px;
+    }
+    div{
+      float: none;
+    }
+  }
+  .app-detail-container .top-app-info .app-btn-box {
+    padding-top: 30px;
+    text-align: right;
+    div{
+      display: inline-block;
+    }
   }
 }
 </style>

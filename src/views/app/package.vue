@@ -34,15 +34,14 @@
             width="120"/>
         </el-table>
         <div align="right">
-          <el-input v-model="packageNum" type="Number" placeholder="" style="width: 160px;margin-top: 15px;">
-            <template slot="prepend">购买数量</template>
-          </el-input>
+          购买数量：<el-input-number :precision="0" v-model="packageNum" :min="1" controls-position="right" style="width: 160px;margin-top: 15px;"/>
         </div>
       </div>
       <div v-else class="QRCode_box" style="height: 200px;"/>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="handleClose">取 消</el-button>
-        <el-button type="primary" @click="submitUpload">确 定</el-button>
+        <el-button v-if="!isGet" @click="handleClose">取 消</el-button>
+        <el-button v-if="!isGet" type="primary" @click="getPackage">确 定</el-button>
+        <el-button v-if="isGet" @click="isGet = false">返 回</el-button>
       </span>
     </el-dialog>
   </div>
@@ -98,8 +97,8 @@ export default {
     handleClose() {
       this.$emit('handleClose')
     },
-    submitUpload() {
-      this.$emit('submitUpload')
+    getPackage() {
+      console.log('购买套餐！')
     }
   }
 }

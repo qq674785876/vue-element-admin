@@ -83,7 +83,7 @@
                 <svg-icon :icon-class="type"/>
               </span>
             </div>
-            <div class="app-img"/>
+            <div :style="{ 'background-image': 'url(' + list.appIcon + ')' }" class="app-img"/>
             <div class="app-info">
               <p class="app-title">{{ list.appName }}</p>
               <p class="app-info-cont">应用大小：<span class="app-text">{{ list.size }}</span></p>
@@ -98,7 +98,7 @@
               <router-link :to="'/app/detail/' + list.appId">
                 <el-button size="mini" icon="el-icon-edit" round>管理</el-button>
               </router-link>
-              <el-button size="mini" icon="el-icon-view" round @click="getPreview">预览</el-button>
+              <el-button size="mini" icon="el-icon-view" round @click="getPreview(list.appId)">预览</el-button>
               <el-button size="mini" icon="el-icon-delete" circle @click="appDelete(list.appId)"/>
             </div>
           </el-card>
@@ -109,9 +109,7 @@
       :is="currentRole"
       :dialog-title="dialogTitle"
       :dialog-visible="dialogVisible"
-      :preview-src="previewSrc"
-      :preview-url="previewUrl"
-      :upload-time="uploadTime"
+      :app-id="appId"
       @handleClose="handleClose"
       @submitUpload="submitUpload"/>
     <iframe-loading v-show="isLoading" :loading-src="loadingSrc" :progress-bar="uploadPercent"/>
@@ -131,14 +129,12 @@ export default {
   data() {
     return {
       loading: false,
-      currentRole: 'preview',
+      currentRole: '',
       userInfo: {},
       dialogTitle: '',
       dialogVisible: false,
       uploadPercent: 0,
-      previewSrc: '',
-      previewUrl: 'http://www.baidu.com/123',
-      uploadTime: '2018-03-02 23:32:23',
+      appId: '',
       headers: {
         'token': ''
       },
@@ -187,7 +183,7 @@ export default {
     },
     appDelete(appId) {
       const _this = this
-      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+      _this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -265,7 +261,8 @@ export default {
     handleClose() {
       this.dialogVisible = false
     },
-    getPreview() {
+    getPreview(appId) {
+      this.appId = appId
       this.currentRole = 'preview'
       this.dialogVisible = true
     },
@@ -439,6 +436,7 @@ export default {
         width: 70px;
         background-color: blue;
         border-radius: 100%;
+        background-size: cover;
       }
       .app-info{
         margin-top: 30px;
@@ -479,6 +477,9 @@ export default {
   }
   .el-input{
     margin-left: 0;
+  }
+  .app-container .preview-cont{
+    width: 100% !important;
   }
   .app-box{
     height: calc(100vh - 300px);
