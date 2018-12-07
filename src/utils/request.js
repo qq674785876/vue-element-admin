@@ -28,7 +28,23 @@ service.interceptors.request.use(
 
 // response interceptor
 service.interceptors.response.use(
-  response => response,
+  response => {
+    const res = response.data
+    if (res.error > 400 && res.error < 500) {
+      Message({
+        message: res.reason, // error.message
+        type: 'error',
+        duration: 5 * 1000
+      })
+      setTimeout(function() {
+        store.dispatch('FedLogOut').then(() => {
+          location.reload() // 为了重新实例化vue-router对象 避免bug
+        })
+      }, 3000)
+    } else {
+      return response
+    }
+  },
   /**
    * 下面的注释为通过在response里，自定义code来标示请求状态
    * 当code返回如下情况则说明权限有问题，登出并返回到登录页

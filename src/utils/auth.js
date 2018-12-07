@@ -29,3 +29,6 @@ export function getUserInfo() {
   return Cookies.get(UserInfo) ? JSON.parse(Cookies.get(UserInfo)) : ''
 }
 
+export function removeUserInfo() {
+  return Cookies.remove(UserInfo)
+}

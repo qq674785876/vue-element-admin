@@ -1,5 +1,5 @@
 import { loginByUsername, logout } from '@/api/index'
-import { setToken, removeAllCookie, getUserInfo } from '@/utils/auth'
+import { setToken, removeAllCookie, getUserInfo, removeUserInfo } from '@/utils/auth'
 
 const user = {
   state: {
@@ -119,7 +119,8 @@ const user = {
     // 前端 登出
     FedLogOut({ commit }) {
       return new Promise(resolve => {
-        commit('SET_TOKEN', '')
+        commit('SET_USERINFO', '')
+        removeUserInfo()
         resolve()
       })
     },

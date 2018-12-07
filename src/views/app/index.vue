@@ -2,18 +2,18 @@
   <div class="app-container">
     <el-row class="searchAndInfo">
       <el-col :span="10" :xs="24">
-        <el-radio-group v-model="appType" @change="getAppList">
-          <el-radio-button label="ios">
+        <el-checkbox-group v-model="appType" @change="getAppList">
+          <el-checkbox-button label="ios">
             <span class="svg-container">
               <svg-icon icon-class="ios" />
             </span>
-          </el-radio-button>
-          <el-radio-button label="android">
+          </el-checkbox-button>
+          <el-checkbox-button label="android">
             <span class="svg-container android">
               <svg-icon icon-class="android" />
             </span>
-          </el-radio-button>
-        </el-radio-group>
+          </el-checkbox-button>
+        </el-checkbox-group>
         <el-input
           v-model="searchKey"
           placeholder="输入名称搜索"
@@ -141,7 +141,7 @@ export default {
       uploadApi: process.env.BASE_API + '/v1/appUpload',
       isLoading: false,
       loadingSrc: '/static/SvgLoading/index.html',
-      appType: 'android',
+      appType: ['ios', 'android'],
       searchKey: '',
       applist: []
     }
@@ -220,10 +220,16 @@ export default {
     },
     getAppList() {
       const _this = this
+      let platform = _this.appType
       _this.loading = true
+      if (platform.length === 2) {
+        platform = ''
+      } else if (platform.length === 1) {
+        platform = _this.appType[0]
+      }
       getAppList({
         appName: _this.searchKey,
-        platform: _this.appType,
+        platform: platform,
         pageNum: 1,
         pageSize: 10
       }).then(res => {
@@ -312,15 +318,21 @@ export default {
   overflow: hidden;
   .svg-container.android{
   }
+  .searchAndInfo{
+    .el-checkbox-group{
+      display: inline-block;
+      float: left;
+    }
+    .el-input{
+      position: relative;
+      margin-left: 10px;
+      float: left;
+      width: 200px;
+    }
+  }
   .el-icon-question{
     color: #666;
     padding-left: 2px;
-  }
-  .el-input{
-    position: relative;
-    top: 1px;
-    margin-left: 50px;
-    width: 200px;
   }
   .top-info-box{
     ul{
