@@ -34,7 +34,7 @@
             width="120"/>
         </el-table>
         <div align="right">
-          购买数量：<el-input-number :precision="0" v-model="packageNum" :min="1" controls-position="right" style="width: 160px;margin-top: 15px;"/>
+          购买数量：<el-input-number :precision="0" v-model="packageNum" :min="min" controls-position="right" style="width: 160px;margin-top: 15px;"/>
         </div>
       </div>
       <div v-else class="QRCode_box" style="height: 200px;"/>
@@ -68,20 +68,23 @@ export default {
   },
   data() {
     return {
-      isGet: true,
+      isGet: false,
       loading: false,
       templateRadio: 12,
       packageNum: 0,
+      min: 1,
       packageList: [{
         packageName: '一号套餐',
         packageCont: '最大可上传500个应用，每天可下载500次',
         packagePrice: 1000,
-        packageId: 12
+        packageId: 12,
+        min: 5
       }, {
         packageName: '一号套餐',
         packageCont: '最大可上传500个应用，每天可下载500次',
         packagePrice: 1000,
-        packageId: 11
+        packageId: 11,
+        min: 2
       }]
     }
   },
@@ -90,6 +93,8 @@ export default {
   methods: {
     selectRow(row, b, c) {
       this.templateRadio = row.packageId
+      this.min = row.min
+      this.packageNum = row.min
     },
     getTemplateRow() {
 
