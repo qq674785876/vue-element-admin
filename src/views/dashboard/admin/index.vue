@@ -65,6 +65,7 @@ export default {
       currentRole: 'message',
       dialogVisible: false,
       gradientColor: '#ccc',
+      notify: null,
       exhibition: [{
         bgColor: 'rgb(5, 171, 191)',
         title: '内测托管',
@@ -95,6 +96,7 @@ export default {
   methods: {
     sendMessage() {
       const h = this.$createElement
+      if (this.notify) this.notify.close()
       this.notify = this.$notify({
         dangerouslyUseHTMLString: true,
         message: h('div', {

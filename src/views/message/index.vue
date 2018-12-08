@@ -12,7 +12,7 @@
         <p>特惠活动，账号信息，到账通知</p>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="dialogVisible = false">知道了</el-button>
+        <el-button type="primary" @click="handleClose()">知道了</el-button>
       </span>
     </el-dialog>
   </div>
@@ -44,7 +44,8 @@ export default {
 <style rel="stylesheet/scss" lang="scss" >
 .message-box{
   .el-dialog{
-    min-width: 500px;
+    width: 500px;
+    max-width: 500px;
     border-radius: 10px;
     overflow: hidden;
     .el-dialog__header {
@@ -94,7 +95,7 @@ export default {
 .mobile{
   .message-box{
     .el-dialog{
-      width: 100%;
+      min-width: 100%;
     }
     .header{
       position: absolute;

@@ -43,7 +43,7 @@ export default {
         grid: {
           left: '3%',
           right: '4%',
-          bottom: '3%',
+          bottom: '10%',
           containLabel: true
         },
         xAxis: {
@@ -65,7 +65,7 @@ export default {
 .chart-container{
   position: relative;
   width: 100%;
-  height: 300px;
+  height: 340px;
 }
 </style>
 

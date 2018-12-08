@@ -28,7 +28,17 @@
           </el-row>
           <div class="btn-box" align="right">
             <el-button v-if="!isEdit" type="primary" size="mini" style="margin-right: 30px;" @click="isEdit = true">编辑</el-button>
-            <el-button v-else type="primary" size="mini" style="margin-right: 30px;" @click="userUpdate(userInfo)">保存</el-button>
+            <el-button
+              v-else
+              type="primary"
+              size="mini"
+              style="margin-right: 30px;"
+              @click="userUpdate({
+                wechat: userInfo.wechat,
+                imNumber: userInfo.imNumber,
+                company: userInfo.company,
+                job: userInfo.job
+            })">保存</el-button>
           </div>
         </div>
         <div class="module-list">
@@ -41,7 +51,7 @@
             </el-col>
             <el-col :span="12">
               <span class="name">套餐：</span>
-              <span>{{ userInfo.packageName ? userInfo.mobile : '未购买套餐' }}</span>
+              <span>{{ userInfo.packageName ? userInfo.packageName : '未购买套餐' }}</span>
               <a href="javascript:;" style="margin-left: 15px;color: blue;" class="el-icon-goods" @click="dialogVisible = true">购买</a>
             </el-col>
             <el-col :span="12">
@@ -61,21 +71,50 @@
         <div class="module-list">
           <p class="title">实名信息</p>
           <el-row class="realName-box">
+            <el-col :span="24" style="text-align: left;">
+              <span class="name">实名状态：</span>
+              <span>{{ userInfo.realState | realName }}</span>
+              <el-button v-if="userInfo.realState !== 1" type="primary" size="mini" @click="getRealName">提交实名信息</el-button>
+            </el-col>
             <el-col :span="8" :xs="24">
               <div class="img-box">
-                <img :src="userInfo.front">
+                <el-upload
+                  :before-upload="frontImgUpload"
+                  :show-file-list="false"
+                  class="avatar-uploader"
+                  action="https://jsonplaceholder.typicode.com/posts/"
+                  list-type="picture">
+                  <img v-if="userInfo.front" :src="userInfo.front">
+                  <i v-else class="el-icon-plus"/>
+                </el-upload>
               </div>
               <p>身份证正面</p>
             </el-col>
             <el-col :span="8" :xs="24">
               <div class="img-box">
-                <img :src="userInfo.contrary">
+                <el-upload
+                  :before-upload="contraryImgUpload"
+                  :show-file-list="false"
+                  class="avatar-uploader"
+                  action="https://jsonplaceholder.typicode.com/posts/"
+                  list-type="picture">
+                  <img v-if="userInfo.contrary" :src="userInfo.contrary">
+                  <i v-else class="el-icon-plus"/>
+                </el-upload>
               </div>
               <p>身份证反面</p>
             </el-col>
             <el-col :span="8" :xs="24">
               <div class="img-box">
-                <img :src="userInfo.hand">
+                <el-upload
+                  :before-upload="handImgUpload"
+                  :show-file-list="false"
+                  class="avatar-uploader"
+                  action="https://jsonplaceholder.typicode.com/posts/"
+                  list-type="picture">
+                  <img v-if="userInfo.hand" :src="userInfo.hand">
+                  <i v-else class="el-icon-plus"/>
+                </el-upload>
               </div>
               <p>手持身份证正面</p>
             </el-col>
@@ -141,6 +180,7 @@
       <div v-if="editType === 'email'" class="editEmail">
         <el-form ref="emailForm" :model="emailForm" :rules="emailRules" label-width="80px">
           <el-form-item
+            v-if="step === 2"
             :rules="[
               { required: true, message: '请输入邮箱地址', trigger: 'change' },
               { type: 'email', message: '请输入正确的邮箱地址', trigger: 'change' }
@@ -150,9 +190,23 @@
           >
             <el-input v-model="emailForm.email" placeholder="请输入新邮箱地址"/>
           </el-form-item>
-          <el-form-item prop="code" label="验证码">
+          <el-form-item v-else>
+            <p>请验证您当前邮箱： {{ userInfo.email }}</p>
+          </el-form-item>
+          <el-form-item v-if="step === 2" prop="code" label="验证码">
             <el-input
               v-model="emailForm.code"
+              placeholder="验证码"
+              name="code"
+              type="tel"
+              maxlength="6"
+              style="width: 140px;"
+            />
+            <el-button @click="getVerifyCode">{{ verifyCodeText }}</el-button>
+          </el-form-item>
+          <el-form-item v-if="step === 1">
+            <el-input
+              v-model="code"
               placeholder="验证码"
               name="code"
               type="tel"
@@ -189,22 +243,43 @@
         </el-form>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="editDialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="submitForm(editType + 'Form')">确 定</el-button>
+        <el-button v-if="step === 1" @click="editDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="submitForm(editType + 'Form')">{{ step === 1 ? '下一步' : '确 定' }}</el-button>
       </span>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import { getUserDetails, userUpdate, sendMail } from '@/api/index'
+import { getUserDetails, userUpdate, sendMail, getRealName, imageUpload, sendMailUpdate, checkCode, emailUpdate } from '@/api/index'
+import store from '@/store'
+import { Message } from 'element-ui'
 import { validateEmail } from '@/utils/validate'
 import Package from '@/views/app/package'
 // import { mapGetters } from 'vuex'
+let timer = null
 
 export default {
   name: 'Set',
   components: { Package },
+  // computed: {
+  //   ...mapGetters([
+  //     'userInfo'
+  //   ])
+  // },
+  filters: {
+    realName(value) {
+      if (value === 0) {
+        return '未实名或待审核（审核期间可以点击图片重新上传身份信息）'
+      } else if (value === 1) {
+        return '已实名'
+      } else if (value === 2) {
+        return '审核失败（点击图片重新上传身份信息进行实名）'
+      } else {
+        return ''
+      }
+    }
+  },
   data() {
     const _this = this
     const validatecode = (rule, value, callback) => {
@@ -224,7 +299,7 @@ export default {
     const validatePass = function(rule, value, callback) {
       if (value === '') {
         callback(new Error('请再次输入密码'))
-      } else if (value !== _this.passwordForm.validatePassword) {
+      } else if (value !== _this.passwordForm.newPassword) {
         callback(new Error('两次输入密码不一致!'))
       } else {
         callback()
@@ -238,6 +313,7 @@ export default {
       }
     }
     return {
+      step: 1,
       emailRules: {
         code: [{ required: true, trigger: 'blur', validator: validatecode }]
       },
@@ -260,6 +336,8 @@ export default {
       total: 9,
       isEdit: false,
       userInfo: {},
+      code: '',
+      updateKey: '',
       passwordForm: {
         oldPassword: '',
         newPassword: '',
@@ -268,11 +346,6 @@ export default {
       emailForm: {
         email: '',
         code: ''
-      },
-      personalInfo: {
-        frontImg: '',
-        contraryImg: '',
-        handImg: ''
       },
       noticeList: [{
         time: '2018-05-03 14:20:30',
@@ -313,23 +386,276 @@ export default {
       }]
     }
   },
-  // computed: {
-  //   ...mapGetters([
-  //     'userInfo'
-  //   ])
-  // },
   mounted() {
     this.getUserDetails()
   },
   methods: {
     editEmail() {
+      const _this = this
+      if (_this.step === 1) {
+        checkCode({ code: _this.code }).then(response => {
+          const data = response.data
+          const result = data.result
+          if (data.error !== 0) {
+            _this.$notify({
+              title: '操作失败',
+              message: data.reason,
+              type: 'error'
+            })
+            return
+          }
+          _this.step = 2
+          _this.verifyCodeText = '获取验证码'
+          clearInterval(timer)
+          _this.emailForm.code = ''
+          _this.updateKey = result.updateKey
+          console.log(_this.updateKey)
+        }).catch(error => {
+          console.log(error)
+        })
+      } else {
+        emailUpdate({
+          code: _this.emailForm.code,
+          email: _this.emailForm.email,
+          updateKey: _this.updateKey
+        }).then(response => {
+          const data = response.data
+          if (data.error !== 0) {
+            _this.$notify({
+              title: '操作失败',
+              message: data.reason,
+              type: 'error'
+            })
+            return
+          }
+          Message({
+            message: '邮箱修改成功，请重新登陆！', // error.message
+            type: 'warning',
+            duration: 5 * 1000
+          })
+          setTimeout(function() {
+            store.dispatch('FedLogOut').then(() => {
+              location.reload() // 为了重新实例化vue-router对象 避免bug
+            })
+          }, 2000)
+          // _this.verifyCodeText = '获取验证码'
+          // _this.updateKey = ''
+          // clearInterval(timer)
+          // _this.emailForm.code = ''
+        }).catch(error => {
+          console.log(error)
+        })
+      }
+    },
+    getVerifyCode() {
+      const _this = this
 
+      if (_this.verifyCodeText === '获取验证码') {
+        if (_this.step === 2) {
+          _this.sendMail()
+        } else {
+          _this.sendMailUpdate()
+        }
+      } else {
+        return
+      }
+    },
+    sendMail() {
+      const _this = this
+      let time = 60
+      if (!validateEmail(this.emailForm.email)) {
+        return
+      }
+      return new Promise((resolve, reject) => {
+        sendMail(_this.emailForm.email, 0).then(response => {
+          const data = response.data
+          if (data.error !== 0) {
+            _this.$notify({
+              title: '发送失败',
+              message: data.reason,
+              type: 'error'
+            })
+            return
+          }
+          _this.$notify({
+            title: '发送成功',
+            message: '已发送验证码至邮箱！',
+            type: 'success'
+          })
+          _this.verifyCodeText = '重新获取 ' + time + 'S'
+          timer = setInterval(function() {
+            if (time > 1) {
+              time--
+              _this.verifyCodeText = '重新获取 ' + time + 'S'
+            } else {
+              clearInterval(timer)
+              timer = null
+              _this.verifyCodeText = '获取验证码'
+            }
+          }, 1000)
+          resolve()
+        }).catch(error => {
+          reject(error)
+        })
+      })
+    },
+    sendMailUpdate() {
+      const _this = this
+      let time = 60
+      sendMailUpdate().then(response => {
+        const data = response.data
+        if (data.error !== 0) {
+          _this.$notify({
+            title: '操作失败',
+            message: data.reason,
+            type: 'error'
+          })
+          return
+        }
+        _this.$notify({
+          title: '发送成功',
+          message: '已发送验证码至邮箱！',
+          type: 'success'
+        })
+        _this.verifyCodeText = '重新获取 ' + time + 'S'
+        timer = setInterval(function() {
+          if (time > 1) {
+            time--
+            _this.verifyCodeText = '重新获取 ' + time + 'S'
+          } else {
+            clearInterval(timer)
+            timer = null
+            _this.verifyCodeText = '获取验证码'
+          }
+        }, 1000)
+      }).catch(error => {
+        console.log(error)
+      })
+    },
+    getRealName() {
+      const _this = this
+      getRealName({
+        front: _this.userInfo.front,
+        contrary: _this.userInfo.contrary,
+        hand: _this.userInfo.hand
+      }).then(response => {
+        const data = response.data
+        if (data.error !== 0) {
+          _this.$notify({
+            title: '实名失败',
+            message: data.reason,
+            type: 'error'
+          })
+          return
+        }
+        _this.$notify({
+          title: '操作成功',
+          message: '实名信息提交成功！',
+          type: 'success'
+        })
+      }).catch(error => {
+        console.log(error)
+      })
+    },
+    frontImgUpload(file) {
+      const _this = this
+      // return isLt2M;
+      // return isJPG && isLt2M;
+
+      if (_this.isImgFlag(file)) {
+        _this.uploadImg(file, 'front')
+      }
+
+      return false
+    },
+    contraryImgUpload(file) {
+      const _this = this
+      // return isLt2M;
+      // return isJPG && isLt2M;
+
+      if (_this.isImgFlag(file)) {
+        _this.uploadImg(file, 'contrary')
+      }
+
+      return false
+    },
+    handImgUpload(file) {
+      const _this = this
+      // return isLt2M;
+      // return isJPG && isLt2M;
+
+      if (_this.isImgFlag(file)) {
+        _this.uploadImg(file, 'hand')
+      }
+
+      return false
+    },
+    uploadImg(file, type) {
+      const _this = this
+
+      const formData = new FormData()
+      formData.append('image', file) // 传文件
+      imageUpload(formData).then(response => {
+        const data = response.data
+        const result = data.result
+        if (data.error !== 0) {
+          _this.$notify({
+            title: '上传失败',
+            message: data.reason,
+            type: 'error'
+          })
+          return
+        }
+        _this.$notify({
+          title: '上传成功',
+          message: '图片上传成功!',
+          type: 'success'
+        })
+        _this.userInfo[type] = result.viewUrl
+      }).catch(error => {
+        console.log(error)
+      })
+    },
+    isImgFlag(file) {
+      const _this = this
+      const isJPG = file.type === 'image/jpeg'
+      const isGIF = file.type === 'image/gif'
+      const isPNG = file.type === 'image/png'
+      const isBMP = file.type === 'image/bmp'
+      const isLt2M = file.size / 1024 / 1024 < 2
+
+      if (!isJPG && !isGIF && !isPNG && !isBMP) {
+        _this.$notify({
+          title: '格式错误',
+          message: '上传图片必须是JPG/GIF/PNG/BMP格式!',
+          type: 'error'
+        })
+        return false
+      }
+
+      if (!isLt2M) {
+        _this.$notify({
+          title: '格式错误',
+          message: '上传图片必须是JPG/GIF/PNG/BMP格式!',
+          type: 'error'
+        })
+        return false
+      }
+
+      return true
     },
     submitForm(formName) {
       const _this = this
       _this.$refs[formName].validate((valid) => {
         if (valid) {
-          _this.editEmail()
+          if (formName === 'emailForm') {
+            _this.editEmail()
+          } else {
+            _this.userUpdate({
+              password: _this.passwordForm.newPassword,
+              oldPassword: _this.passwordForm.oldPassword
+            }, '密码修改成功！', true)
+          }
         } else {
           console.log('error submit!!')
           return false
@@ -340,13 +666,14 @@ export default {
       const _this = this
       _this.editType = editType
       _this.editDialogVisible = true
+      _this.step = 1
       if (editType === 'email') {
         _this.editTitle = '修改邮箱'
       } else if (editType === 'password') {
         _this.editTitle = '修改密码'
       }
     },
-    userUpdate(data) {
+    userUpdate(data, tips, isLogOut) {
       const _this = this
       _this.loading = true
       userUpdate(data).then(res => {
@@ -360,11 +687,24 @@ export default {
           })
           return
         }
-        _this.$notify({
-          title: '修改成功',
-          message: '用户信息修改成功',
-          type: 'success'
-        })
+        if (isLogOut) {
+          Message({
+            message: '密码修改成功，请重新登陆！', // error.message
+            type: 'warning',
+            duration: 5 * 1000
+          })
+          setTimeout(function() {
+            store.dispatch('FedLogOut').then(() => {
+              location.reload() // 为了重新实例化vue-router对象 避免bug
+            })
+          }, 2000)
+        } else {
+          _this.$notify({
+            title: '修改成功',
+            message: tips || '用户信息修改成功',
+            type: 'success'
+          })
+        }
         _this.isEdit = false
         _this.isEditMobile = false
       }).catch(error => {
@@ -392,13 +732,10 @@ export default {
       })
     },
     handleSelectionChange() {
-      console.log(1)
     },
     handleSizeChange() {
-      console.log(1)
     },
     handleCurrentChange() {
-      console.log(1)
     },
     indexMethod(index) {
       return index * 2
@@ -408,50 +745,6 @@ export default {
     },
     editClose() {
 
-    },
-    getVerifyCode() {
-      let timer = null
-      let time = 60
-      const _this = this
-      if (!validateEmail(this.emailForm.email)) {
-        return
-      }
-      if (_this.verifyCodeText === '获取验证码') {
-        return new Promise((resolve, reject) => {
-          sendMail(_this.emailForm.email, 0).then(response => {
-            const data = response.data
-            if (data.error !== 0) {
-              _this.$notify({
-                title: '发送失败',
-                message: data.reason,
-                type: 'error'
-              })
-              return
-            }
-            _this.$notify({
-              title: '发送成功',
-              message: '已发送验证码至邮箱！',
-              type: 'success'
-            })
-            _this.verifyCodeText = '重新获取 ' + time + 'S'
-            timer = setInterval(function() {
-              if (time > 1) {
-                time--
-                _this.verifyCodeText = '重新获取 ' + time + 'S'
-              } else {
-                clearInterval(timer)
-                timer = null
-                _this.verifyCodeText = '获取验证码'
-              }
-            }, 1000)
-            resolve()
-          }).catch(error => {
-            reject(error)
-          })
-        })
-      } else {
-        return
-      }
     }
   }
 }
@@ -473,29 +766,45 @@ export default {
 		padding-top: 30px;
 	}
 	.personal-info{
-		.el-col{
-			margin: 10px 0;
-			font-size: 14px;
-			color: #888;
-		}
-		.module-list{
-			box-shadow: 0 0 10px #ccc;
-			padding: 10px 20px;
-			margin-bottom: 30px;
-      .el-input{
-        width: 180px;
+    .name{
+      display: inline-block;
+      width: 80px;
+      margin-right: 10px;
+      text-align: justify;
+      text-align-last: justify;
+    }
+    .el-col{
+     margin: 10px 0;
+     font-size: 14px;
+     color: #888;
+   }
+   .module-list{
+     box-shadow: 0 0 10px #ccc;
+     padding: 10px 20px;
+     margin-bottom: 30px;
+     &:first-child{
+      .name{
+        width: 45px;
+        margin-right: 10px;
       }
-			.realName-box{
-				text-align: center;
-				.img-box{
-					img{
-						width: 300px;
-						height: 200px;
-					}
-				}
-			}
-		}
-	}
+    }
+    .el-input{
+      width: 180px;
+    }
+    .realName-box{
+      text-align: center;
+      .img-box{
+       img{
+        width: 300px;
+        height: 200px;
+      }
+      .el-icon-plus{
+        font-size: 160px;
+      }
+    }
+  }
+}
+}
 }
 .mobile{
   .el-dialog{

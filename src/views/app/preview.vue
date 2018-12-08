@@ -10,8 +10,10 @@
           <img :src="appInfo.appIcon">
           <p class="name">{{ appInfo.appName }}</p>
           <p class="tips">扫描二维码下载</p>
-          <p class="tips">或用手机浏览器输入这个网址：<span>{{ appInfo.appUrl }}</span></p>
-          <el-button type="primary" style="width: 180px;margin: 15px 0;" round>下载安装</el-button>
+          <p class="tips">或用手机浏览器输入这个网址：<span>{{ appInfo.baseUrl + appInfo.sortUrl }}</span></p>
+          <router-link :to="'/' + appInfo.appId" tag="a" target="_blank">
+            <el-button type="primary" style="width: 180px;margin: 15px 0;" round>下载安装</el-button>
+          </router-link>
         </div>
         <div class="preview-cont-2">
           <p class="tips">{{ appInfo.version }} - {{ appInfo.size }}</p>

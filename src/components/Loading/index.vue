@@ -47,7 +47,7 @@ export default {
     right: 0;
     bottom: 0;
     color: red;
-    font-size: 4vw;
+    font-size: 3vw;
     text-align: center;
     z-index: 99999999;
     line-height: 100vh;

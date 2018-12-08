@@ -91,6 +91,7 @@
                 action="http://test.com/"
                 class="avatar-uploader">
                 <img v-if="basicInfo.editAppIcon" :src="basicInfo.editAppIcon" class="app-img">
+                <p style="font-size: 12px;color: #ccc;margin: 10px 0 0 0;">可点击图标更换</p>
                 <span class="svg-container">
                   <svg-icon icon-class="add" />
                 </span>
@@ -100,6 +101,7 @@
               <span class="title">应用描述</span>
               <el-input
                 v-model="basicInfo.describe"
+                type="textarea"
                 placeholder="请输入应用描述"/>
             </div>
             <div>
@@ -186,7 +188,7 @@
 </template>
 
 <script>
-import { getAppInfo, appVersionRemark, appStateUpdate, appUrlUpdate, appUpdate, imageUpload, userApp } from '@/api/index'
+import { getAppInfo, appVersionRemark, appStateUpdate, appUrlUpdate, appUpdate, imageUpload, userApp, appMerge } from '@/api/index'
 import IframeLoading from '@/components/Loading/index'
 import { mapGetters } from 'vuex'
 import Chart from './chart'
@@ -269,7 +271,31 @@ export default {
   },
   methods: {
     appMerge() {
-
+      const _this = this
+      _this.loading = true
+      appMerge({
+        appId: _this.basicInfo.appId,
+        sort: _this.mergeSortUrl
+      }).then(res => {
+        _this.loading = false
+        const data = res.data
+        if (data.error !== 0) {
+          _this.$notify({
+            title: '操作失败',
+            message: data.reason,
+            type: 'error'
+          })
+          return
+        }
+        _this.$notify({
+          title: '操作成功',
+          message: '应用合并成功',
+          type: 'success'
+        })
+        _this.getAppInfo()
+      }).catch(error => {
+        console.log(error)
+      })
     },
     selectApp(index) {
       const _this = this
@@ -352,20 +378,28 @@ export default {
       // const _this = this
       // return false
     },
-    uploadSuccess() {
+    uploadSuccess(res) {
       const _this = this
       _this.isLoading = false
       _this.uploadPercent = 0
-      _this.$notify({
-        title: '上传成功',
-        message: '文件上传成功',
-        type: 'success'
-      })
-      _this.getAppInfo()
+      if (res.error === 0) {
+        _this.$notify({
+          title: '上传成功',
+          message: '文件上传成功',
+          type: 'success'
+        })
+        _this.getAppInfo()
+      } else {
+        _this.$notify({
+          title: '上传失败',
+          message: res.reason,
+          type: 'error'
+        })
+      }
     },
     uploadProgress(event, file, fileList) {
       this.isLoading = true
-      this.uploadPercent = Number(file.percentage.toFixed(0))
+      this.uploadPercent = Number(file.percentage.toFixed(1))
     },
     switchTaps(el) {
       if (el.name === 'tap4') {
@@ -708,8 +742,9 @@ export default {
           border-radius: 100%;
         }
         .title{
-          display: inline-block;
+          display: block;
           width: 160px;
+          padding-bottom: 20px;
         }
         .el-input{
           width: 200px;
@@ -720,8 +755,9 @@ export default {
           }
         }
         &.tips{
-          .el-input{
+          .el-textarea{
             width: 400px;
+            display: block;
           }
         }
         .app-img{
@@ -826,7 +862,7 @@ export default {
       }
       .right{
         .el-input{
-          width: 240px;
+          width: 320px;
         }
       }
     }

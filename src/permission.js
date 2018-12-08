@@ -19,10 +19,9 @@ NProgress.configure({ showSpinner: false })// NProgress Configuration
 router.beforeEach((to, from, next) => {
   NProgress.start() // start progress bar
   const userInfo = getUserInfo()
-  console.log(to.path)
+  console.log(to.name, window.location.href)
   if (userInfo !== undefined && userInfo && userInfo !== 'undefined' && userInfo !== '') {
-    if (to.path === '/login') {
-      console.log('进入login')
+    if (to.path === '/login' || to.name === 'Down') {
       next()
     } else {
       const roles = store.getters.roles
@@ -33,11 +32,9 @@ router.beforeEach((to, from, next) => {
       next()
     }
   } else {
-    if (to.path === '/login') {
-      console.log('进入login')
+    if (to.path === '/login' || to.name === 'Down') {
       next()
     } else {
-      console.log('进入login')
       next('/login')
       NProgress.done()
     }

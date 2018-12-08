@@ -45,6 +45,32 @@ export function sendMail(email, find) {
   })
 }
 
+export function sendMailUpdate() {
+  return request({
+    url: '/v1/sendMailUpdate',
+    method: 'post',
+    headers: { 'token': getUserInfo().token }
+  })
+}
+
+export function checkCode(data) {
+  return request({
+    url: '/v1/checkCode',
+    method: 'post',
+    headers: { 'token': getUserInfo().token },
+    data
+  })
+}
+
+export function emailUpdate(data) {
+  return request({
+    url: '/v1/emailUpdate',
+    method: 'post',
+    headers: { 'token': getUserInfo().token },
+    data
+  })
+}
+
 export function logout() {
   return request({
     url: '/login/logout',
@@ -173,6 +199,15 @@ export function appUpdate(obj) {
     method: 'post',
     headers: { 'token': getUserInfo().token },
     params: data
+  })
+}
+
+export function appMerge(data) {
+  return request({
+    url: '/v1/appMerge',
+    method: 'post',
+    headers: { 'token': getUserInfo().token },
+    data
   })
 }
 

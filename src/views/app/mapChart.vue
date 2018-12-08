@@ -67,7 +67,7 @@ export default {
           label: {
             // true会显示城市名
             emphasis: {
-              show: false
+              show: true
             }
           },
           itemStyle: {
@@ -93,6 +93,9 @@ export default {
             data: [{
               name: 'ds',
               value: [121.15, 31.89, 2321]
+            }, {
+              name: '天津',
+              value: [123.15, 31.89, 2321]
             }],
             // 标记的大小
             symbolSize: 10,

@@ -95,6 +95,13 @@ export const constantRouterMap = [
     ]
   },
   {
+    path: '/:id',
+    component: () => import('@/views/app/down'),
+    name: 'Down',
+    meta: { title: '下载安装', noCache: true },
+    hidden: true
+  },
+  {
     path: '/set',
     component: Layout,
     children: [
@@ -122,7 +129,7 @@ export const constantRouterMap = [
 ]
 
 export default new Router({
-  mode: 'hash', // require service support
+  mode: 'history', // require service support
   scrollBehavior: () => ({ y: 0 }),
   routes: constantRouterMap
 })

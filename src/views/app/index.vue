@@ -249,20 +249,29 @@ export default {
         console.log(error)
       })
     },
-    uploadSuccess() {
+    uploadSuccess(res) {
       const _this = this
       _this.isLoading = false
       _this.uploadPercent = 0
-      _this.$notify({
-        title: '上传成功',
-        message: '文件上传成功',
-        type: 'success'
-      })
-      _this.getAppList()
+      if (res.error === 0) {
+        _this.$notify({
+          title: '上传成功',
+          message: '文件上传成功',
+          type: 'success'
+        })
+        _this.getAppList()
+        _this.getUserDetails()
+      } else {
+        _this.$notify({
+          title: '上传失败',
+          message: res.reason,
+          type: 'error'
+        })
+      }
     },
     uploadProgress(event, file, fileList) {
       this.isLoading = true
-      this.uploadPercent = Number(file.percentage.toFixed(0))
+      this.uploadPercent = Number(file.percentage.toFixed(1))
     },
     handleClose() {
       this.dialogVisible = false
@@ -281,6 +290,7 @@ export default {
 
     },
     uploadApp(file) {
+      console.log(file)
       // const _this = this
       // const formData = new FormData()
       // formData.append('app', file) // 传文件
