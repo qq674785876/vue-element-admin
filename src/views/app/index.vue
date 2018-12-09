@@ -274,6 +274,7 @@ export default {
       this.uploadPercent = Number(file.percentage.toFixed(1))
     },
     handleClose() {
+      this.currentRole = ''
       this.dialogVisible = false
       this.getUserDetails()
     },

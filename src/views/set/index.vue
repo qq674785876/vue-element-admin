@@ -799,6 +799,7 @@ export default {
     },
     handleClose() {
       this.dialogVisible = false
+      this.currentRole = ''
       this.getUserDetails()
     },
     editClose() {

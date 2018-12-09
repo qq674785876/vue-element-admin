@@ -113,7 +113,7 @@ export default {
       }).then(res => {
         _this.loading = false
         const data = res.data
-        const result = data.result
+        // const result = data.result
         if (data.error !== 0) {
           return
         }
@@ -124,7 +124,6 @@ export default {
         })
         _this.isPuySuccess = true
         clearInterval(_this.timer)
-        console.log(result)
       }).catch(error => {
         console.log(error)
       })
