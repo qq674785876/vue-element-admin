@@ -87,7 +87,7 @@ export default {
 }
 </script>
 
-<style rel="stylesheet/scss" lang="scss" scoped>
+<style rel="stylesheet/scss" lang="scss">
 .preview-cont{
   width: 500px;
   margin: 0 auto;
@@ -119,6 +119,15 @@ export default {
   .tips{
     font-size: 14px;
     color: #666;
+  }
+}
+.mobile{
+  .el-dialog{
+    margin-top: 0 !important;
+    height: 100vh;
+    .el-dialog__body{
+      padding: 0 !important;
+    }
   }
 }
 </style>

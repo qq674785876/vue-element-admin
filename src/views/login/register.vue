@@ -111,7 +111,7 @@
       :title="dialogTitle"
       :visible.sync="dialogVisible"
       :modal-append-to-body="false"
-      width="40%">
+      width="100%">
       <div class="app-agreement">
         <div class="agreement-text">
           dasasa sas asas asas asasa sasas asas asasas asas asas asasa sasa sasa sasd asda sdasd

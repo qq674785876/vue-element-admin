@@ -30,6 +30,9 @@ export default{
       dialogVisible: false
     }
   },
+  computed: {
+
+  },
   destroyed() {
     const _this = this
     if (_this.notify) _this.notify.close()
@@ -38,9 +41,9 @@ export default{
     const _this = this
     // _this.messageFind()
     clearInterval(top.messageTimer)
-    top.messageTimer = setInterval(function(){
-    	if (_this.$route.name !== 'Down') {
-				_this.messageFind()
+    top.messageTimer = setInterval(function() {
+  	if (_this.$route.name !== 'Down' && _this.$route.path !== '/login') {
+        _this.messageFind()
       }
     }, 60000)
   },

@@ -104,6 +104,14 @@
             </div>
           </el-card>
         </div>
+        <el-pagination
+          :current-page.sync="pageNum"
+          :page-size="pageSize"
+          :pager-count="5"
+          :total="total"
+          layout="prev, pager, next, jumper"
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"/>
       </el-col>
     </el-row>
     <component
@@ -135,6 +143,9 @@ export default {
       dialogTitle: '',
       dialogVisible: false,
       uploadPercent: 0,
+      pageNum: 1,
+      pageSize: 10,
+      total: 100,
       appId: '',
       headers: {
         'token': ''
@@ -162,6 +173,12 @@ export default {
     this.getUserDetails()
   },
   methods: {
+    handleSizeChange() {
+      this.getAppList()
+    },
+    handleCurrentChange() {
+      this.getAppList()
+    },
     getUserDetails() {
       const _this = this
       _this.loading = true
@@ -231,8 +248,8 @@ export default {
       getAppList({
         appName: _this.searchKey,
         platform: platform,
-        pageNum: 1,
-        pageSize: 10
+        pageNum: _this.pageNum,
+        pageSize: _this.pageSize
       }).then(res => {
         _this.loading = false
         const data = res.data
@@ -246,6 +263,7 @@ export default {
           return
         }
         _this.applist = result
+        // _this.total = result.total
       }).catch(error => {
         console.log(error)
       })
@@ -405,8 +423,12 @@ export default {
       margin-top: 20px;
     }
   }
+  .el-pagination{
+    text-align: right;
+    padding-right: 50px;
+  }
   .app-box{
-    height: calc(100vh - 180px);
+    height: calc(100vh - 200px);
     padding-top: 20px;
     overflow: auto;
     .el-card.is-always-shadow, .el-card.is-hover-shadow:focus, .el-card.is-hover-shadow:hover{
@@ -499,14 +521,20 @@ export default {
   .top-info-box{
     display: none;
   }
+  .el-pagination{
+    padding-right: 20px;
+    .el-pagination__jump{
+      display: none !important;
+    }
+  }
   .el-input{
-    margin-left: 0;
+    margin-left: 0 !important;
   }
   .app-container .preview-cont{
     width: 100% !important;
   }
   .app-box{
-    height: calc(100vh - 300px);
+    height: calc(100vh - 325px);
     overflow: auto;
     .app-list{
       margin-left: 0;

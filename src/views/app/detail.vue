@@ -931,6 +931,10 @@ export default {
         width: 80% !important;
       }
     }
+    .el-dialog{
+      margin-top: 10vh !important;
+      width: 100% !important;
+    }
   }
   .app-detail-container .app-detail-box .chart-box .top .el-button-group{
     padding-top: 15px;
@@ -940,10 +944,6 @@ export default {
   }
   .chart-container{
     height: 300px;
-  }
-  .el-dialog{
-    margin-top: 10vh !important;
-    width: 100% !important;
   }
   .app-detail-container .preview-cont{
     width: 100% !important;
