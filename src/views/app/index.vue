@@ -25,7 +25,7 @@
         <ul>
           <li>
             <el-tooltip placement="top-start">
-              <div slot="content"> 1.账号下所用应用共用上传次数<br>2.每日凌晨0点自动重置上传次数</div>
+              <div slot="content"> 1.账号下所用应用共用上传次数<br>2.上传数为总上传数，不会每日重置</div>
               <p>可上传APP数<i class="el-icon-question"/></p>
             </el-tooltip>
             <p><span>{{ userInfo.upload }}</span></p>
