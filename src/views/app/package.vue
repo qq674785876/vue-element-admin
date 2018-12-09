@@ -47,7 +47,7 @@
         </div>
       </div>
       <div v-if="isGet && !isPuySuccess" align="center">
-        <div>请用<span style="color: blue;font-size: 16px;">微信扫码</span>支付￥{{ buyPrice }}</div>
+        <div>请用<span style="color: blue;font-size: 16px;">微信扫码</span>支付￥{{ buyPrice.toFixed(2) }}</div>
         <div class="QRCode_box" style="width: 200px;height: 200px;margin: 20px auto;">
           <img :src="qrCode" style="width: 100%;">
         </div>
