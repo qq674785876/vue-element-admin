@@ -78,7 +78,9 @@
             </el-col>
             <el-col :span="8" :xs="24">
               <div class="img-box">
+                <img v-if="userInfo.realState === 1" :src="userInfo.front">
                 <el-upload
+                  v-else
                   :before-upload="frontImgUpload"
                   :show-file-list="false"
                   class="avatar-uploader"
@@ -92,7 +94,9 @@
             </el-col>
             <el-col :span="8" :xs="24">
               <div class="img-box">
+                <img v-if="userInfo.realState === 1" :src="userInfo.contrary">
                 <el-upload
+                  v-else
                   :before-upload="contraryImgUpload"
                   :show-file-list="false"
                   class="avatar-uploader"
@@ -106,7 +110,9 @@
             </el-col>
             <el-col :span="8" :xs="24">
               <div class="img-box">
+                <img v-if="userInfo.realState === 1" :src="userInfo.hand">
                 <el-upload
+                  v-else
                   :before-upload="handImgUpload"
                   :show-file-list="false"
                   class="avatar-uploader"
