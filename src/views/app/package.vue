@@ -57,7 +57,7 @@
       <span slot="footer" class="dialog-footer">
         <el-button v-if="!isGet" @click="handleClose">取 消</el-button>
         <el-button v-if="!isGet" type="primary" @click="getPackage">确 定</el-button>
-        <el-button v-if="isGet" @click="isGet = false,isPuySuccess = false">返 回</el-button>
+        <el-button v-if="isGet" @click="prev">返 回</el-button>
       </span>
     </el-dialog>
   </div>
@@ -107,6 +107,12 @@ export default {
     this.packages()
   },
   methods: {
+    prev() {
+      const _this = this
+      clearInterval(_this.timer)
+      _this.isGet = false
+      _this.isPuySuccess = false
+    },
     checkOrderState() {
       const _this = this
       checkOrderState({
