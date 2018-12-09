@@ -52,7 +52,7 @@
             <el-col :span="12">
               <span class="name">套餐：</span>
               <span>{{ userInfo.packageName ? userInfo.packageName : '未购买套餐' }}</span>
-              <a href="javascript:;" style="margin-left: 15px;color: blue;" class="el-icon-goods" @click="dialogVisible = true">购买</a>
+              <a href="javascript:;" style="margin-left: 15px;color: blue;" class="el-icon-goods" @click="currentRole = 'package',dialogVisible = true">购买</a>
             </el-col>
             <el-col :span="12">
               <span class="name">绑定手机：</span>
@@ -333,7 +333,7 @@ export default {
       },
       verifyCodeText: '获取验证码',
       loading: false,
-      currentRole: 'package',
+      currentRole: '',
       editTitle: '',
       editDialogVisible: false,
       editType: '',
@@ -799,6 +799,7 @@ export default {
     },
     handleClose() {
       this.dialogVisible = false
+      this.getUserDetails()
     },
     editClose() {
 

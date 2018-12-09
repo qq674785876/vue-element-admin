@@ -6,7 +6,7 @@
     <p v-if="!versions().mobile" class="tips">手机扫描或浏览器访问 {{ appInfo.baseUrl + appInfo.sortUrl }}</p>
     <p v-if="!versions().mobile" style="padding: 20px 0;color: #fff;"> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - </p>
     <p class="appSize">{{ appInfo.version + ' - ' + appInfo.size }}</p>
-    <p class="appUpdateDate">更新于： {{ updateTime }}</p>
+    <p class="appUpdateDate">更新于： {{ appInfo.createTime }}</p>
     <el-button v-if="versions().mobile && isShowButton && appInfo.state === 0" type="primary" round @click="appDown">
       <span class="svg-container">
         <svg-icon :icon-class="appType" />

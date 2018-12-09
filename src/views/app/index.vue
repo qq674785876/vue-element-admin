@@ -275,6 +275,7 @@ export default {
     },
     handleClose() {
       this.dialogVisible = false
+      this.getUserDetails()
     },
     getPreview(appId) {
       this.appId = appId

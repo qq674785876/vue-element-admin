@@ -4,8 +4,7 @@
       :title="dialogTitle"
       :visible.sync="dialogVisible"
       :before-close="handleClose"
-      width="40%"
-      @open="packages">
+      width="40%">
       <div v-if="!isGet" class="packageList">
         <el-row>
           <el-col v-if="packageName" :span="12">
@@ -104,6 +103,7 @@ export default {
     }
   },
   mounted() {
+    this.packages()
   },
   methods: {
     checkOrderState() {

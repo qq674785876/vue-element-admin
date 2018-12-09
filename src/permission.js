@@ -19,7 +19,7 @@ NProgress.configure({ showSpinner: false })// NProgress Configuration
 router.beforeEach((to, from, next) => {
   NProgress.start() // start progress bar
   const userInfo = getUserInfo()
-  console.log(to.name, window.location.href)
+  // console.log(to.name, window.location.href)
   if (userInfo !== undefined && userInfo && userInfo !== 'undefined' && userInfo !== '') {
     if (to.path === '/login' || to.name === 'Down') {
       next()
