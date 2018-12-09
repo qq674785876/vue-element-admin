@@ -77,7 +77,14 @@ export default {
             data: this.mapChartData,
             // 标记的大小
             symbolSize(val) {
-              return val[2] / 10
+              // val[2] / 10
+              let size = 0
+              if (val[2] * 3 > 60) {
+                size = 50
+              } else {
+                size = val[2] * 3
+              }
+              return size
             },
             // 鼠标悬浮的时候在圆点上显示数值
             label: {

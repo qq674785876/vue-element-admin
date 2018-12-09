@@ -186,8 +186,9 @@ export default {
     background-size: cover;
     color: #fff;
     .appIcon{
-      width: 30vw;
-      padding-top: 20vh;
+      width: 20vw;
+      border-radius: 10px;
+      margin-top: 20vh;
     }
   }
 }

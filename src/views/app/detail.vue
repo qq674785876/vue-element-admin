@@ -153,9 +153,9 @@
             <p class="top">
               下载趋势图
               <el-radio-group v-model="dateType" size="mini" style="float: right;margin-right: 30px;" @change="appStatistics">
-                <el-radio-button label="14d">近14天</el-radio-button>
-                <el-radio-button label="7d">近7天</el-radio-button>
-                <el-radio-button label="24h">24小时</el-radio-button>
+                <el-radio-button label="14">近14天</el-radio-button>
+                <el-radio-button label="7">近7天</el-radio-button>
+                <el-radio-button label="1">24小时</el-radio-button>
               </el-radio-group>
             </p>
             <Chart ref="chart" :line-chart-data="lineChartData" height="300" width="100%"/>
@@ -168,11 +168,11 @@
               border
               style="width: 100%">
               <el-table-column
-                property="city"
+                property="name"
                 label="城市"
                 width="120"/>
               <el-table-column
-                property="downNum"
+                property="total"
                 label="下载数量"/>
             </el-table>
           </div>
@@ -220,7 +220,7 @@ export default {
       mergeSortUrl: '',
       activeName: 'tap1',
       appId: this.$route.params.id,
-      dateType: '14d',
+      dateType: '14',
       basicInfo: {
         // appIcon: "http://api.ublog.top/uploads/tmp/d4c7b67c1c7c259c538be2d8704e3e46/res/mipmap-hdpi-v4/ic_launcher.png",
         // appId: "ZWE4OC8ySmJ3NWNkZHBPK0MyTk51Y0RhNE9La2VhYjNqQUYyTVl6Zg==",

@@ -24,27 +24,28 @@
       <el-col :span="14" :xs="24" class="top-info-box">
         <ul>
           <li>
-            <el-tooltip content="Top Left 提示文字" placement="top-start">
+            <el-tooltip placement="top-start">
+              <div slot="content"> 1.账号下所用应用共用上传次数<br>2.每日凌晨0点自动重置上传次数</div>
               <p>可上传APP数<i class="el-icon-question"/></p>
             </el-tooltip>
             <p><span>{{ userInfo.upload }}</span></p>
           </li>
           <li>
-            <el-tooltip content="Top Left 提示文字" placement="top-start">
+            <el-tooltip placement="top-start">
+              <div slot="content"> 1.账号下所有应用共用此剩余下载次数<br>2.每日凌晨0点自动重置下载次数</div>
               <p>今日免费下载点数<i class="el-icon-question"/></p>
             </el-tooltip>
             <p><span>{{ userInfo.download }}</span></p>
           </li>
           <li>
-            <el-tooltip content="Top Left 提示文字" placement="top-start">
+            <el-tooltip placement="top-start">
+              <div slot="content"> 1.下载次数包没有时间限制，用完为止<br>2.购买的下载次数包为总下载量，不会每日重置</div>
               <p>剩余付费下载点数<i class="el-icon-question"/></p>
             </el-tooltip>
             <p><span>{{ userInfo.surplus }}</span></p>
           </li>
           <li class="shop">
-            <el-tooltip content="Top Left 提示文字" placement="top-start">
-              <p>购买点数包<i class="el-icon-question"/></p>
-            </el-tooltip>
+            <p>购买点数包</p>
             <p>
               <el-button round @click="getPackage">
                 <span class="svg-container">

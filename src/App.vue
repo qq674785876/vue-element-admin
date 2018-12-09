@@ -39,7 +39,9 @@ export default{
     // _this.messageFind()
     clearInterval(top.messageTimer)
     top.messageTimer = setInterval(() => {
-      _this.messageFind()
+  	if (_this.$route.name !== 'Down') {
+    	_this.messageFind()
+  	}
     }, 60000)
   },
   methods: {
@@ -167,6 +169,7 @@ export default{
 			height: 120px;
 			text-align: center;
 			padding: 0 20px;
+			overflow: auto;
 			h1{
 				font-size: 18px;
 				padding-top: 15px;
@@ -185,4 +188,10 @@ export default{
 		}
 	}
 }
+.mobile{
+	.message-box{
+		display: none;
+	}
+}
+
 </style>

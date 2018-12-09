@@ -9,7 +9,7 @@ const user = {
     code: '',
     token: getUserInfo().token,
     name: getUserInfo().email,
-    avatar: '../../../static/images/login-logo.png',
+    avatar: '/static/images/head.jpg',
     introduction: '',
     roles: ['admin'],
     setting: {

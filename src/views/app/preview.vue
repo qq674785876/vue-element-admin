@@ -10,7 +10,9 @@
           <img :src="appInfo.qrCode">
           <p class="name">{{ appInfo.appName }}</p>
           <p class="tips">扫描二维码下载</p>
-          <p class="tips">或用手机浏览器输入这个网址：<span>{{ appInfo.baseUrl + appInfo.sortUrl }}</span></p>
+          <p class="tips">
+            或用手机浏览器输入这个网址： <a :href="appInfo.baseUrl + appInfo.sortUrl" target="_blank">{{ appInfo.baseUrl + appInfo.sortUrl }}</a>
+          </p>
           <router-link :to="'/' + appInfo.sortUrl" tag="a" target="_blank">
             <el-button type="primary" style="width: 180px;margin: 15px 0;" round>下载安装</el-button>
           </router-link>
@@ -106,7 +108,7 @@ export default {
     font-size: 14px;
     color: #666;
     line-height: 20px;
-    span{
+    a{
       color: blue;
     }
   }
