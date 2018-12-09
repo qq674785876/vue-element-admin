@@ -293,7 +293,6 @@ export default {
 
     },
     uploadApp(file) {
-      console.log(file)
       // const _this = this
       // const formData = new FormData()
       // formData.append('app', file) // 传文件

@@ -620,7 +620,6 @@ export default {
       }
       this.basicInfo.appImage = temArray
       this.basicInfo.appImageStr = temArray.join(',')
-      console.log(temArray)
     },
     handlePictureCardPreview(img) {
       this.dialogImageUrl = img

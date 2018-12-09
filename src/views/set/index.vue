@@ -464,7 +464,6 @@ export default {
           clearInterval(timer)
           _this.emailForm.code = ''
           _this.updateKey = result.updateKey
-          console.log(_this.updateKey)
         }).catch(error => {
           console.log(error)
         })
