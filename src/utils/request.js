@@ -30,7 +30,7 @@ service.interceptors.request.use(
 service.interceptors.response.use(
   response => {
     const res = response.data
-    if (res.error > 400 && res.error < 500) {
+    if (res.error > 400 && res.error < 500 && res.error !== 404) {
       Message({
         message: res.reason, // error.message
         type: 'error',

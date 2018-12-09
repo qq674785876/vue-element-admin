@@ -1,6 +1,6 @@
 <template>
   <div v-loading="loading" class="set-container" element-loading-text="拼命加载中">
-    <el-tabs type="border-card" class="card-box">
+    <el-tabs type="border-card" class="card-box" @tab-click="selectTab">
       <el-tab-pane label="个人信息" class="personal-info">
         <div class="module-list">
           <p class="title">基本信息</p>
@@ -123,9 +123,9 @@
       </el-tab-pane>
       <el-tab-pane label="通知管理">
         <div class="module-list">
-          <p class="title">
-            3项
-            <a href="javascript:;" style="margin-left: 15px;color: blue;float: right;font-size: 14px;">全部标记已读</a>
+          <p class="title" align="right">
+            <!-- 3项 -->
+            <a href="javascript:;" style="margin-left: 15px;color: blue;font-size: 14px;" @click="setRead('')">全部标记已读</a>
           </p>
           <el-row>
             <el-table
@@ -144,20 +144,29 @@
                 label="编号"
                 width="100"/>
               <el-table-column
-                prop="time"
+                prop="createTime"
                 label="发送时间"
                 width="220"/>
               <el-table-column
-                prop="cont"
+                prop="message"
                 label="通知内容"
                 show-overflow-tooltip/>
               <el-table-column
-                prop="status"
+                prop="state"
                 label="状态"
-                show-overflow-tooltip/>
+                show-overflow-tooltip>
+                <template slot-scope="scope">
+                  <el-button
+                    v-if="scope.row.state === '未读'"
+                    type="warning"
+                    size="mini"
+                    @click="handleRead(scope.$index, scope.row)">未读</el-button>
+                  <span v-else>{{ scope.row.state }}</span>
+                </template>
+              </el-table-column>
             </el-table>
             <el-pagination
-              :current-page.sync="currentPage"
+              :current-page.sync="pageNum"
               :page-size="pageSize"
               :total="total"
               layout="prev, pager, next, jumper"
@@ -251,7 +260,7 @@
 </template>
 
 <script>
-import { getUserDetails, userUpdate, sendMail, getRealName, imageUpload, sendMailUpdate, checkCode, emailUpdate } from '@/api/index'
+import { getUserDetails, userUpdate, sendMail, getRealName, imageUpload, sendMailUpdate, checkCode, emailUpdate, messageList, messageUpdate } from '@/api/index'
 import store from '@/store'
 import { Message } from 'element-ui'
 import { validateEmail } from '@/utils/validate'
@@ -331,7 +340,7 @@ export default {
       dialogTitle: '购买套餐',
       dialogVisible: false,
       isEditMobile: false,
-      currentPage: 1,
+      pageNum: 1,
       pageSize: 10,
       total: 9,
       isEdit: false,
@@ -347,49 +356,89 @@ export default {
         email: '',
         code: ''
       },
-      noticeList: [{
-        time: '2018-05-03 14:20:30',
-        cont: '越来越多人在使用这个平台',
-        status: 1
-      }, {
-        time: '2018-07-03 14:20:30',
-        cont: '套餐活动',
-        status: 0
-      }, {
-        time: '2018-03-03 23:20:30',
-        cont: '新增更多的套餐',
-        status: 0
-      }, {
-        time: '2018-05-03 14:20:30',
-        cont: '越来越多人在使用这个平台',
-        status: 1
-      }, {
-        time: '2018-07-03 14:20:30',
-        cont: '套餐活动',
-        status: 0
-      }, {
-        time: '2018-03-03 23:20:30',
-        cont: '新增更多的套餐',
-        status: 0
-      }, {
-        time: '2018-05-03 14:20:30',
-        cont: '越来越多人在使用这个平台',
-        status: 1
-      }, {
-        time: '2018-07-03 14:20:30',
-        cont: '套餐活动',
-        status: 0
-      }, {
-        time: '2018-07-03 14:20:30',
-        cont: '套餐活动',
-        status: 0
-      }]
+      noticeList: [],
+      selectRecIds: ''
     }
   },
   mounted() {
     this.getUserDetails()
   },
   methods: {
+    selectTab(tab) {
+      if (tab.label === '通知管理') {
+        this.messageList()
+      }
+    },
+    handleRead(index, row) {
+      this.setRead(row.recId)
+    },
+    messageUpdate(recId) {
+      const _this = this
+      _this.loading = true
+      messageUpdate({
+        recId: recId || _this.selectRecIds
+      }).then(response => {
+        const data = response.data
+        _this.loading = false
+        if (data.error !== 0) {
+          _this.$notify({
+            title: '操作失败',
+            message: data.reason,
+            type: 'error'
+          })
+          return
+        }
+        _this.$notify({
+          title: '操作成功',
+          message: '已全部标记为已读',
+          type: 'success'
+        })
+        _this.messageList()
+      }).catch(error => {
+        console.log(error)
+      })
+    },
+    setRead(recId) {
+      const _this = this
+      let text = ''
+      if (!recId) {
+        text = '是否全部标记为已读?'
+      } else {
+        text = '是否标记为已读?'
+      }
+
+      _this.$confirm(text, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        _this.messageUpdate(recId)
+      }).catch(() => {
+
+      })
+    },
+    messageList() {
+      const _this = this
+      messageList({
+        pageNum: _this.pageNum,
+        pageSize: _this.pageSize
+      }).then(response => {
+        const data = response.data
+        const result = data.result
+        if (data.error !== 0) {
+          _this.$notify({
+            title: '查询失败',
+            message: data.reason,
+            type: 'error'
+          })
+          return
+        }
+        _this.total = result.total
+        _this.noticeList = result.row
+      }).catch(error => {
+        console.log(error)
+      })
+    },
     editEmail() {
       const _this = this
       if (_this.step === 1) {
@@ -731,14 +780,22 @@ export default {
         console.log(error)
       })
     },
-    handleSelectionChange() {
+    handleSelectionChange(data) {
+      const _this = this
+      const arr = []
+      for (let i = 0; i < data.length; i++) {
+        arr.push(data[i].recId)
+      }
+      _this.selectRecIds = arr.join(',')
     },
     handleSizeChange() {
+      this.messageList()
     },
     handleCurrentChange() {
+      this.messageList()
     },
     indexMethod(index) {
-      return index * 2
+      return this.pageSize * (this.pageNum - 1) + index + 1
     },
     handleClose() {
       this.dialogVisible = false

@@ -152,16 +152,16 @@
           <div class="down-trend chart-box">
             <p class="top">
               下载趋势图
-              <el-button-group>
-                <el-button size="mini">近14天</el-button>
-                <el-button size="mini">近7天</el-button>
-                <el-button size="mini">24小时</el-button>
-              </el-button-group>
+              <el-radio-group v-model="dateType" size="mini" style="float: right;margin-right: 30px;" @change="appStatistics">
+                <el-radio-button label="14d">近14天</el-radio-button>
+                <el-radio-button label="7d">近7天</el-radio-button>
+                <el-radio-button label="24h">24小时</el-radio-button>
+              </el-radio-group>
             </p>
             <Chart ref="chart" :line-chart-data="lineChartData" height="300" width="100%"/>
           </div>
           <div class="position-distribution chart-box">
-            <MapChart ref="mapChart" :line-chart-data="mapChartData" height="600" width="100%"/>
+            <MapChart ref="mapChart" :map-chart-data="mapChartData" height="600" width="100%"/>
             <el-table
               :data="downTableData"
               highlight-current-row
@@ -188,7 +188,7 @@
 </template>
 
 <script>
-import { getAppInfo, appVersionRemark, appStateUpdate, appUrlUpdate, appUpdate, imageUpload, userApp, appMerge } from '@/api/index'
+import { getAppInfo, appVersionRemark, appStateUpdate, appUrlUpdate, appUpdate, imageUpload, userApp, appMerge, appStatistics } from '@/api/index'
 import IframeLoading from '@/components/Loading/index'
 import { mapGetters } from 'vuex'
 import Chart from './chart'
@@ -220,6 +220,7 @@ export default {
       mergeSortUrl: '',
       activeName: 'tap1',
       appId: this.$route.params.id,
+      dateType: '14d',
       basicInfo: {
         // appIcon: "http://api.ublog.top/uploads/tmp/d4c7b67c1c7c259c538be2d8704e3e46/res/mipmap-hdpi-v4/ic_launcher.png",
         // appId: "ZWE4OC8ySmJ3NWNkZHBPK0MyTk51Y0RhNE9La2VhYjNqQUYyTVl6Zg==",
@@ -235,19 +236,19 @@ export default {
         // state: 0,
         // version: "4.2.1.44.1128"
       },
-      appMini: ['', '', '', '', '', '', '', '', '', '', ''],
+      appMini: [],
       lineChartData: {
-        legend: ['应用下载'],
-        xAxis: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24],
+        legend: {
+          data: ['应用下载']
+        },
+        xAxis: [],
         series: [{
           name: '下载量',
           type: 'line',
-          data: [5, 20, 36, 10, 10, 20, 5, 20, 36, 10, 10, 20, 5, 20, 36, 10, 10, 20, 5, 20, 36, 10, 10, 20]
+          data: []
         }]
       },
-      mapChartData: {
-
-      },
+      mapChartData: [],
       downTableData: [{
         city: '上海',
         downNum: 32
@@ -268,8 +269,30 @@ export default {
   mounted() {
     this.headers.token = this.token
     this.getAppInfo()
+    this.appStatistics()
   },
   methods: {
+    appStatistics() {
+      const _this = this
+      _this.loading = true
+      appStatistics({
+        appId: _this.appId,
+        type: _this.dateType
+      }).then(res => {
+        _this.loading = false
+        const data = res.data
+        const result = data.result
+        if (data.error !== 0) {
+          return
+        }
+        _this.lineChartData.xAxis = result.time
+        _this.lineChartData.series[0].data = result.data
+        _this.mapChartData = result.prov
+        _this.downTableData = result.city
+      }).catch(error => {
+        console.log(error)
+      })
+    },
     appMerge() {
       const _this = this
       _this.loading = true

@@ -10,31 +10,15 @@ export default {
   name: 'Chart',
   components: { echarts },
   props: {
-    lineChartData: {
-      type: Object,
+    mapChartData: {
+      type: Array,
       required: true
     }
   },
   data() {
     return {
-      myChart: null
-    }
-  },
-  mounted() {
-    this.initChart()
-  },
-  methods: {
-    resize() {
-      const _this = this
-      setTimeout(function() {
-        _this.myChart.resize()
-      }, 100)
-    },
-    initChart() {
-      // 基于准备好的dom，初始化echarts实例
-      const myChart = this.myChart = echarts.init(document.getElementById('mapChart'))
-      // 绘制图表
-      myChart.setOption({
+      myChart: null,
+      option: {
         backgroundColor: '#fff',
         // 标题
         title: {
@@ -90,15 +74,11 @@ export default {
             type: 'scatter',
             // 使用地理坐标系，通过 geoIndex 指定相应的地理坐标系组件
             coordinateSystem: 'geo',
-            data: [{
-              name: 'ds',
-              value: [121.15, 31.89, 2321]
-            }, {
-              name: '天津',
-              value: [123.15, 31.89, 2321]
-            }],
+            data: this.mapChartData,
             // 标记的大小
-            symbolSize: 10,
+            symbolSize(val) {
+              return val[2] / 10
+            },
             // 鼠标悬浮的时候在圆点上显示数值
             label: {
               normal: {
@@ -110,7 +90,13 @@ export default {
             },
             itemStyle: {
               normal: {
-                color: 'red'
+                color: new echarts.graphic.RadialGradient(0.4, 0.3, 1, [{
+                  offset: 0,
+                  color: 'rgb(251, 118, 123)'
+                }, {
+                  offset: 1,
+                  color: 'rgb(204, 46, 72)'
+                }])
               },
               // 鼠标悬浮的时候圆点样式变化
               emphasis: {
@@ -120,7 +106,38 @@ export default {
             }
           }
         ]
-      })
+      }
+    }
+  },
+  watch: {
+    mapChartData: {
+      handler(newVal, oldVal) {
+        if (this.myChart) {
+          this.option.series[0].data = this.mapChartData
+          // for(let i = 0 ; i < this.mapChartData.length; i++){
+          //   this.option.series[0].data[i].value[2] = i * 30
+          // }
+          this.myChart.setOption(this.option)
+        }
+      },
+      deep: true
+    }
+  },
+  mounted() {
+    this.initChart()
+  },
+  methods: {
+    resize() {
+      const _this = this
+      setTimeout(function() {
+        _this.myChart.resize()
+      }, 100)
+    },
+    initChart() {
+      // 基于准备好的dom，初始化echarts实例
+      const myChart = this.myChart = echarts.init(document.getElementById('mapChart'))
+      // 绘制图表
+      myChart.setOption(this.option)
     }
   }
 }

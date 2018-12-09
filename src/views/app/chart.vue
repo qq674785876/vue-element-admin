@@ -16,24 +16,8 @@ export default {
   },
   data() {
     return {
-      myChart: null
-    }
-  },
-  mounted() {
-    this.initChart()
-  },
-  methods: {
-    resize() {
-      const _this = this
-      setTimeout(function() {
-        _this.myChart.resize()
-      }, 100)
-    },
-    initChart() {
-      // 基于准备好的dom，初始化echarts实例
-      const myChart = this.myChart = echarts.init(document.getElementById('lineChart'))
-      // 绘制图表
-      myChart.setOption({
+      myChart: null,
+      option: {
         tooltip: {
           trigger: 'axis'
         },
@@ -52,10 +36,41 @@ export default {
           data: this.lineChartData.xAxis
         },
         yAxis: {
-          type: 'value'
+          type: 'value',
+          minInterval: 1
         },
         series: this.lineChartData.series
-      })
+      }
+    }
+  },
+  watch: {
+    lineChartData: {
+      handler(newVal, oldVal) {
+        if (this.myChart) {
+          this.option.legend = this.lineChartData.legend
+          this.option.xAxis.data = this.lineChartData.xAxis
+          this.option.series = this.lineChartData.series
+          this.myChart.setOption(this.option)
+        }
+      },
+      deep: true
+    }
+  },
+  mounted() {
+    this.initChart()
+  },
+  methods: {
+    resize() {
+      const _this = this
+      setTimeout(function() {
+        _this.myChart.resize()
+      }, 100)
+    },
+    initChart() {
+      // 基于准备好的dom，初始化echarts实例
+      const myChart = this.myChart = echarts.init(document.getElementById('lineChart'))
+      // 绘制图表
+      myChart.setOption(this.option)
     }
   }
 }

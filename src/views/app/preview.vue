@@ -11,7 +11,7 @@
           <p class="name">{{ appInfo.appName }}</p>
           <p class="tips">扫描二维码下载</p>
           <p class="tips">或用手机浏览器输入这个网址：<span>{{ appInfo.baseUrl + appInfo.sortUrl }}</span></p>
-          <router-link :to="'/' + appInfo.appId" tag="a" target="_blank">
+          <router-link :to="'/' + appInfo.sortUrl" tag="a" target="_blank">
             <el-button type="primary" style="width: 180px;margin: 15px 0;" round>下载安装</el-button>
           </router-link>
         </div>

@@ -48,11 +48,13 @@
     <component
       :is="currentRole"
       :dialog-visible="dialogVisible"
+      :message-ttile="messageTtile"
       @handleClose="handleClose"/>
   </div>
 </template>
 
 <script>
+import { messageFind } from '@/api/index'
 import Message from '@/views/message'
 
 export default {
@@ -63,6 +65,8 @@ export default {
   data() {
     return {
       currentRole: 'message',
+      messageTtile: '',
+      messageCont: '',
       dialogVisible: false,
       gradientColor: '#ccc',
       notify: null,
@@ -90,11 +94,33 @@ export default {
     }
   },
   mounted() {
-    this.sendMessage()
-    this.dialogVisible = true
+    const _this = this
+    setInterval(() => {
+      _this.messageFind()
+      console.log(1)
+    }, 60000)
   },
   methods: {
-    sendMessage() {
+    messageFind() {
+      const _this = this
+      messageFind().then(response => {
+        const data = response.data
+        const result = data.result
+        if (data.error !== 0) {
+          return
+        }
+        if (result.type > 3) {
+          _this.messageTtile = result.title
+          _this.messageCont = result.message
+          _this.dialogVisible = true
+        } else {
+          _this.sendMessage(result.title, result.message)
+        }
+      }).catch(error => {
+        console.log(error)
+      })
+    },
+    sendMessage(title, message) {
       const h = this.$createElement
       if (this.notify) this.notify.close()
       this.notify = this.$notify({
@@ -108,8 +134,8 @@ export default {
           h('div', {
             attrs: { 'class': 'cont-box' }
           }, [
-            h('h1', null, '开启消息通知'),
-            h('p', null, '特惠活动，账号信息，到账通知')
+            h('h1', null, title),
+            h('p', null, message)
           ]),
           h('div', {
             attrs: { 'class': 'btn-box' }

@@ -4,8 +4,17 @@
       :title="dialogTitle"
       :visible.sync="dialogVisible"
       :before-close="handleClose"
-      width="40%">
+      width="40%"
+      @open="packages">
       <div v-if="!isGet" class="packageList">
+        <el-row>
+          <el-col v-if="packageName" :span="12">
+            当前套餐：{{ packageName }}
+          </el-col>
+          <el-col v-if="expireTime" :span="12">
+            到期时间：{{ expireTime }}
+          </el-col>
+        </el-row>
         <el-table
           v-loading="loading"
           :data="packageList"
@@ -25,11 +34,11 @@
             label="套餐名称"
             width="140"/>
           <el-table-column
-            prop="packageCont"
+            prop="package"
             label="套餐内容"
             width="auto"/>
           <el-table-column
-            prop="packagePrice"
+            prop="price"
             label="套餐价格"
             width="120"/>
         </el-table>
@@ -37,7 +46,14 @@
           购买数量：<el-input-number :precision="0" v-model="packageNum" :min="min" controls-position="right" style="width: 160px;margin-top: 15px;"/>
         </div>
       </div>
-      <div v-else class="QRCode_box" style="height: 200px;"/>
+      <div v-if="isGet && isPuySuccess" align="center">
+        <div>请扫码支付￥{{ buyPrice }}</div>
+        <div class="QRCode_box" style="width: 200px;height: 200px;margin: 0 auto;">
+          <img :src="qrCode" style="width: 100%;">
+        </div>
+        温馨提示：<p class="tips" style="color: red;">支付成功后自动刷新</p>
+      </div>
+      <div v-if="isPuySuccess"><i class="el-icon-success" style="color: green;"/>套餐购买成功</div>
       <span slot="footer" class="dialog-footer">
         <el-button v-if="!isGet" @click="handleClose">取 消</el-button>
         <el-button v-if="!isGet" type="primary" @click="getPackage">确 定</el-button>
@@ -48,6 +64,7 @@
 </template>
 
 <script>
+import { packages, buyPackage, checkOrderState } from '@/api/index'
 
 export default {
   name: 'Upload',
@@ -70,31 +87,100 @@ export default {
     return {
       isGet: false,
       loading: false,
-      templateRadio: 12,
+      templateRadio: '',
+      payType: 1,
       packageNum: 0,
+      price: 0,
+      deduction: 0,
+      buyPrice: 0,
+      isPuySuccess: false,
+      orderNum: '',
       min: 1,
-      packageList: [{
-        packageName: '一号套餐',
-        packageCont: '最大可上传500个应用，每天可下载500次',
-        packagePrice: 1000,
-        packageId: 12,
-        min: 5
-      }, {
-        packageName: '一号套餐',
-        packageCont: '最大可上传500个应用，每天可下载500次',
-        packagePrice: 1000,
-        packageId: 11,
-        min: 2
-      }]
+      expireTime: '',
+      packageName: '',
+      qrCode: '',
+      packageList: []
     }
   },
   mounted() {
   },
   methods: {
+    checkOrderState() {
+      const _this = this
+      checkOrderState({
+        orderNum: _this.orderNum
+      }).then(res => {
+        _this.loading = false
+        const data = res.data
+        const result = data.result
+        if (data.error !== 0) {
+          return
+        }
+        _this.$notify({
+          title: '支付成功！',
+          message: '已经购买成功！',
+          type: 'success'
+        })
+        this.isPuySuccess = true
+        console.log(result)
+      }).catch(error => {
+        console.log(error)
+      })
+    },
+    packages() {
+      const _this = this
+      _this.isGet = false
+      _this.loading = true
+      packages().then(res => {
+        _this.loading = false
+        const data = res.data
+        const result = data.result
+        if (data.error !== 0) {
+          _this.$notify({
+            title: '获取失败',
+            message: data.reason,
+            type: 'error'
+          })
+          return
+        }
+        _this.packageList = result.packages
+        _this.expireTime = result.expireTime
+        _this.packageName = result.packageName
+      }).catch(error => {
+        console.log(error)
+      })
+    },
+    buyPackage() {
+      const _this = this
+      _this.loading = true
+      buyPackage({
+        packageId: _this.templateRadio,
+        payType: _this.payType,
+        num: _this.packageNum
+      }).then(res => {
+        _this.loading = false
+        const data = res.data
+        const result = data.result
+        if (data.error !== 0) {
+          _this.$notify({
+            title: '获取失败',
+            message: data.reason,
+            type: 'error'
+          })
+          return
+        }
+        _this.qrCode = result.qrCode
+        _this.orderNum = result.orderNum
+      }).catch(error => {
+        console.log(error)
+      })
+    },
     selectRow(row, b, c) {
       this.templateRadio = row.packageId
-      this.min = row.min
-      this.packageNum = row.min
+      this.min = row.num
+      this.packageNum = row.num
+      this.price = row.price
+      this.deduction = row.deduction
     },
     getTemplateRow() {
 
@@ -103,7 +189,18 @@ export default {
       this.$emit('handleClose')
     },
     getPackage() {
-      console.log('购买套餐！')
+      const _this = this
+      if (_this.templateRadio) {
+        if (_this.packageNum < 1) {
+          this.$message('购买数量需大于0')
+        } else {
+          _this.isGet = true
+          _this.buyPackage()
+          _this.buyPrice = this.price * this.packageNum - this.deduction
+        }
+      } else {
+        this.$message('请选择购买套餐')
+      }
     }
   }
 }

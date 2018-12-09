@@ -5,11 +5,11 @@
       :before-close="handleClose"
       width="25%">
       <div class="header">
-        <h1>这里是文字信息。</h1>
+        <h1>消息通知</h1>
       </div>
       <div class="cont-box">
-        <h1>开启消息通知</h1>
-        <p>特惠活动，账号信息，到账通知</p>
+        <h1>{{ messageTtile }}</h1>
+        <p>{{ messageCont }}</p>
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click="handleClose()">知道了</el-button>
@@ -27,6 +27,14 @@ export default {
     dialogVisible: {
       type: Boolean,
       default: false
+    },
+    messageTtile: {
+      type: String,
+      default: ''
+    },
+    messageCont: {
+      type: String,
+      default: ''
     }
   },
   data() {

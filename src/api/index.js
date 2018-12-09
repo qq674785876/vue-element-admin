@@ -220,3 +220,80 @@ export function appVersionRemark(obj) {
     data
   })
 }
+
+export function appStatistics(data) {
+  return request({
+    url: '/v1/appStatistics',
+    method: 'get',
+    headers: { 'token': getUserInfo().token },
+    params: data
+  })
+}
+
+export function packages() {
+  return request({
+    url: '/v1/packages',
+    method: 'get',
+    headers: { 'token': getUserInfo().token }
+  })
+}
+
+export function buyPackage(data) {
+  return request({
+    url: '/v1/buyPackage',
+    method: 'get',
+    headers: { 'token': getUserInfo().token },
+    params: data
+  })
+}
+
+export function messageList(data) {
+  return request({
+    url: '/v1/messageList',
+    method: 'get',
+    headers: { 'token': getUserInfo().token },
+    params: data
+  })
+}
+
+export function messageUpdate(data) {
+  return request({
+    url: '/v1/messageUpdate',
+    method: 'post',
+    headers: { 'token': getUserInfo().token },
+    params: data
+  })
+}
+
+export function messageFind() {
+  return request({
+    url: '/v1/messageFind',
+    method: 'get',
+    headers: { 'token': getUserInfo().token }
+  })
+}
+
+export function appDownInfo(data) {
+  return request({
+    url: '/v1/appDownInfo',
+    method: 'get',
+    params: data
+  })
+}
+
+export function appDownUrl(data) {
+  return request({
+    url: '/v1/appDownUrl',
+    method: 'post',
+    params: data
+  })
+}
+
+export function checkOrderState(data) {
+  return request({
+    url: '/v1/checkOrderState',
+    method: 'get',
+    headers: { 'token': getUserInfo().token },
+    params: data
+  })
+}
