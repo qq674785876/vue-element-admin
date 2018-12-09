@@ -3,6 +3,8 @@
     <el-dialog
       :visible.sync="dialogVisible"
       :before-close="handleClose"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
       width="25%">
       <div class="header">
         <h1>消息通知</h1>

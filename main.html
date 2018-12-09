@@ -2,6 +2,8 @@
 <html>
 <head>
 	<title>柴火分发</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
+	<meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
 	<link rel="stylesheet" type="text/css" href="static/swiper/dist/css/swiper.min.css">
 	<link rel="stylesheet" type="text/css" href="static/swiper/animate/animate.min.css">
 	<script type="text/javascript" src="static/swiper/dist/js/swiper.min.js"></script>
@@ -128,6 +130,9 @@
 		var mySwiper = new Swiper('.swiper-container', {
 			loop: true,
 			autoplay: true,//可选选项，自动滑动
+			mousewheel: {
+		    sensitivity : .1,
+		  },
 			pagination: {
 				el: '.swiper-pagination',
 			},

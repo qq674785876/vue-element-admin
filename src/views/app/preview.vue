@@ -93,8 +93,8 @@ export default {
   padding-bottom: 30px;
   border-bottom: 1px solid #eee;
   img{
-    height: 120px;
-    width: 120px;
+    height: 200px;
+    width: 200px;
     border-radius: 20px;
   }
   .name{
