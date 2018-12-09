@@ -13,7 +13,7 @@ export default{
     },
     fontSizeMin: {
       type: Number,
-      default: 16
+      default: 30
     },
     fontSizeMax: {
       type: Number,
