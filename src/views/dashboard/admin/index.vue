@@ -97,8 +97,7 @@ export default {
     const _this = this
     setInterval(() => {
       _this.messageFind()
-      console.log(1)
-    }, 60000)
+    }, 3000)
   },
   methods: {
     messageFind() {

@@ -46,18 +46,18 @@
           购买数量：<el-input-number :precision="0" v-model="packageNum" :min="min" controls-position="right" style="width: 160px;margin-top: 15px;"/>
         </div>
       </div>
-      <div v-if="isGet && isPuySuccess" align="center">
+      <div v-if="isGet && !isPuySuccess" align="center">
         <div>请扫码支付￥{{ buyPrice }}</div>
         <div class="QRCode_box" style="width: 200px;height: 200px;margin: 0 auto;">
           <img :src="qrCode" style="width: 100%;">
         </div>
         温馨提示：<p class="tips" style="color: red;">支付成功后自动刷新</p>
       </div>
-      <div v-if="isPuySuccess"><i class="el-icon-success" style="color: green;"/>套餐购买成功</div>
+      <div v-if="isPuySuccess" align="center"><i class="el-icon-success" style="font-size: 50px;color: green;"/><p>套餐购买成功</p></div>
       <span slot="footer" class="dialog-footer">
         <el-button v-if="!isGet" @click="handleClose">取 消</el-button>
         <el-button v-if="!isGet" type="primary" @click="getPackage">确 定</el-button>
-        <el-button v-if="isGet" @click="isGet = false">返 回</el-button>
+        <el-button v-if="isGet" @click="isGet = false,isPuySuccess = false">返 回</el-button>
       </span>
     </el-dialog>
   </div>
@@ -86,6 +86,7 @@ export default {
   data() {
     return {
       isGet: false,
+      timer: null,
       loading: false,
       templateRadio: '',
       payType: 1,
@@ -121,7 +122,8 @@ export default {
           message: '已经购买成功！',
           type: 'success'
         })
-        this.isPuySuccess = true
+        _this.isPuySuccess = true
+        clearInterval(_this.timer)
         console.log(result)
       }).catch(error => {
         console.log(error)
@@ -171,6 +173,9 @@ export default {
         }
         _this.qrCode = result.qrCode
         _this.orderNum = result.orderNum
+        _this.timer = setInterval(function() {
+          _this.checkOrderState()
+        }, 1000)
       }).catch(error => {
         console.log(error)
       })
