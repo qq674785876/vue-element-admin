@@ -12,7 +12,7 @@
         <p>{{ messageCont }}</p>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="handleClose()">知道了</el-button>
+        <el-button type="primary" @click="handleClose(recId)">知道了</el-button>
       </span>
     </el-dialog>
   </div>
@@ -24,6 +24,10 @@ export default {
   name: 'Message',
   components: {},
   props: {
+    recId: {
+      type: Number,
+      default: 0
+    },
     dialogVisible: {
       type: Boolean,
       default: false
@@ -42,8 +46,8 @@ export default {
     }
   },
   methods: {
-    handleClose() {
-      this.$emit('handleClose')
+    handleClose(recId) {
+      this.$emit('handleClose', recId)
     }
   }
 }

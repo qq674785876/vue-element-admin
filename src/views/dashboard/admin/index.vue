@@ -49,12 +49,14 @@
       :is="currentRole"
       :dialog-visible="dialogVisible"
       :message-ttile="messageTtile"
+      :message-cont="messageCont"
+      :rec-id="recId"
       @handleClose="handleClose"/>
   </div>
 </template>
 
 <script>
-import { messageFind } from '@/api/index'
+import { messageFind, messageUpdate } from '@/api/index'
 import Message from '@/views/message'
 
 export default {
@@ -66,6 +68,7 @@ export default {
     return {
       currentRole: 'message',
       messageTtile: '',
+      recId: 0,
       messageCont: '',
       dialogVisible: false,
       gradientColor: '#ccc',
@@ -95,11 +98,31 @@ export default {
   },
   mounted() {
     const _this = this
-    setInterval(() => {
+    clearInterval(top.messageTimer)
+    top.messageTimer = setInterval(() => {
       _this.messageFind()
-    }, 3000)
+    }, 60000)
+  },
+  destroyed() {
+    const _this = this
+    if (_this.notify) _this.notify.close()
   },
   methods: {
+    messageUpdate(recId) {
+      const _this = this
+      _this.loading = true
+      messageUpdate({
+        recId: recId || _this.selectRecIds
+      }).then(response => {
+        const data = response.data
+        _this.loading = false
+        if (data.error !== 0) {
+          return
+        }
+      }).catch(error => {
+        console.log(error)
+      })
+    },
     messageFind() {
       const _this = this
       messageFind().then(response => {
@@ -108,21 +131,24 @@ export default {
         if (data.error !== 0) {
           return
         }
+        result.type = 4
         if (result.type > 3) {
+          _this.recId = result.recId
           _this.messageTtile = result.title
           _this.messageCont = result.message
           _this.dialogVisible = true
         } else {
-          _this.sendMessage(result.title, result.message)
+          _this.sendMessage(result.recId, result.title, result.message)
         }
       }).catch(error => {
         console.log(error)
       })
     },
-    sendMessage(title, message) {
-      const h = this.$createElement
-      if (this.notify) this.notify.close()
-      this.notify = this.$notify({
+    sendMessage(recId, title, message) {
+      const _this = this
+      const h = _this.$createElement
+      if (_this.notify) _this.notify.close()
+      _this.notify = _this.$notify({
         dangerouslyUseHTMLString: true,
         message: h('div', {
           attrs: { 'class': 'message-notice-box' }
@@ -142,7 +168,9 @@ export default {
             h('a', {
               attrs: { 'href': 'javascript:;' },
               on: {
-                click: this.clickBtn
+                click: () => {
+                  return _this.clickBtn(recId)
+                }
               }
             }, '知道了')
           ])
@@ -160,11 +188,15 @@ export default {
         customClass: 'zz-message-notice'
       })
     },
-    clickBtn() {
-      this.notify.close()
+    clickBtn(recId) {
+      const _this = this
+      _this.notify.close()
+      _this.messageUpdate(recId)
     },
-    handleClose() {
-      this.dialogVisible = false
+    handleClose(recId) {
+      const _this = this
+      _this.dialogVisible = false
+      _this.messageUpdate(recId)
     }
   }
 }

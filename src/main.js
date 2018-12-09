@@ -32,6 +32,7 @@ Object.keys(filters).forEach(key => {
 })
 
 Vue.config.productionTip = false
+window.messageTimer = null
 
 new Vue({
   el: '#app',
