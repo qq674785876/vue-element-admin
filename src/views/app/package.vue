@@ -112,6 +112,7 @@ export default {
       clearInterval(_this.timer)
       _this.isGet = false
       _this.isPuySuccess = false
+      _this.packages()
     },
     checkOrderState() {
       const _this = this
