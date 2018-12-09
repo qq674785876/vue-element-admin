@@ -14,7 +14,10 @@
       下载安装
     </el-button>
     <div v-if="versions().weixin" class="getTips">
-      请点击右上角选择用浏览器打开
+      <p>请点击右上角选择用浏览器打开</p>
+      <span class="svg-container">
+        <svg-icon icon-class="ydjt"/>
+      </span>
     </div>
   </div>
 </template>
@@ -178,8 +181,19 @@ export default {
     left: 0;
     height: 100%;
     width: 100%;
-    padding-top: 10vh;
-    background: rgba(0,0,0,.3);
+    padding-top: 8vh;
+    background: rgba(0,0,0,.5);
+    p{
+      display: inline-block;
+      position: relative;
+      font-size: 5vw;
+    }
+    .svg-container{
+      position: absolute;
+      right: 5vw;
+      top: 3vh;
+      font-size: 50px;
+    }
   }
   &.mobile{
     background: url(/static/images/message.jpg);
@@ -187,6 +201,7 @@ export default {
     color: #fff;
     .appIcon{
       width: 20vw;
+      height: 20vw;
       border-radius: 10px;
       margin-top: 20vh;
     }
