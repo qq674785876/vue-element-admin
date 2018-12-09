@@ -18,7 +18,7 @@
           :before-upload="uploadApp">
           <el-button size="mini" icon="el-icon-upload" round style="margin-right: 10px;">上传新版本</el-button>
         </el-upload>
-        <el-button type="primary" size="mini" icon="el-icon-view" round @click="getPreview">预览</el-button>
+        <el-button type="primary" size="mini" icon="el-icon-view" round @click="getPreview($route.params.id)">预览</el-button>
       </div>
     </div>
     <div class="app-detail-box">
@@ -52,7 +52,7 @@
                   <el-button size="mini" round @click="list.isEdit = true"><i class="el-icon-edit"/></el-button>
                 </el-tooltip>
                 <el-tooltip content="预览" placement="top-start">
-                  <el-button size="mini" round @click="getPreview"><i class="el-icon-view"/></el-button>
+                  <el-button size="mini" round @click="getPreview(list.appId)"><i class="el-icon-view"/></el-button>
                 </el-tooltip>
                 <el-tooltip v-if="list.state === 1" content="下线" placement="top-start">
                   <el-button size="mini" round><i class="el-icon-download" @click="appStateUpdate(list.apkId, 0, '下线')"/></el-button>
@@ -213,7 +213,7 @@ export default {
       loadingSrc: '/static/SvgLoading/index.html',
       loading: false,
       saveLoading: false,
-      currentRole: 'preview',
+      currentRole: '',
       dialogVisible: false,
       file: '',
       checked: false,
@@ -436,7 +436,8 @@ export default {
     saveEait(apkId, remark, index) {
       this.appVersionRemark(apkId, remark, index)
     },
-    getPreview() {
+    getPreview(apkId) {
+      this.appId = apkId
       this.currentRole = 'preview'
       this.dialogVisible = true
     },

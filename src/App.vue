@@ -38,10 +38,10 @@ export default{
     const _this = this
     // _this.messageFind()
     clearInterval(top.messageTimer)
-    top.messageTimer = setInterval(() => {
-  	if (_this.$route.name !== 'Down') {
-    	_this.messageFind()
-  	}
+    top.messageTimer = setInterval(function(){
+    	if (_this.$route.name !== 'Down') {
+				_this.messageFind()
+      }
     }, 60000)
   },
   methods: {
@@ -53,7 +53,7 @@ export default{
         if (data.error !== 0) {
           return
         }
-        if (result.type > 3) {
+        if (result.type === 3) {
           _this.recId = result.recId
           _this.messageTtile = result.title
           _this.messageCont = result.message

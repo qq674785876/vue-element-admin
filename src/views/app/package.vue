@@ -4,9 +4,10 @@
       :title="dialogTitle"
       :visible.sync="dialogVisible"
       :before-close="handleClose"
+      class="packageDialog"
       width="40%">
       <div v-if="!isGet" class="packageList">
-        <el-row>
+        <el-row style="font-size:  16px;color: #409EFF;padding: 10px 0;">
           <el-col v-if="packageName" :span="12">
             当前套餐：{{ packageName }}
           </el-col>
@@ -46,8 +47,8 @@
         </div>
       </div>
       <div v-if="isGet && !isPuySuccess" align="center">
-        <div>请扫码支付￥{{ buyPrice }}</div>
-        <div class="QRCode_box" style="width: 200px;height: 200px;margin: 0 auto;">
+        <div>请用<span style="color: blue;font-size: 16px;">微信扫码</span>支付￥{{ buyPrice }}</div>
+        <div class="QRCode_box" style="width: 200px;height: 200px;margin: 20px auto;">
           <img :src="qrCode" style="width: 100%;">
         </div>
         温馨提示：<p class="tips" style="color: red;">支付成功后自动刷新</p>
@@ -190,7 +191,9 @@ export default {
 
     },
     handleClose() {
-      this.$emit('handleClose')
+      const _this = this
+      clearInterval(_this.timer)
+      _this.$emit('handleClose')
     },
     getPackage() {
       const _this = this
@@ -211,6 +214,11 @@ export default {
 </script>
 
 <style rel="stylesheet/scss" lang="scss" >
+.packageDialog{
+  .el-dialog__body{
+    padding-top: 0 !important;
+  }
+}
 .el-table__row{
   cursor: pointer;
 }
