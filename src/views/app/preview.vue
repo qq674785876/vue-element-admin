@@ -7,7 +7,7 @@
       @open="getAppInfo">
       <div v-loading="loading">
         <div class="preview-cont">
-          <img :src="appInfo.appIcon">
+          <img :src="appInfo.qrCode">
           <p class="name">{{ appInfo.appName }}</p>
           <p class="tips">扫描二维码下载</p>
           <p class="tips">或用手机浏览器输入这个网址：<span>{{ appInfo.baseUrl + appInfo.sortUrl }}</span></p>
