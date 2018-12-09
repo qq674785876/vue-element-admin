@@ -40,7 +40,7 @@ export default{
     clearInterval(top.messageTimer)
     top.messageTimer = setInterval(() => {
       _this.messageFind()
-    }, 1000)
+    }, 60000)
   },
   methods: {
     messageFind() {
