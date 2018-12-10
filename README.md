@@ -34,7 +34,7 @@ English | [简体中文](./README.zh-CN.md)
 
 It is a magical vue admin based on the newest development stack of vue, built-in i18n solution, typical templates for enterprise applications, lots of awesome features. It helps you build a large complex Single-Page Applications. I believe whatever your needs are, this project will help you.
 
-- [Preview](http://panjiachen.github.io/vue-element-admin)
+- [Preview](http://51zhangzhen.cn/)
 
 - [Documentation](https://panjiachen.github.io/vue-element-admin-site/)
 
