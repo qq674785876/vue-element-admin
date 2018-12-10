@@ -198,18 +198,18 @@ npm run lint -- --fix
 
 ## Changelog
 
-Detailed changes for each release are documented in the [release notes](https://github.com/PanJiaChen/vue-element-admin/releases).
+Detailed changes for each release are documented in the [release notes](https://github.com/qq674785876/vue-element-admin/commits/develop).
 
 ## Online Demo
 
-[在线 Demo](http://panjiachen.github.io/vue-element-admin)
+[在线 Demo](http://51zhangzhen.cn/)
 
 ## Donate
 
-如果你觉得这个项目帮助到了你，你可以帮作者买一杯果汁表示鼓励 :tropical_drink:
-![donate](https://panjiachen.github.io/donate/donation.png)
+如果你觉得这个项目帮助到了你，你可以帮作者买一杯果汁表示鼓励 :tropical_drink:（微信/支付宝）
+![donate](http://51zhangzhen.cn/QRCode/WeChat.jpg)
 
-[Paypal Me](https://www.paypal.me/panfree23)
+![donate](http://51zhangzhen.cn/QRCode/Alipay.jpg)
 
 ## Browsers support
 
@@ -221,6 +221,4 @@ Modern browsers and Internet Explorer 10+.
 
 ## License
 
-[MIT](https://github.com/PanJiaChen/vue-element-admin/blob/master/LICENSE)
-
-Copyright (c) 2017-present PanJiaChen
+Copyright (c) 2018-present Zare

@@ -183,21 +183,19 @@ Refer to [Documentation](https://panjiachen.github.io/vue-element-admin-site/gui
 
 ## Changelog
 
-Detailed changes for each release are documented in the [release notes](https://github.com/PanJiaChen/vue-element-admin/releases).
+Detailed changes for each release are documented in the [release notes](https://github.com/qq674785876/vue-element-admin/commits/develop).
 
 ## Online Demo
 
-[Preview](http://panjiachen.github.io/vue-element-admin)
+[Preview](http://51zhangzhen.cn/)
 
 ## Donate
 
-If you find this project useful, you can buy author a glass of juice :tropical_drink:
+If you find this project useful, you can buy author a glass of juice :tropical_drink:（微信/支付宝）
 
-![donate](https://wpimg.wallstcn.com/bd273f0d-83a0-4ef2-92e1-9ac8ed3746b9.png)
+![donate](http://51zhangzhen.cn/QRCode/WeChat.jpg)
 
-[Paypal Me](https://www.paypal.me/panfree23)
-
-[Buy me a coffee](https://www.buymeacoffee.com/Pan)
+![donate](http://51zhangzhen.cn/QRCode/Alipay.jpg)
 
 ## Browsers support
 
@@ -209,6 +207,4 @@ Modern browsers and Internet Explorer 10+.
 
 ## License
 
-[MIT](https://github.com/PanJiaChen/vue-element-admin/blob/master/LICENSE)
-
-Copyright (c) 2017-present PanJiaChen
+Copyright (c) 2018-present Zare
