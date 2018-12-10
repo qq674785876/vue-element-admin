@@ -189,8 +189,8 @@
 
 <script>
 import { getAppInfo, appVersionRemark, appStateUpdate, appUrlUpdate, appUpdate, imageUpload, userApp, appMerge, appStatistics } from '@/api/index'
+import { getUserInfo } from '@/utils/auth'
 import IframeLoading from '@/components/Loading/index'
-import { mapGetters } from 'vuex'
 import Chart from './chart'
 import MapChart from './mapChart'
 import Preview from './preview'
@@ -202,7 +202,7 @@ export default {
   data() {
     return {
       headers: {
-        'token': ''
+        'token': getUserInfo().token
       },
       selectAppIndex: null,
       dialogImageVisible: false,
@@ -262,12 +262,8 @@ export default {
     }
   },
   computed: {
-    ...mapGetters([
-      'token'
-    ])
   },
   mounted() {
-    this.headers.token = this.token
     this.getAppInfo()
     this.appStatistics()
   },

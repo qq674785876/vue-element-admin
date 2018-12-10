@@ -127,7 +127,7 @@
 
 <script>
 import { getAppList, appDelete, getUserDetails } from '@/api/index'
-import { mapGetters } from 'vuex'
+import { getUserInfo } from '@/utils/auth'
 import IframeLoading from '@/components/Loading/index'
 import Preview from './preview'
 import Package from './package'
@@ -148,7 +148,7 @@ export default {
       total: 100,
       appId: '',
       headers: {
-        'token': ''
+        'token': getUserInfo().token
       },
       uploadApi: process.env.BASE_API + '/v1/appUpload',
       isLoading: false,
@@ -159,16 +159,12 @@ export default {
     }
   },
   computed: {
-    ...mapGetters([
-      'token'
-    ])
   },
   mounted() {
     // const _this = this
     // setInterval(function(){
     //   _this.progressBar++
     // },1000)
-    this.headers.token = this.token
     this.getAppList()
     this.getUserDetails()
   },
