@@ -18,7 +18,7 @@
           :before-upload="uploadApp">
           <el-button size="mini" icon="el-icon-upload" round style="margin-right: 10px;">上传新版本</el-button>
         </el-upload>
-        <el-button type="primary" size="mini" icon="el-icon-view" round @click="getPreview($route.params.id)">预览</el-button>
+        <el-button type="primary" size="mini" icon="el-icon-view" round @click="getPreview(basicInfo.sortUrl)">预览</el-button>
       </div>
     </div>
     <div class="app-detail-box">
@@ -52,7 +52,7 @@
                   <el-button size="mini" round @click="list.isEdit = true"><i class="el-icon-edit"/></el-button>
                 </el-tooltip>
                 <el-tooltip content="预览" placement="top-start">
-                  <el-button size="mini" round @click="getPreview(list.appId)"><i class="el-icon-view"/></el-button>
+                  <el-button size="mini" round @click="getPreview(list.sortUrl)"><i class="el-icon-view"/></el-button>
                 </el-tooltip>
                 <el-tooltip v-if="list.state === 1" content="下线" placement="top-start">
                   <el-button size="mini" round><i class="el-icon-download" @click="appStateUpdate(list.apkId, 0, '下线')"/></el-button>
@@ -122,6 +122,36 @@
                   <i class="el-icon-plus"/>
                 </el-upload>
               </div>
+            </div>
+            <div class="businessInfo">
+              <span class="title">企业证书信息</span>
+              <el-row>
+                <el-col :span="8" :xs="24">
+                  <el-input v-model="basicInfo.appType">
+                    <template slot="prepend">版本类型</template>
+                  </el-input>
+                </el-col>
+                <el-col :span="8" :xs="24">
+                  <el-input v-model="basicInfo.newVersion">
+                    <template slot="prepend">最新版本</template>
+                  </el-input>
+                </el-col>
+                <el-col :span="8" :xs="24">
+                  <el-input v-model="basicInfo.appType">
+                    <template slot="prepend">公司名称</template>
+                  </el-input>
+                </el-col>
+                <el-col :span="8" :xs="24">
+                  <el-input v-model="basicInfo.CompanyName">
+                    <template slot="prepend">集团信息</template>
+                  </el-input>
+                </el-col>
+                <el-col :span="8" :xs="24">
+                  <el-input v-model="basicInfo.updateTime">
+                    <template slot="prepend">更新时间</template>
+                  </el-input>
+                </el-col>
+              </el-row>
             </div>
           </div>
         </el-tab-pane>
@@ -432,10 +462,14 @@ export default {
     saveEait(apkId, remark, index) {
       this.appVersionRemark(apkId, remark, index)
     },
-    getPreview(apkId) {
-      this.appId = apkId
-      this.currentRole = 'preview'
-      this.dialogVisible = true
+    getPreview(sortUrl) {
+      // this.currentRole = 'preview'
+      // this.dialogVisible = true
+      if (sortUrl) {
+        this.$router.push('/' + sortUrl)
+      } else {
+        this.$router.push('/' + this.basicInfo.sortUrl)
+      }
     },
     getUpload() {
       this.currentRole = 'upload'
@@ -746,7 +780,7 @@ export default {
     //基本信息
     .basic-info{
       color: #333;
-      > div{
+      & > div{
         padding-left: 30px;
         margin: 30px 0;
         position: relative;
@@ -759,6 +793,15 @@ export default {
           position: absolute;
           background-color: #888;
           border-radius: 100%;
+        }
+        &.businessInfo{
+          .el-col{
+            padding-bottom: 20px;
+            .el-input{
+              width: 400px;
+              max-width: 100%;
+            }
+          }
         }
         .title{
           display: block;

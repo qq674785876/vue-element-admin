@@ -47,7 +47,7 @@
         </div>
       </div>
       <div v-if="isGet && !isPuySuccess" align="center">
-        <div>请用<span style="color: blue;font-size: 16px;">微信扫码</span>支付￥{{ buyPrice.toFixed(2) }}</div>
+        <div>请用<span style="color: blue;font-size: 16px;">微信扫码</span>支付￥{{ buyPrice }}</div>
         <div class="QRCode_box" style="width: 200px;height: 200px;margin: 20px auto;">
           <img :src="qrCode" style="width: 100%;">
         </div>
@@ -211,6 +211,7 @@ export default {
           _this.isGet = true
           _this.buyPackage()
           _this.buyPrice = this.price * this.packageNum - this.deduction
+          _this.buyPrice = _this.buyPrice.toFixed(2) < 0.01 ? 0.01 : _this.buyPrice.toFixed(2)
         }
       } else {
         this.$message('请选择购买套餐')

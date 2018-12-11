@@ -1,23 +1,32 @@
 <template>
   <div v-loading="loading" :class="{ mobile: versions().mobile }" element-loading-background="rgba(0, 0, 0, 0.3)" class="down-container">
-    <img v-if="!versions().mobile" :src="appInfo.qrCode" class="QRCode">
-    <img v-if="versions().mobile" :src="appInfo.appIcon" class="appIcon">
-    <p class="appName">{{ appInfo.appName }}</p>
-    <p v-if="!versions().mobile" class="tips">手机扫描或浏览器访问 {{ appInfo.baseUrl + appInfo.sortUrl }}</p>
-    <p v-if="!versions().mobile" style="padding: 20px 0;color: #fff;"> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - </p>
-    <p class="appSize">{{ appInfo.version + ' - ' + appInfo.size }}</p>
-    <p class="appUpdateDate">更新于： {{ appInfo.createTime }}</p>
-    <el-button v-if="versions().mobile && isShowButton && appInfo.state === 0" type="primary" round @click="appDown">
-      <span class="svg-container">
-        <svg-icon :icon-class="appType" />
-      </span>
-      下载安装
-    </el-button>
-    <div v-if="versions().weixin" class="getTips">
-      <p>请点击右上角选择用浏览器打开</p>
-      <span class="svg-container">
-        <svg-icon icon-class="ydjt"/>
-      </span>
+    <div class="app-info">
+      <!-- <img :src="appInfo.qrCode" class="QRCode"> -->
+      <div v-if="!versions().mobile" class="icon-box">
+        <div class="left-top-box">
+          <img :src="appInfo.appIcon" class="QRCode">
+        </div>
+        <div class="right-bottom-box">
+          <img :src="appInfo.qrCode" class="QRCode">
+        </div>
+      </div>
+      <img v-if="versions().mobile" :src="appInfo.appIcon" class="appIcon">
+      <p class="appName">{{ appInfo.appName }}</p>
+      <p v-if="!versions().mobile" class="tips">扫描二维码下载</p>
+      <p v-if="!versions().mobile" class="tips">手机扫描或浏览器访问 {{ appInfo.baseUrl + appInfo.sortUrl }}</p>
+      <el-button v-if="!versions().mobile" type="primary" round style="margin-bottom: 50px; width: 180px;" @click="appDown">下载安装</el-button>
+      <p class="appSize">{{ appInfo.version + ' - ' + appInfo.size }}</p>
+      <p class="appUpdateDate">更新于： {{ appInfo.createTime }}</p>
+      <el-button v-if="!versions().weixin && versions().mobile && isShowButton && appInfo.state === 0" round style="position: relative;top: 15vh;background: transparent;color: #fff;" @click="appDown">
+        <span class="svg-container">
+          <svg-icon :icon-class="appType" />
+        </span>
+        下载安装
+      </el-button>
+      <div v-if="versions().weixin" class="pop">
+        <p>请点击右上角选择用浏览器打开</p>
+      </div>
+      <el-row v-if="!versions().mobile" class="copyright">copyright © 2018 柴火分发 All rights Reserved</el-row>
     </div>
   </div>
 </template>
@@ -154,23 +163,103 @@ export default {
 }
 </script>
 
-<style  rel="stylesheet/scss" lang="scss" scoped>
+<style rel="stylesheet/scss" lang="scss">
+html,body{
+  overflow: hidden !important;
+}
 .down-container{
   text-align: center;
-  background: #147bdbc5;
-  height: 100vh;
+  background: url(/static/images/login-bg.jpg);
+  height: 100%;
+  max-height: 100%;
+  display:flex;
+  .app-info{
+    max-width: 100%;
+    max-height: 100%;
+    width: 800px;
+    margin:0 auto;
+    border-radius: 20px;
+    background-color: #fff;
+    padding: 10vh 0 0;
+    align-self:center;
+    position:relative;
+    font-size: 14px;
+    color: #ccc;
+    overflow: auto;
+    .appSize,.appUpdateDate{
+      margin: 0;
+      font-size: 14px;
+    }
+    .icon-box{
+      height: 200px;
+      width: 190px;
+      margin: 0 auto;
+      position: relative;
+      div{
+        img{
+          height: 70px;
+          width: 70px;
+          margin: 10px;
+        }
+      }
+      &::after{
+        content: '';
+        position: absolute;
+        width: 100%;
+        left: 0;
+        top: 50px;
+        height: 120px;
+        text-align: center;
+        background: #ddd;
+        transform: rotate(45deg);
+        border-radius: 10px;
+      }
+      &:hover{
+        .right-bottom-box{
+          transform: scale(2);
+        }
+      }
+      .left-top-box{
+        position: absolute;
+        left: -12px;
+        top: 2px;
+        background: #eee;
+        height: 90px;
+        width: 90px;
+        border-radius: 10px;
+        z-index: 99;
+      }
+      .right-bottom-box{
+        position: absolute;
+        right: -15px;
+        bottom: -20px;
+        background: #ddd;
+        height: 90px;
+        width: 90px;
+        border-radius: 10px;
+        z-index: 99;
+        transition: .4s;
+      }
+    }
+  }
+  .copyright{
+    font-size: 14px;
+    padding-top: 6vh;
+    padding-bottom: 20px;
+    color: #ccc;
+  }
   .QRCode{
     width: 140px;
     height: 140px;
-    margin-top: 20vh;
   }
   .appName{
-    font-size: 16px;
+    font-size: 20px;
     padding-top: 30px;
+    color: #000;
   }
   .el-button{
     margin-top: 20px;
-    font-size: 18px;
+    font-size: 14px;
     .svg-container{
       font-size: 20px;
     }
@@ -186,7 +275,7 @@ export default {
     p{
       display: inline-block;
       position: relative;
-      font-size: 5vw;
+      font-size: 14px;
     }
     .svg-container{
       position: absolute;
@@ -196,15 +285,49 @@ export default {
     }
   }
   &.mobile{
-    background: url(/static/images/message.jpg);
+    background: url(/static/images/mobile-bg.jpg);
     background-size: cover;
     color: #fff;
+    overflow: hidden;
     .appIcon{
       width: 20vw;
       height: 20vw;
       border-radius: 10px;
-      margin-top: 20vh;
+      margin-top: 0vh;
     }
+    .appName{
+      font-size: 28px;
+      color: #fff;
+    }
+    .appSize,.appUpdateDate{
+      font-size: 16px;
+    }
+    .app-info{
+      background-color: transparent;
+      padding-top: 0;
+    }
+  }
+  .pop {
+   position: fixed;
+   right: 10px;
+   top: 30px;
+   width: 160px;
+   padding: 5px 15px;
+   background: rgba(0,0,0,.3);
+   -moz-border-radius:    10px;
+   -webkit-border-radius: 10px;
+   border-radius:         10px;
+  }
+  .pop:before {
+    content:"";
+    position: absolute;
+    right: 10px;
+    top: -16px;
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-bottom: 16px solid rgba(0,0,0,.3);
   }
 }
 </style>
