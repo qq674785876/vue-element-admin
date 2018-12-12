@@ -35,9 +35,14 @@
               </el-button>
             </div>
           </div>
-          <div v-for="(list , index) in basicInfo.versionList" :key="index" class="app-version-list">
+          <div v-for="(list , index) in basicInfo.versionList" :key="index" class="app-version-list version-list">
+            <span class="svg-container">
+              <svg-icon :icon-class="list.platform" />
+            </span>
             <div class="list-cont">
-              <p class="title">{{ list.version }}</p>
+              <p class="title">
+                {{ list.version }}
+              </p>
               <p class="date">{{ list.createTime }}</p>
               <p v-if="!list.isEdit" class="tips">{{ list.remark }}</p>
               <el-row v-else class="edit-box">
@@ -123,39 +128,31 @@
                 </el-upload>
               </div>
             </div>
-            <div class="businessInfo">
-              <span class="title">企业证书信息</span>
-              <el-row>
-                <el-col :span="8" :xs="24">
-                  <el-input v-model="basicInfo.appType">
-                    <template slot="prepend">版本类型</template>
-                  </el-input>
-                </el-col>
-                <el-col :span="8" :xs="24">
-                  <el-input v-model="basicInfo.newVersion">
-                    <template slot="prepend">最新版本</template>
-                  </el-input>
-                </el-col>
-                <el-col :span="8" :xs="24">
-                  <el-input v-model="basicInfo.appType">
-                    <template slot="prepend">公司名称</template>
-                  </el-input>
-                </el-col>
-                <el-col :span="8" :xs="24">
-                  <el-input v-model="basicInfo.CompanyName">
-                    <template slot="prepend">集团信息</template>
-                  </el-input>
-                </el-col>
-                <el-col :span="8" :xs="24">
-                  <el-input v-model="basicInfo.updateTime">
-                    <template slot="prepend">更新时间</template>
-                  </el-input>
-                </el-col>
-              </el-row>
-            </div>
           </div>
         </el-tab-pane>
-        <el-tab-pane name="tap3" label="应用合并">
+        <el-tab-pane name="tap3" label="证书信息">
+          <div class="businessInfo">
+            <span class="title">企业证书信息</span>
+            <el-row>
+              <el-col>
+                <el-input v-model="basicInfo.type" :disabled="true">
+                  <template slot="prepend">版本类型</template>
+                </el-input>
+              </el-col>
+              <el-col>
+                <el-input v-model="basicInfo.company" :disabled="true">
+                  <template slot="prepend">公司名称</template>
+                </el-input>
+              </el-col>
+              <el-col>
+                <el-input v-model="basicInfo.group" :disabled="true">
+                  <template slot="prepend">集团信息</template>
+                </el-input>
+              </el-col>
+            </el-row>
+          </div>
+        </el-tab-pane>
+        <el-tab-pane name="tap4" label="应用合并">
           <el-row class="app-merge">
             <el-col :span="6" :xs="24" class="left">
               <p class="left-title">选择已有的应用进行合并</p>
@@ -178,7 +175,7 @@
             </el-col>
           </el-row>
         </el-tab-pane>
-        <el-tab-pane name="tap4" label="数据分析">
+        <el-tab-pane name="tap5" label="数据分析">
           <div class="down-trend chart-box">
             <p class="top">
               下载趋势图
@@ -451,7 +448,7 @@ export default {
       this.uploadPercent = Number(file.percentage.toFixed(1))
     },
     switchTaps(el) {
-      if (el.name === 'tap4') {
+      if (el.name === 'tap5') {
         this.$refs.chart.resize()
         this.$refs.mapChart.resize()
       }
@@ -769,6 +766,17 @@ export default {
         left: -6px;
         top: 0;
       }
+      &.version-list::after{
+        display: none;
+      }
+      &.version-list{
+        .svg-container{
+          position: absolute;
+          left: -8px;
+          top: -4px;
+          color: #666;
+        }
+      }
       .el-input{
         width: 600px;
       }
@@ -793,15 +801,6 @@ export default {
           position: absolute;
           background-color: #888;
           border-radius: 100%;
-        }
-        &.businessInfo{
-          .el-col{
-            padding-bottom: 20px;
-            .el-input{
-              width: 400px;
-              max-width: 100%;
-            }
-          }
         }
         .title{
           display: block;
@@ -898,6 +897,25 @@ export default {
               margin-left: 0;
             }
           }
+        }
+      }
+    }
+    //企业信息
+    .businessInfo{
+      .title{
+        margin: 0;
+        padding-bottom: 30px;
+      }
+      .el-row::after{
+        content: '';
+        display: block;
+        clear: both;
+      }
+      .el-col{
+        padding-top: 20px;
+        .el-input{
+          width: 400px;
+          max-width: 100%;
         }
       }
     }

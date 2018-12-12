@@ -99,19 +99,19 @@
               <router-link :to="'/app/detail/' + list.appId">
                 <el-button size="mini" icon="el-icon-edit" round>管理</el-button>
               </router-link>
-              <el-button size="mini" icon="el-icon-view" round @click="getPreview(list.appId)">预览</el-button>
+              <el-button size="mini" icon="el-icon-view" round @click="getPreview(list.sortUrl)">预览</el-button>
               <el-button size="mini" icon="el-icon-delete" circle @click="appDelete(list.appId)"/>
             </div>
           </el-card>
         </div>
-        <el-pagination
+        <!--         <el-pagination
           :current-page.sync="pageNum"
           :page-size="pageSize"
           :pager-count="5"
           :total="total"
           layout="prev, pager, next, jumper"
           @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"/>
+          @current-change="handleCurrentChange"/> -->
       </el-col>
     </el-row>
     <component
@@ -144,8 +144,8 @@ export default {
       dialogVisible: false,
       uploadPercent: 0,
       pageNum: 1,
-      pageSize: 10,
-      total: 100,
+      pageSize: 200,
+      // total: 100,
       appId: '',
       headers: {
         'token': getUserInfo().token
@@ -169,12 +169,12 @@ export default {
     this.getUserDetails()
   },
   methods: {
-    handleSizeChange() {
-      this.getAppList()
-    },
-    handleCurrentChange() {
-      this.getAppList()
-    },
+    // handleSizeChange() {
+    //   this.getAppList()
+    // },
+    // handleCurrentChange() {
+    //   this.getAppList()
+    // },
     getUserDetails() {
       const _this = this
       _this.loading = true
@@ -293,10 +293,8 @@ export default {
       this.dialogVisible = false
       this.getUserDetails()
     },
-    getPreview(appId) {
-      this.appId = appId
-      this.currentRole = 'preview'
-      this.dialogVisible = true
+    getPreview(sortUrl) {
+      this.$router.push('/' + sortUrl)
     },
     getPackage() {
       this.currentRole = 'package'
