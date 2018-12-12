@@ -463,9 +463,11 @@ export default {
       // this.currentRole = 'preview'
       // this.dialogVisible = true
       if (sortUrl) {
-        this.$router.push('/' + sortUrl)
+        // this.$router.push('/' + sortUrl)
+        window.open('/#/' + sortUrl)
       } else {
-        this.$router.push('/' + this.basicInfo.sortUrl)
+        // this.$router.push('/' + this.basicInfo.sortUrl)
+        window.open('/#/' + sortUrl)
       }
     },
     getUpload() {

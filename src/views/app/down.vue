@@ -1,5 +1,13 @@
 <template>
-  <div v-loading="loading" :class="{ mobile: versions().mobile }" element-loading-background="rgba(0, 0, 0, 0.3)" class="down-container">
+  <div v-loading="loading" :class="[type, { mobile: versions().mobile }]" element-loading-background="rgba(0, 0, 0, 0.3)" class="down-container">
+    <div v-if="type === 'three' && versions().mobile">
+      <span class="pattern left">
+        <img src="/static/images/left.png">
+      </span>
+      <span class="pattern right">
+        <img src="/static/images/right.png">
+      </span>
+    </div>
     <div class="app-info">
       <!-- <img :src="appInfo.qrCode" class="QRCode"> -->
       <div v-if="!versions().mobile" class="icon-box">
@@ -17,7 +25,7 @@
       <el-button v-if="!versions().mobile" type="primary" round style="margin-bottom: 50px; width: 180px;" @click="appDown">下载安装</el-button>
       <p class="appSize">{{ appInfo.version + ' - ' + appInfo.size }}</p>
       <p class="appUpdateDate">更新于： {{ appInfo.createTime }}</p>
-      <el-button v-if="!versions().weixin && versions().mobile && isShowButton && appInfo.state === 0" round style="position: relative;top: 15vh;background: transparent;color: #fff;" @click="appDown">
+      <el-button v-if="!versions().weixin && versions().mobile && isShowButton && appInfo.state === 0" class="mobileBtn" round @click="appDown">
         <span class="svg-container">
           <svg-icon :icon-class="appType" />
         </span>
@@ -42,6 +50,7 @@ export default {
   data() {
     return {
       loading: false,
+      type: 'two',
       appId: this.$route.params.id,
       updateTime: '',
       appInfo: {},
@@ -296,38 +305,95 @@ html,body{
       margin-top: 0vh;
     }
     .appName{
-      font-size: 28px;
+      font-size: 22px;
       color: #fff;
     }
     .appSize,.appUpdateDate{
-      font-size: 16px;
+      font-size: 14px;
     }
     .app-info{
       background-color: transparent;
       padding-top: 0;
+      overflow: hidden;
+      height: 100%;
+      padding-top: 20vh;
     }
-  }
-  .pop {
-   position: fixed;
-   right: 10px;
-   top: 30px;
-   width: 160px;
-   padding: 5px 15px;
-   background: rgba(0,0,0,.3);
-   -moz-border-radius:    10px;
-   -webkit-border-radius: 10px;
-   border-radius:         10px;
-  }
-  .pop:before {
-    content:"";
-    position: absolute;
-    right: 10px;
-    top: -16px;
-    width: 0;
-    height: 0;
-    border-left: 6px solid transparent;
-    border-right: 6px solid transparent;
-    border-bottom: 16px solid rgba(0,0,0,.3);
+    .mobileBtn{
+      position: relative;
+      top: 10vh;
+      background: transparent;
+      color: #fff;
+    }
+    .pop {
+      position: fixed;
+      right: 10px;
+      top: 30px;
+      width: 160px;
+      padding: 5px 15px;
+      background: rgba(0,0,0,.3);
+      -moz-border-radius:    10px;
+      -webkit-border-radius: 10px;
+      border-radius:         10px;
+      color: #fff;
+      z-index: 9999;
+    }
+    .pop:before {
+      content:"";
+      position: absolute;
+      right: 10px;
+      top: -16px;
+      width: 0;
+      height: 0;
+      border-left: 6px solid transparent;
+      border-right: 6px solid transparent;
+      border-bottom: 16px solid rgba(0,0,0,.3);
+    }
+    &.two{
+      background: -webkit-linear-gradient(red, blue); /* Safari 5.1 - 6.0 */
+      background: -o-linear-gradient(red, blue); /* Opera 11.1 - 12.0 */
+      background: -moz-linear-gradient(red, blue); /* Firefox 3.6 - 15 */
+      background: linear-gradient(red, blue); /* 标准的语法 */
+      .mobileBtn{
+        color: #fff;
+        border-color: #fff;
+      }
+    }
+    &.three{
+      background: #fff;
+      .appName{
+        color: #333;
+      }
+      .appSize,.appUpdateDate{
+        color: #666;
+      }
+      .pattern{
+        position: absolute;
+        top: 0;
+        z-index: 1;
+        max-width: 312px;
+        width: 21.66%;
+        transition: all .5s;
+        img{
+          width: 100%;
+        }
+        &.left{
+          left: 0;
+        }
+        &.right{
+          right: 0;
+        }
+      }
+      .pattern{
+        width: 20%;
+      }
+      .mobileBtn{
+        color: rgba(73,212,177,1);
+        border-color: rgba(73,212,177,1);
+      }
+      .pop{
+        background: rgba(0,0,0,.6);
+      }
+    }
   }
 }
 </style>

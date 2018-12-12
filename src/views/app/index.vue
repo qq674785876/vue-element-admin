@@ -294,7 +294,8 @@ export default {
       this.getUserDetails()
     },
     getPreview(sortUrl) {
-      this.$router.push('/' + sortUrl)
+      // this.$router.push('/' + sortUrl)
+      window.open('/#/' + sortUrl)
     },
     getPackage() {
       this.currentRole = 'package'
