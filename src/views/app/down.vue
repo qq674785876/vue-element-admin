@@ -25,12 +25,14 @@
       <el-button v-if="!versions().mobile" type="primary" round style="margin-bottom: 50px; width: 180px;" @click="appDown">下载安装</el-button>
       <p class="appSize">{{ appInfo.version + ' - ' + appInfo.size }}</p>
       <p class="appUpdateDate">更新于： {{ appInfo.createTime }}</p>
-      <el-button v-if="!versions().weixin && versions().mobile && isShowButton && appInfo.state === 0" class="mobileBtn" round @click="appDown">
+      <p v-if="isDown" style="color: #fff;font-size: 20px;position: relative;top: 30px;margin-bottom: 0;">正在安装，请查看手机桌面~</p>
+      <el-button v-if="!isDown && !versions().weixin && versions().mobile && isShowButton && appInfo.state === 0" v-loading="btnLoading" element-loading-background="rgba(255, 255, 255, 0.5)" class="mobileBtn" round @click="appDown">
         <span class="svg-container">
           <svg-icon :icon-class="appType" />
         </span>
         下载安装
       </el-button>
+      <el-button v-if="isDown" class="mobileBtn" round @click="goTrust">立即信任</el-button>
       <div v-if="versions().weixin" class="pop">
         <p>请点击右上角选择用浏览器打开</p>
       </div>
@@ -50,7 +52,10 @@ export default {
   data() {
     return {
       loading: false,
+      btnLoading: false,
+      isDown: false,
       type: '',
+      cert: '',
       appId: this.$route.params.id,
       updateTime: '',
       appInfo: {},
@@ -73,6 +78,10 @@ export default {
     }
   },
   methods: {
+    goTrust(){
+      const _this = this
+      window.location.href = _this.cert
+    },
     versions() {
       const u = window.navigator.userAgent
       // app = window.navigator.appVersion
@@ -127,6 +136,7 @@ export default {
     },
     appDown() {
       const _this = this
+      let timer = null
       _this.loading = true
       appDownUrl({
         appId: _this.appId,
@@ -140,7 +150,18 @@ export default {
         if (data.error !== 0) {
           return
         }
-        window.open(result.url)
+        // window.open(result.url)
+        location.href = result.url
+        _this.cert = result.cert
+        if(_this.appType === 'ios'){
+          _this.btnLoading = true
+          clearTimeout(timer)
+          timer = setTimeout(function(){
+            _this.btnLoading = false
+            _this.isDown = true
+          }, 6000)
+        }
+
       }).catch(error => {
         console.log(error)
       })
