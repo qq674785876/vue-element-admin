@@ -128,6 +128,28 @@
                 </el-upload>
               </div>
             </div>
+            <div class="tips">
+              <span class="title">下载页面模板</span>
+              <div class="appScreenshot">
+                <el-row>
+                  <el-select v-model="basicInfo.background" placeholder="请选择">
+                    <el-option
+                      v-for="item in templateList"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"/>
+                  </el-select>
+                </el-row>
+                <p>模板参考:</p>
+                <el-card v-for="(list, index) in templateList" :key="index" shadow="hover">
+                  模板{{ index+1 }}
+                  <img :src="list.img">
+                  <div class="img-set-box">
+                    <i class="el-icon-zoom-in" @click="handlePictureCardPreview(list.img)"/>
+                  </div>
+                </el-card>
+              </div>
+            </div>
           </div>
         </el-tab-pane>
         <el-tab-pane name="tap3" label="证书信息">
@@ -208,7 +230,7 @@
     </div>
     <component :is="currentRole" :dialog-visible="dialogVisible" :app-id="appId" @handleClose="handleClose"/>
     <iframe-loading v-show="isLoading" :loading-src="loadingSrc" :progress-bar="uploadPercent"/>
-    <el-dialog :visible.sync="dialogImageVisible">
+    <el-dialog :visible.sync="dialogImageVisible" class="imgDialog" height="500">
       <img :src="dialogImageUrl" width="100%" alt="">
     </el-dialog>
   </div>
@@ -248,6 +270,19 @@ export default {
       activeName: 'tap1',
       appId: this.$route.params.id,
       dateType: '14',
+      templateList: [{
+        label: '模板1',
+        value: 0,
+        img: '/static/images/mb-1.jpg'
+      }, {
+        label: '模板2',
+        value: 1,
+        img: '/static/images/mb-2.jpg'
+      }, {
+        label: '模板3',
+        value: 2,
+        img: '/static/images/mb-3.jpg'
+      }],
       basicInfo: {
         // appIcon: "http://api.ublog.top/uploads/tmp/d4c7b67c1c7c259c538be2d8704e3e46/res/mipmap-hdpi-v4/ic_launcher.png",
         // appId: "ZWE4OC8ySmJ3NWNkZHBPK0MyTk51Y0RhNE9La2VhYjNqQUYyTVl6Zg==",
@@ -372,7 +407,8 @@ export default {
         sortUrl: _this.basicInfo.sortUrl,
         appIcon: _this.basicInfo.editAppIcon,
         describe: _this.basicInfo.describe,
-        appImage: _this.basicInfo.appImageStr
+        appImage: _this.basicInfo.appImageStr,
+        background: _this.basicInfo.background
       }).then(res => {
         _this.loading = false
         const data = res.data
@@ -659,6 +695,13 @@ export default {
 </script>
 
 <style rel="stylesheet/scss" lang="scss">
+.imgDialog{
+  img{
+    display: block;
+    max-width: 300px;
+    margin: 0 auto;
+  }
+}
 .app-detail-container {
   padding: 20px;
   .el-checkbox{
@@ -869,6 +912,7 @@ export default {
             display: inline-block;
             width: 160px;
             position: relative;
+            text-align: center;
             .img-set-box{
               position: absolute;
               display: none;

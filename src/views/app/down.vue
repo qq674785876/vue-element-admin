@@ -50,7 +50,7 @@ export default {
   data() {
     return {
       loading: false,
-      type: 'two',
+      type: '',
       appId: this.$route.params.id,
       updateTime: '',
       appInfo: {},
@@ -163,6 +163,11 @@ export default {
           return
         }
         _this.appInfo = result
+        if (_this.appInfo.background === 1) {
+          _this.type = 'two'
+        } else if (_this.appInfo.background === 2) {
+          _this.type = 'three'
+        }
         _this.isShowButton = _this.appInfo.platform.indexOf(_this.appType) > -1
       }).catch(error => {
         console.log(error)
