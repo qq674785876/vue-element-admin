@@ -26,7 +26,7 @@
       <p class="appSize">{{ appInfo.version + ' - ' + appInfo.size }}</p>
       <p class="appUpdateDate">更新于： {{ appInfo.createTime }}</p>
       <p v-if="isDown" style="color: #fff;font-size: 20px;position: relative;top: 30px;margin-bottom: 0;">正在安装，请查看手机桌面~</p>
-      <el-button v-if="!isDown && !versions().weixin && versions().mobile && isShowButton && appInfo.state === 0" v-loading="btnLoading" element-loading-background="rgba(255, 255, 255, 0.5)" class="mobileBtn" round @click="appDown">
+      <el-button v-loading="btnLoading" v-if="!isDown && !versions().weixin && versions().mobile && isShowButton && appInfo.state === 0" element-loading-background="rgba(255, 255, 255, 0.5)" class="mobileBtn" round @click="appDown">
         <span class="svg-container">
           <svg-icon :icon-class="appType" />
         </span>
@@ -78,7 +78,7 @@ export default {
     }
   },
   methods: {
-    goTrust(){
+    goTrust() {
       const _this = this
       window.location.href = _this.cert
     },
@@ -153,15 +153,14 @@ export default {
         // window.open(result.url)
         location.href = result.url
         _this.cert = result.cert
-        if(_this.appType === 'ios'){
+        if (_this.appType === 'ios') {
           _this.btnLoading = true
           clearTimeout(timer)
-          timer = setTimeout(function(){
+          timer = setTimeout(function() {
             _this.btnLoading = false
             _this.isDown = true
           }, 6000)
         }
-
       }).catch(error => {
         console.log(error)
       })
