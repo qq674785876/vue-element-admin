@@ -5,8 +5,8 @@
       <el-row>
         <el-col :md="12" :xs="0" class="login-logo-box">
           <el-carousel indicator-position="outside">
-            <el-carousel-item v-for="index in 4" :key="index">
-              <img :src="logoimgs[0]">
+            <el-carousel-item v-for="(img, index) in logoimgs" :key="index">
+              <img :src="img">
             </el-carousel-item>
           </el-carousel>
         </el-col>
@@ -115,7 +115,6 @@ import SIdentify from './identify'
 import Register from './register'
 import RealName from './realName'
 import ForgetPass from './forgetPass'
-import img1 from '../../../static/images/login-logo.png'
 
 export default {
   name: 'Login',
@@ -150,7 +149,7 @@ export default {
       // currentRole: 'realName',
       selectType: 'login',
       currentRole: 'login',
-      logoimgs: [img1],
+      logoimgs: ['/static/images/login-banner-1.jpg', '/static/images/login-banner-2.jpg', '/static/images/login-banner-3.jpg', '/static/images/login-banner-4.jpg'],
       eyeClass: 'eye-close',
       registerForm: {
         email: '',
