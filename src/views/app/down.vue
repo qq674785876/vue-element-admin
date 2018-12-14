@@ -26,7 +26,8 @@
       <p class="appSize">{{ appInfo.version + ' - ' + appInfo.size }}</p>
       <p class="appUpdateDate">更新于： {{ appInfo.createTime }}</p>
       <p v-if="isDown" style="color: #fff;font-size: 20px;position: relative;top: 30px;margin-bottom: 0;">正在安装，请查看手机桌面~</p>
-      <el-button v-loading="btnLoading" v-if="!isDown && !versions().weixin && versions().mobile && isShowButton && appInfo.state === 0" element-loading-background="rgba(255, 255, 255, 0.5)" class="mobileBtn" round @click="appDown">
+      <div v-if="btnLoading" v-loading="btnLoading" element-loading-text="获取中" element-loading-background="rgba(255, 255, 255, 0)" style="height: 30px;position: relative;top: 10vh;"></div>
+      <el-button v-if="!btnLoading && !isDown && !versions().weixin && versions().mobile && isShowButton && appInfo.state === 0" class="mobileBtn" round @click="appDown">
         <span class="svg-container">
           <svg-icon :icon-class="appType" />
         </span>
@@ -169,6 +170,11 @@ export default {
         const data = res.data
         const result = data.result
         if (data.error !== 0) {
+          _this.$notify({
+            title: '下载失败',
+            message: data.reason,
+            type: 'error'
+          })
           return
         }
         // window.open(result.url)
@@ -338,7 +344,8 @@ html,body{
   .copyright{
     font-size: 14px;
     padding-top: 6vh;
-    padding-bottom: 20px;
+    position: relative;
+    top: -10px;
     color: #ccc;
   }
   .QRCode{
@@ -407,6 +414,11 @@ html,body{
       overflow: auto;
       height: calc(100%);
       padding-top: 20vh;
+      .el-loading-parent--relative{
+        .el-loading-text{
+          color: #ccc;
+        }
+      }
     }
     .mobileBtn{
       position: relative;
