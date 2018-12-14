@@ -500,13 +500,7 @@ export default {
     getPreview(sortUrl) {
       // this.currentRole = 'preview'
       // this.dialogVisible = true
-      if (sortUrl) {
-        // this.$router.push('/' + sortUrl)
-        window.open('/#/' + sortUrl)
-      } else {
-        // this.$router.push('/' + this.basicInfo.sortUrl)
-        window.open('/#/' + sortUrl)
-      }
+      window.open('/#/' + this.basicInfo.sortUrl)
     },
     getUpload() {
       this.currentRole = 'upload'

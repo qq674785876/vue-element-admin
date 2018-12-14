@@ -78,8 +78,8 @@
             <p>注册成功</p>
           </h1>
           <div class="tips-box">
-            <p class="loading">等待人工审核...</p>
-            <p class="tips">审核完成即可上传您的应用</p>
+            <p class="loading">{{ dialogLoadText }}</p>
+            <p class="tips">{{ dialogLoadTips }}</p>
           </div>
         </div>
       </div>
@@ -97,6 +97,8 @@ export default {
   name: 'RealName',
   data() {
     return {
+      dialogLoadText: '等待人工审核...',
+      dialogLoadTips: '审核完成即可上传您的应用',
       loading: false,
       infos: [],
       uploadApi: process.env.BASE_API + '/v1/imageUpload',
@@ -110,6 +112,8 @@ export default {
     finish(flag) {
       const _this = this
       if (flag) {
+        _this.dialogLoadText = '等待人工审核...'
+        _this.dialogLoadTips = '审核完成即可上传您的应用'
         if (!_this.imageUrl_front) {
           _this.$notify({
             title: '错误信息',
@@ -149,6 +153,8 @@ export default {
           })
         }
       } else {
+        _this.dialogLoadText = '赶快登陆...'
+        _this.dialogLoadTips = '去上传你的文件吧'
         _this.dialogVisible = true
       }
     },

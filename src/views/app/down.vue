@@ -271,7 +271,12 @@ html,body{
         margin: 0 auto;
       }
       img{
-        width: 33.33333%;
+        width: 32.33333%;
+        margin-bottom: 5px;
+        &:nth-of-type(3n - 1){
+          margin-left: 1.5%;
+          margin-right: 1.5%;
+        }
       }
     }
     .appSize,.appUpdateDate{
@@ -429,7 +434,13 @@ html,body{
         margin: 0 auto;
       }
       img{
-        width: 50%;
+        width: 49%;
+        &:nth-of-type(3n - 1){
+          margin: 0 0 5px 0;
+        }
+        &:nth-of-type(2n + 1){
+          margin-right: 2%;
+        }
       }
     }
     .pop {
