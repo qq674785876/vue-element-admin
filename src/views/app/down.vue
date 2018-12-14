@@ -37,7 +37,22 @@
         <p>请点击右上角选择用浏览器打开</p>
       </div>
       <el-row v-if="!versions().mobile" class="copyright">copyright © 2018 柴火分发 All rights Reserved</el-row>
+      <el-row v-if="appInfo.describe && appInfo.appImage.length !== 0" class="detailBox">
+        <div v-if="appInfo.describe">
+          <p class="title">应用描述</p>
+          <p>{{ appInfo.describe }}</p>
+        </div>
+        <div v-if="appInfo.appImage.length !== 0">
+          <p class="title">应用截图</p>
+          <div class="imgBox">
+            <img v-for="(img, index) in appInfo.appImage" :src="img" :key="index" @click="handlePictureCardPreview(img)">
+          </div>
+        </div>
+      </el-row>
     </div>
+    <el-dialog :visible.sync="dialogImageVisible" class="imgDialog" height="500">
+      <img :src="dialogImageUrl" width="100%" alt="">
+    </el-dialog>
   </div>
 </template>
 
@@ -62,6 +77,8 @@ export default {
       lat: '',
       lng: '',
       isShowButton: false,
+      dialogImageVisible: false,
+      dialogImageUrl: '',
       appType: this.versions().ios ? 'ios' : 'android'
     }
   },
@@ -78,6 +95,10 @@ export default {
     }
   },
   methods: {
+    handlePictureCardPreview(img) {
+      this.dialogImageUrl = img
+      this.dialogImageVisible = true
+    },
     goTrust() {
       const _this = this
       window.location.href = _this.cert
@@ -209,7 +230,7 @@ html,body{
   display:flex;
   .app-info{
     max-width: 100%;
-    max-height: 100%;
+    max-height: 666px;
     width: 800px;
     margin:0 auto;
     border-radius: 20px;
@@ -220,6 +241,39 @@ html,body{
     font-size: 14px;
     color: #ccc;
     overflow: auto;
+    &::-webkit-scrollbar-track-piece { //滚动条凹槽的颜色，还可以设置边框属性
+      background-color:rgba(0,0,0,.1);
+    }
+    &::-webkit-scrollbar {//滚动条的宽度
+      width:3px;
+      height:3px;
+    }
+    &::-webkit-scrollbar-thumb {//滚动条的设置
+      background-color:rgba(0,0,0,.2);
+      background-clip:padding-box;
+      min-height:28px;
+    }
+    &::-webkit-scrollbar-thumb:hover{
+      background-color: rgba(0,0,0,.3);
+    }
+    .detailBox{
+      padding-bottom: 5vh;
+      p{
+        color: #666;
+      }
+      .title{
+        font-size: 24px;
+        color: #000;
+      }
+      .imgBox{
+        text-align: left;
+        width: 90%;
+        margin: 0 auto;
+      }
+      img{
+        width: 33.33333%;
+      }
+    }
     .appSize,.appUpdateDate{
       margin: 0;
       font-size: 14px;
@@ -323,6 +377,12 @@ html,body{
     background-size: cover;
     color: #fff;
     overflow: hidden;
+    .imgDialog{
+      .el-dialog{
+        width: 100% !important;
+        max-heihgt: 100% !important;
+      }
+    }
     .appIcon{
       width: 20vw;
       height: 20vw;
@@ -339,8 +399,8 @@ html,body{
     .app-info{
       background-color: transparent;
       padding-top: 0;
-      overflow: hidden;
-      height: 100%;
+      overflow: auto;
+      height: calc(100%);
       padding-top: 20vh;
     }
     .mobileBtn{
@@ -348,6 +408,29 @@ html,body{
       top: 10vh;
       background: transparent;
       color: #fff;
+    }
+    .detailBox{
+      border-top: 1px solid #fff;
+      margin-top: 50vh;
+      margin-bottom: 10vh;
+      p{
+        color: #eee;
+        font-size: 14px;
+        width: 80%;
+        margin: 30px auto;
+      }
+      .title{
+        font-size: 20px;
+        color: #fff;
+      }
+      .imgBox{
+        text-align: left;
+        width: 90%;
+        margin: 0 auto;
+      }
+      img{
+        width: 50%;
+      }
     }
     .pop {
       position: fixed;
@@ -390,6 +473,11 @@ html,body{
       }
       .appSize,.appUpdateDate{
         color: #666;
+      }
+      .detailBox{
+        p{
+          color: #000;
+        }
       }
       .pattern{
         position: absolute;
