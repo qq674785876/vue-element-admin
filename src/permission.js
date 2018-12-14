@@ -20,8 +20,12 @@ router.beforeEach((to, from, next) => {
   NProgress.start() // start progress bar
   const userInfo = getUserInfo()
   // console.log(to.name, window.location.href)
+  if (to.name === 'Down') {
+    next()
+    return
+  }
   if (userInfo !== undefined && userInfo && userInfo !== 'undefined' && userInfo !== '') {
-    if (to.path === '/login' || to.name === 'Down') {
+    if (to.path === '/login') {
       next()
     } else {
       const roles = store.getters.roles
@@ -32,7 +36,7 @@ router.beforeEach((to, from, next) => {
       next()
     }
   } else {
-    if (to.path === '/login' || to.name === 'Down') {
+    if (to.path === '/login') {
       next()
     } else {
       next('/login')

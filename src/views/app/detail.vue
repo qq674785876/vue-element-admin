@@ -71,7 +71,6 @@
         </el-tab-pane>
         <el-tab-pane name="tap2" label="基本信息">
           <div class="basic-info">
-            <el-button class="updateApp" type="primary" size="mini" @click="appUpdate">更新应用信息</el-button>
             <div>
               <span class="title">应用ID</span>
               {{ basicInfo.appkey }}
@@ -148,6 +147,9 @@
                     <i class="el-icon-zoom-in" @click="handlePictureCardPreview(list.img)"/>
                   </div>
                 </el-card>
+                <el-row style="margin-top: 50px;">
+                  <el-button class="updateApp" type="primary" size="mini" @click="appUpdate">更新应用信息</el-button>
+                </el-row>
               </div>
             </div>
           </div>
