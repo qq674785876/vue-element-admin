@@ -26,7 +26,7 @@
       <p class="appSize">{{ appInfo.version + ' - ' + appInfo.size }}</p>
       <p class="appUpdateDate">更新于： {{ appInfo.createTime }}</p>
       <p v-if="isDown" style="color: #fff;font-size: 20px;position: relative;top: 30px;margin-bottom: 0;">正在安装，请查看手机桌面~</p>
-      <div v-if="btnLoading" v-loading="btnLoading" element-loading-text="获取中" element-loading-background="rgba(255, 255, 255, 0)" style="height: 30px;position: relative;top: 10vh;"></div>
+      <div v-loading="btnLoading" v-if="btnLoading" element-loading-text="获取中" element-loading-background="rgba(255, 255, 255, 0)" style="height: 30px;position: relative;top: 10vh;"/>
       <el-button v-if="!btnLoading && !isDown && !versions().weixin && versions().mobile && isShowButton && appInfo.state === 0" class="mobileBtn" round @click="appDown">
         <span class="svg-container">
           <svg-icon :icon-class="appType" />
@@ -38,7 +38,7 @@
         <p>请点击右上角选择用浏览器打开</p>
       </div>
       <el-row v-if="!versions().mobile" class="copyright">copyright © 2018 柴火分发 All rights Reserved</el-row>
-      <el-row v-if="appInfo.describe && appInfo.appImage.length !== 0" class="detailBox">
+      <el-row v-if="appInfo.describe || appInfo.appImage.length !== 0" class="detailBox">
         <div v-if="appInfo.describe">
           <p class="title">应用描述</p>
           <p>{{ appInfo.describe }}</p>
