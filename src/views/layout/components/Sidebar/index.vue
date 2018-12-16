@@ -1,7 +1,7 @@
 <template>
   <el-scrollbar wrap-class="scrollbar-wrapper">
     <el-row class="topTips">
-      caihuoneiche.com
+      TaPK内测侠
     </el-row>
     <el-row class="user-info-box">
       <div :style="{'background-image': 'url('+ avatar +')'}" class="user-head"/>
@@ -60,7 +60,7 @@ export default {
   line-height: 40px;
   text-align: center;
   color: #fff;
-  font-size: 20px;
+  font-size: 16px;
   background: rgba(0,0,0,.3);
 }
 .user-info-box{

@@ -14,19 +14,17 @@
         :key="index"
         class="exhibition-list">
         <div class="exhibition-cont">
-          <span class="svg-container">
-            <svg-icon :icon-class="list.svgClass" />
-          </span>
           <p class="title">{{ list.title }}</p>
           <p class="tips">{{ list.tips }}</p>
         </div>
       </el-col>
     </el-row>
 
-    <el-row v-if="device!=='mobile'" class="exhibition-box" type="flex" justify="space-around">
+    <el-row v-if="device!=='mobile'" class="exhibition-box" justify="space-around">
       <el-col
         v-for="(list, index) in exhibition"
-        :span="5"
+        :span="4"
+        :offset="3"
         :style="{
           'background': list.bgColor,
           'background': '-webkit-linear-gradient(left top, ' + gradientColor + ' , ' + list.bgColor + ')',
@@ -37,11 +35,11 @@
         :key="index"
         class="exhibition-list">
         <div class="exhibition-cont">
-          <span class="svg-container">
-            <svg-icon :icon-class="list.svgClass" />
-          </span>
           <p class="title">{{ list.title }}</p>
           <p class="tips">{{ list.tips }}</p>
+        </div>
+        <div class="exhibition-cont rotate">
+          <p class="tips">{{ list.rotateTips }}</p>
         </div>
       </el-col>
     </el-row>
@@ -57,19 +55,34 @@ export default {
       gradientColor: '#ccc',
       exhibition: [{
         bgColor: 'rgb(5, 171, 191)',
-        title: '内测托管',
-        tips: '一键上传应用，扫描二维码下载',
-        svgClass: 'tuoguan'
+        title: '立即信任',
+        tips: '下载后立即信任，省略多余步骤 方便安装使用',
+        rotateTips: '截图'
       }, {
         bgColor: 'rgb(94, 90, 226)',
-        title: '应用合并',
-        tips: '扫描同一个二维码，根据设备类型自动下载对应的IOS或Android应用',
-        svgClass: 'merge'
+        title: '大数据分析',
+        tips: '内测数据监控，实时掌握测试效果 实现精准推广，让每一份广告花的更有价值',
+        rotateTips: '数据柱状图 地域分析图 下载分析'
       }, {
         bgColor: 'rgb(54, 59, 61)',
-        title: '实名管理',
-        tips: '实名认证保证每个上传者在一个安全的环境中进行应用开发',
-        svgClass: 'realName'
+        title: '多模板',
+        tips: '500MB专网光纤， 多节点数据，只为快快快快！',
+        rotateTips: '【几套分发模板的图片展示】 精美模板 随意选择'
+      }, {
+        bgColor: 'rgb(122, 46, 30)',
+        title: '企业级宽带加速',
+        tips: '500MB专网光纤， 多节点数据，只为快快快快！',
+        rotateTips: '快，是一种态度'
+      }, {
+        bgColor: 'rgb(12, 202, 120)',
+        title: '高级防护',
+        tips: '保护客户隐私，让您测试无忧',
+        rotateTips: '锁住用户的一切信息不泄露'
+      }, {
+        bgColor: 'rgb(160, 90, 226)',
+        title: '多种套餐',
+        tips: '选择最适合你的，组合最优方案 省钱，实惠',
+        rotateTips: 'VIP包月套餐 高级VIP：188元 上传20个app 每日200下载点数 --适合局域分发,500MB光纤加速 至尊VIP：1688元 可上传100个app 每日2000下载点数--适合高压测试，用户量大，500MB专网光纤+CDN多节点加速，享受极速体验 付费点数：根据实际下载量，适当购买。 25元400点数 220元 4000 2000元 50000点'
       }]
     }
   },
@@ -91,19 +104,61 @@ export default {
   height: calc(100vh - 85px);
   overflow: auto;
   .exhibition-box{
-    padding-top: 10vh;
     text-align: center;
     margin: 0 !important;
     .exhibition-list{
-      height: 60vh;
+      height: 40vh;
       background-size: cover;
-      padding: 0 40px;
+      padding: 0 1vw;
       border-radius: 10px;
+      /*上面是基础样式，根据需求修改，下面的代码实现3d翻转效果*/
+      transform-style: preserve-3d;
+      transition: transform .6s;
+      margin-top: 4vh;
+      &:nth-of-type(1){
+        &:after{
+          background: url("/static/images/rotate-bg.png") center center;
+          background-size: cover;
+        }
+      }
+      &:after{
+        content: '';
+        position: absolute;
+        width:100%;
+        height:100%;
+        /*牌背面的图片*/
+        border-radius:10px;
+        /*将after伪类折叠到box的背面，作为牌的反面*/
+        top:0;
+        left: 0;
+        transform:rotateY(180deg);
+      }
+      &:hover{
+        transform:rotateY(180deg);
+        .exhibition-cont{
+          opacity: 0;
+        }
+      }
       .exhibition-cont{
         margin-top: 15vh;
         color: #fff;
-        .svg-container{
-          font-size: 10vh;
+        transition: all 1s;
+        &.rotate{
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          margin-top: 0;
+          opacity: 1;
+          display: table;    /*让标签元素以表格的形式呈现*/
+          transform:rotateY(180deg);
+          .tips{
+            text-align: center;
+            padding: 0 1vw 0;
+            display: table-cell;    /*ie7和ie6都不能识别 display: table-cell;*/
+            vertical-align: middle;
+          }
         }
       }
       .title{
