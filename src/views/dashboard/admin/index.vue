@@ -17,14 +17,17 @@
           <p class="title">{{ list.title }}</p>
           <p class="tips">{{ list.tips }}</p>
         </div>
+        <div class="exhibition-cont rotate">
+          <p class="tips" v-html="list.rotateTips"></p>
+        </div>
       </el-col>
     </el-row>
 
     <el-row v-if="device!=='mobile'" class="exhibition-box" justify="space-around">
       <el-col
         v-for="(list, index) in exhibition"
-        :span="4"
-        :offset="3"
+        :lg="{span: 4, offset: 3}"
+        :md="{span: 6, offset: 4}"
         :style="{
           'background': list.bgColor,
           'background': '-webkit-linear-gradient(left top, ' + gradientColor + ' , ' + list.bgColor + ')',
@@ -39,7 +42,7 @@
           <p class="tips">{{ list.tips }}</p>
         </div>
         <div class="exhibition-cont rotate">
-          <p class="tips">{{ list.rotateTips }}</p>
+          <p class="tips" v-html="list.rotateTips"></p>
         </div>
       </el-col>
     </el-row>
@@ -82,7 +85,7 @@ export default {
         bgColor: 'rgb(160, 90, 226)',
         title: '多种套餐',
         tips: '选择最适合你的，组合最优方案 省钱，实惠',
-        rotateTips: 'VIP包月套餐 高级VIP：188元 上传20个app 每日200下载点数 --适合局域分发,500MB光纤加速 至尊VIP：1688元 可上传100个app 每日2000下载点数--适合高压测试，用户量大，500MB专网光纤+CDN多节点加速，享受极速体验 付费点数：根据实际下载量，适当购买。 25元400点数 220元 4000 2000元 50000点'
+        rotateTips: 'VIP包月套餐 <p>高级VIP：188元 上传20个app 每日200下载点数 --适合局域分发,500MB光纤加速</p> 至尊VIP：1688元 可上传100个app 每日2000下载点数--适合高压测试，用户量大，500MB专网光纤+CDN多节点加速，享受极速体验 <p>付费点数：根据实际下载量，适当购买。 25元400点数 220元 4000 2000元 50000点</p>'
       }]
     }
   },
@@ -143,6 +146,7 @@ export default {
         margin-top: 15vh;
         color: #fff;
         transition: all 1s;
+        font-size: 16px;
         &.rotate{
           position: absolute;
           top: 0;
@@ -153,6 +157,7 @@ export default {
           opacity: 1;
           display: table;    /*让标签元素以表格的形式呈现*/
           transform:rotateY(180deg);
+          overflow: auto;
           .tips{
             text-align: center;
             padding: 0 1vw 0;
