@@ -297,3 +297,12 @@ export function checkOrderState(data) {
     params: data
   })
 }
+
+export function appSplit(data) {
+  return request({
+    url: '/v1/appSplit',
+    method: 'post',
+    headers: { 'token': getUserInfo().token },
+    params: data
+  })
+}

@@ -196,6 +196,12 @@
                 </span>
                 应用合并
               </el-button>
+              <el-button type="primary" style="margin-left: 0;" @click="appSplit">
+                <span class="svg-container">
+                  <svg-icon icon-class="split" />
+                </span>
+                应用拆分
+              </el-button>
             </el-col>
           </el-row>
         </el-tab-pane>
@@ -239,7 +245,7 @@
 </template>
 
 <script>
-import { getAppInfo, appVersionRemark, appStateUpdate, appUrlUpdate, appUpdate, imageUpload, userApp, appMerge, appStatistics } from '@/api/index'
+import { getAppInfo, appVersionRemark, appStateUpdate, appUrlUpdate, appUpdate, imageUpload, userApp, appMerge, appStatistics, appSplit } from '@/api/index'
 import { getUserInfo } from '@/utils/auth'
 import IframeLoading from '@/components/Loading/index'
 import Chart from './chart'
@@ -351,6 +357,40 @@ export default {
         _this.downTableData = result.city
       }).catch(error => {
         console.log(error)
+      })
+    },
+    appSplit() {
+      const _this = this
+      _this.$confirm('此操作将拆分应用, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        _this.loading = true
+        appSplit({
+          appId: _this.basicInfo.appId
+        }).then(res => {
+          _this.loading = false
+          const data = res.data
+          if (data.error !== 0) {
+            _this.$notify({
+              title: '操作失败',
+              message: data.reason,
+              type: 'error'
+            })
+            return
+          }
+          _this.$notify({
+            title: '操作成功',
+            message: '应用拆分成功',
+            type: 'success'
+          })
+          _this.getAppInfo()
+        }).catch(error => {
+          console.log(error)
+        })
+      }).catch(() => {
+
       })
     },
     appMerge() {
