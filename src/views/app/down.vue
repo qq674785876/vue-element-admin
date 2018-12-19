@@ -210,6 +210,7 @@ export default {
           return
         }
         _this.appInfo = result
+        window.document.title = result.appName
         if (_this.appInfo.background === 1) {
           _this.type = 'two'
         } else if (_this.appInfo.background === 2) {
