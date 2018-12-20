@@ -40,7 +40,11 @@
           <el-table-column
             prop="price"
             label="套餐价格"
-            width="120"/>
+            width="120">
+            <template slot-scope="scope">
+              {{ scope.row.price }}/月
+            </template>
+          </el-table-column>
         </el-table>
         <div align="right">
           购买数量：<el-input-number :precision="0" v-model="packageNum" :min="min" controls-position="right" style="width: 160px;margin-top: 15px;"/>

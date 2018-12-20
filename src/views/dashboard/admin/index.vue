@@ -18,7 +18,7 @@
           <p class="tips">{{ list.tips }}</p>
         </div>
         <div class="exhibition-cont rotate">
-          <p class="tips" v-html="list.rotateTips"></p>
+          <p class="tips" v-html="list.rotateTips"/>
         </div>
       </el-col>
     </el-row>
@@ -42,7 +42,7 @@
           <p class="tips">{{ list.tips }}</p>
         </div>
         <div class="exhibition-cont rotate">
-          <p class="tips" v-html="list.rotateTips"></p>
+          <p class="tips" v-html="list.rotateTips"/>
         </div>
       </el-col>
     </el-row>
@@ -60,7 +60,7 @@ export default {
         bgColor: 'rgb(5, 171, 191)',
         title: '立即信任',
         tips: '下载后立即信任，省略多余步骤 方便安装使用',
-        rotateTips: '截图'
+        rotateTips: ''
       }, {
         bgColor: 'rgb(94, 90, 226)',
         title: '大数据分析',
@@ -115,11 +115,16 @@ export default {
       padding: 0 1vw;
       border-radius: 10px;
       /*上面是基础样式，根据需求修改，下面的代码实现3d翻转效果*/
-      transform-style: preserve-3d;
+      -webkit-transform-style: preserve-3d;
+      -moz-transform-style:preserve-3d;
+      -o-transform-style:preserve-3d;
+      -ms-transform-style:preserve-3d;
       transition: transform .6s;
       margin-top: 4vh;
       &:nth-of-type(1){
         &:after{
+          opacity: 0;
+          transition: opacity .6s;
           background: url("/static/images/rotate-bg.png") center center;
           background-size: cover;
         }
@@ -134,12 +139,26 @@ export default {
         /*将after伪类折叠到box的背面，作为牌的反面*/
         top:0;
         left: 0;
-        transform:rotateY(180deg);
+        -webkit-transform:rotateY(180deg);
+        -moz-transform:rotateY(180deg);
+        -o-transform:rotateY(180deg);
+        -ms-transform:rotateY(180deg);
       }
       &:hover{
-        transform:rotateY(180deg);
+        -webkit-transform:rotateY(180deg);
+        -moz-transform:rotateY(180deg);
+        -o-transform:rotateY(180deg);
+        -ms-transform:rotateY(180deg);
         .exhibition-cont{
           opacity: 0;
+        }
+        .rotate{
+          opacity: 1 !important;
+        }
+        &:nth-of-type(1){
+          &:after{
+            opacity: 1;
+          }
         }
       }
       .exhibition-cont{
@@ -154,9 +173,12 @@ export default {
           width: 100%;
           height: 100%;
           margin-top: 0;
-          opacity: 1;
+          opacity: 0;
           display: table;    /*让标签元素以表格的形式呈现*/
-          transform:rotateY(180deg);
+          -webkit-transform:rotateY(180deg);
+          -moz-transform:rotateY(180deg);
+          -o-transform:rotateY(180deg);
+          -ms-transform:rotateY(180deg);
           overflow: auto;
           .tips{
             text-align: center;
