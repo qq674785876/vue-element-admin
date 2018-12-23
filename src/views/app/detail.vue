@@ -141,7 +141,7 @@
                 </el-row>
                 <p v-if="basicInfo.background === -1">点击上传下载模板:</p>
                 <p v-else>模板参考:</p>
-                <el-card v-if="index !== 3 && basicInfo.background !== -1" v-for="(list, index) in templateList" :key="index" shadow="hover">
+                <el-card v-for="(list, index) in templateList" v-if="index !== 3 && basicInfo.background !== -1" :key="index" shadow="hover">
                   模板{{ index+1 }}
                   <img :src="list.img">
                   <div class="img-set-box">
@@ -151,12 +151,12 @@
                 <el-card v-if="basicInfo.background === -1">
                   <el-upload
                     :before-upload="appImageUploadCustom"
+                    :show-file-list="false"
                     class="avatar-uploader"
                     action="https://jsonplaceholder.typicode.com/posts/"
-                    :show-file-list="false"
                     list-type="picture">
-                    <img :src="customImage" v-if="customImage">
-                    <i class="el-icon-plus" v-else/>
+                    <img v-if="customImage" :src="customImage">
+                    <i v-else class="el-icon-plus"/>
                   </el-upload>
                 </el-card>
                 <el-row style="margin-top: 50px;">
@@ -689,7 +689,7 @@ export default {
 
       return false
     },
-    appImageUploadCustom(file){
+    appImageUploadCustom(file) {
       const _this = this
       // return isLt2M;
       // return isJPG && isLt2M;

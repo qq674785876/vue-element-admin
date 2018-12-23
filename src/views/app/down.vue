@@ -41,7 +41,7 @@
       <el-row v-if="appInfo.describe || appInfo.appImage.length !== 0" class="detailBox">
         <div v-if="appInfo.describe">
           <p class="title">应用描述</p>
-          <p class="describeText" v-html="appInfo.describe"></p>
+          <p class="describeText" v-html="appInfo.describe"/>
         </div>
         <div v-if="appInfo.appImage.length !== 0">
           <p class="title">应用截图</p>
@@ -212,10 +212,10 @@ export default {
           return
         }
         _this.appInfo = result
-        let describeArr = result.describe.split('\n')
+        const describeArr = result.describe.split('\n')
         let describeText = ''
-        for(var i = 0; i < describeArr.length; i++){
-          if(i > 0) describeText += '<br />'
+        for (var i = 0; i < describeArr.length; i++) {
+          if (i > 0) describeText += '<br />'
           describeText += describeArr[0]
         }
         _this.appInfo.describe = describeText
@@ -224,7 +224,7 @@ export default {
           _this.type = 'two'
         } else if (_this.appInfo.background === 2) {
           _this.type = 'three'
-        } else if(_this.appInfo.background === -1){
+        } else if (_this.appInfo.background === -1) {
           _this.type = 'custom'
         }
         _this.isShowButton = _this.appInfo.platform.indexOf(_this.appType) > -1
