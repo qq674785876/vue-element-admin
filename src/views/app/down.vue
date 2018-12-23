@@ -1,5 +1,5 @@
 <template>
-  <div v-loading="loading" :class="[type, { mobile: versions().mobile }]" element-loading-background="rgba(0, 0, 0, 0.3)" class="down-container">
+  <div v-loading="loading" :class="[type, { mobile: versions().mobile }]" :style="{'background-image': (appInfo.background === -1 ? 'url('+ appInfo.backgroundUrl +')' : 'transparent') }" element-loading-background="rgba(0, 0, 0, 0.3)" class="down-container">
     <div v-if="type === 'three' && versions().mobile">
       <span class="pattern left">
         <img src="/static/images/left.png">
@@ -41,7 +41,7 @@
       <el-row v-if="appInfo.describe || appInfo.appImage.length !== 0" class="detailBox">
         <div v-if="appInfo.describe">
           <p class="title">应用描述</p>
-          <p>{{ appInfo.describe }}</p>
+          <p class="describeText" v-html="appInfo.describe"></p>
         </div>
         <div v-if="appInfo.appImage.length !== 0">
           <p class="title">应用截图</p>
@@ -74,7 +74,9 @@ export default {
       cert: '',
       appId: this.$route.params.id,
       updateTime: '',
-      appInfo: {},
+      appInfo: {
+        appImage: []
+      },
       lat: '',
       lng: '',
       isShowButton: false,
@@ -210,11 +212,20 @@ export default {
           return
         }
         _this.appInfo = result
+        let describeArr = result.describe.split('\n')
+        let describeText = ''
+        for(var i = 0; i < describeArr.length; i++){
+          if(i > 0) describeText += '<br />'
+          describeText += describeArr[0]
+        }
+        _this.appInfo.describe = describeText
         window.document.title = result.appName
         if (_this.appInfo.background === 1) {
           _this.type = 'two'
         } else if (_this.appInfo.background === 2) {
           _this.type = 'three'
+        } else if(_this.appInfo.background === -1){
+          _this.type = 'custom'
         }
         _this.isShowButton = _this.appInfo.platform.indexOf(_this.appType) > -1
       }).catch(error => {
@@ -265,6 +276,10 @@ html,body{
     }
     .detailBox{
       padding-bottom: 5vh;
+      .describeText{
+        text-align: left;
+        padding: 0 2vw;
+      }
       p{
         color: #666;
       }
@@ -489,6 +504,8 @@ html,body{
         color: #fff;
         border-color: #fff;
       }
+    }
+    &.custom{
     }
     &.three{
       background: #fff;

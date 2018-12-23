@@ -139,13 +139,25 @@
                       :value="item.value"/>
                   </el-select>
                 </el-row>
-                <p>模板参考:</p>
-                <el-card v-for="(list, index) in templateList" :key="index" shadow="hover">
+                <p v-if="basicInfo.background === -1">点击上传下载模板:</p>
+                <p v-else>模板参考:</p>
+                <el-card v-if="index !== 3 && basicInfo.background !== -1" v-for="(list, index) in templateList" :key="index" shadow="hover">
                   模板{{ index+1 }}
                   <img :src="list.img">
                   <div class="img-set-box">
                     <i class="el-icon-zoom-in" @click="handlePictureCardPreview(list.img)"/>
                   </div>
+                </el-card>
+                <el-card v-if="basicInfo.background === -1">
+                  <el-upload
+                    :before-upload="appImageUploadCustom"
+                    class="avatar-uploader"
+                    action="https://jsonplaceholder.typicode.com/posts/"
+                    :show-file-list="false"
+                    list-type="picture">
+                    <img :src="customImage" v-if="customImage">
+                    <i class="el-icon-plus" v-else/>
+                  </el-upload>
                 </el-card>
                 <el-row style="margin-top: 50px;">
                   <el-button class="updateApp" type="primary" size="mini" @click="appUpdate">更新应用信息</el-button>
@@ -264,6 +276,7 @@ export default {
       selectAppIndex: null,
       dialogImageVisible: false,
       dialogImageUrl: '',
+      customImage: '',
       uploadApi: process.env.BASE_API + '/v1/appUpload',
       isLoading: false,
       uploadPercent: 0,
@@ -290,6 +303,10 @@ export default {
         label: '模板3',
         value: 2,
         img: '/static/images/mb-3.jpg'
+      }, {
+        label: '自定义模板',
+        value: -1,
+        img: ''
       }],
       basicInfo: {
         // appIcon: "http://api.ublog.top/uploads/tmp/d4c7b67c1c7c259c538be2d8704e3e46/res/mipmap-hdpi-v4/ic_launcher.png",
@@ -450,7 +467,8 @@ export default {
         appIcon: _this.basicInfo.editAppIcon,
         describe: _this.basicInfo.describe,
         appImage: _this.basicInfo.appImageStr,
-        background: _this.basicInfo.background
+        background: _this.basicInfo.background,
+        backgroundUrl: _this.customImage
       }).then(res => {
         _this.loading = false
         const data = res.data
@@ -604,6 +622,7 @@ export default {
         result.editAppIcon = result.appIcon
         result.appImageStr = result.appImage.join(',')
         _this.basicInfo = result
+        _this.customImage = result.backgroundUrl
         _this.userApp()
       }).catch(error => {
         console.log(error)
@@ -665,6 +684,21 @@ export default {
       if (_this.isImgFlag(file)) {
         _this.uploadImg(file, (result) => {
           _this.basicInfo.editAppIcon = result.viewUrl
+        })
+      }
+
+      return false
+    },
+    appImageUploadCustom(file){
+      const _this = this
+      // return isLt2M;
+      // return isJPG && isLt2M;
+
+      if (_this.isImgFlag(file)) {
+        _this.uploadImg(file, (result) => {
+          console.log(result.viewUrl)
+          _this.customImage = result.viewUrl
+          _this.basicInfo.backrgoundUrl = result.viewUrl
         })
       }
 
