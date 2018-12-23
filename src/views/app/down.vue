@@ -37,7 +37,7 @@
       <div v-if="versions().weixin" class="pop">
         <p>请点击右上角选择用浏览器打开</p>
       </div>
-      <el-row v-if="!versions().mobile" class="copyright">copyright © 2018 TaPK内测侠 All rights Reserved</el-row>
+      <el-row v-if="!versions().mobile" class="copyright">copyright © 2018 火柴内测分发 All rights Reserved</el-row>
       <el-row v-if="appInfo.describe || appInfo.appImage.length !== 0" class="detailBox">
         <div v-if="appInfo.describe">
           <p class="title">应用描述</p>
