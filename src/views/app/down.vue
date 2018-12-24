@@ -216,7 +216,7 @@ export default {
         let describeText = ''
         for(var i = 0; i < describeArr.length; i++){
           if(i > 0) describeText += '<br />'
-          describeText += describeArr[0]
+          describeText += describeArr[i]
         }
         _this.appInfo.describe = describeText
         window.document.title = result.appName
