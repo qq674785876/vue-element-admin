@@ -139,7 +139,7 @@
                       :value="item.value"/>
                   </el-select>
                 </el-row>
-                <p v-if="basicInfo.background === -1">点击上传下载模板:</p>
+                <p v-if="basicInfo.background === -1">点击下方上传模板：建议尺寸(360 * 640)</p>
                 <p v-else>模板参考:</p>
                 <el-card v-for="(list, index) in templateList" v-if="index !== 3 && basicInfo.background !== -1" :key="index" shadow="hover">
                   模板{{ index+1 }}
