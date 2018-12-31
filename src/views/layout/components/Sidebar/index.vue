@@ -1,7 +1,7 @@
 <template>
   <el-scrollbar wrap-class="scrollbar-wrapper">
     <el-row class="topTips">
-      火柴内测分发
+      TaPK内测侠
     </el-row>
     <el-row class="user-info-box">
       <div :style="{'background-image': 'url('+ avatar +')'}" class="user-head"/>

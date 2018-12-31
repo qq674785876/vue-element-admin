@@ -73,7 +73,7 @@ export default {
     size: '布局大小'
   },
   login: {
-    title: '火柴内测分发',
+    title: 'TaPK内测侠',
     logIn: '登 录',
     username: '请输入邮箱',
     password: '请输入登陆密码',
