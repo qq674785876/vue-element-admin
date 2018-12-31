@@ -29,6 +29,7 @@ router.beforeEach((to, from, next) => {
     next()
     return
   }
+  document.title = '火柴内测分发'
   if (userInfo !== undefined && userInfo && userInfo !== 'undefined' && userInfo !== '') {
     if (to.path === '/login') {
       next()
