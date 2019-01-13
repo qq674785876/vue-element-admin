@@ -34,6 +34,9 @@
         下载安装
       </el-button>
       <el-button v-if="isDown" class="mobileBtn" round @click="goTrust">立即信任</el-button>
+      <div class="statement-box">
+        请您在下载前仔细阅读此<a href="javascript:;" @click="dialogVisible = true">《免责声明》</a>
+      </div>
       <div v-if="versions().weixin" class="pop">
         <p>请点击右上角选择用浏览器打开</p>
       </div>
@@ -54,6 +57,11 @@
     <el-dialog :visible.sync="dialogImageVisible" class="imgDialog" height="500">
       <img :src="dialogImageUrl" width="100%" alt="">
     </el-dialog>
+    <el-dialog :visible.sync="dialogVisible" title="免责声明" class="statement-dialog" width="90%">
+      <div class="cont-box">
+        介于本平台所有内测应用都由第三方客户自主上传，请您仔细甄别您所下载的应用是否违规，违法，涉黄，等有危害国家利益的行为。如有发现，请及时举报。并对于已经造成既定危害的应用，均由第三方上传客户承担。一切最终解释权归本公司所有。
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -70,6 +78,7 @@ export default {
       loading: false,
       btnLoading: false,
       isDown: false,
+      dialogVisible: false,
       type: '',
       cert: '',
       appId: this.$route.params.id,
@@ -239,6 +248,11 @@ export default {
 <style rel="stylesheet/scss" lang="scss">
 html,body{
   overflow: hidden !important;
+}
+.statement-dialog{
+  .el-dialog{
+    margin-top: 30vh !important;
+  }
 }
 .down-container{
   text-align: center;
@@ -441,6 +455,13 @@ html,body{
       top: 10vh;
       background: transparent;
       color: #fff;
+    }
+    .statement-box{
+      position: relative;
+      top: 20vh;
+      a{
+        color: blue;
+      }
     }
     .detailBox{
       border-top: 1px solid #fff;
