@@ -42,7 +42,8 @@
             label="套餐价格"
             width="120">
             <template slot-scope="scope">
-              {{ scope.row.price }}/月
+              <span v-if="scope.row.packageType === 1">{{ scope.row.price }}</span>
+              <span v-else>{{ scope.row.price }}/月</span>
             </template>
           </el-table-column>
         </el-table>

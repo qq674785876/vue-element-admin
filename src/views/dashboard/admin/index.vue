@@ -4,13 +4,6 @@
       <el-col
         v-for="(list, index) in exhibition"
         :span="24"
-        :style="{
-          'background': list.bgColor,
-          'background': '-webkit-linear-gradient(left top, ' + gradientColor + ' , ' + list.bgColor + ')',
-          'background': '-o-linear-gradient(bottom right, ' + gradientColor + ', ' + list.bgColor + ')',
-          'background': '-moz-linear-gradient(bottom right, ' + gradientColor + ', ' + list.bgColor + ')',
-          'background': 'linear-gradient(to bottom right, ' + gradientColor + ' , ' + list.bgColor + ')',
-        }"
         :key="index"
         class="exhibition-list">
         <div class="exhibition-cont">
@@ -28,13 +21,6 @@
         v-for="(list, index) in exhibition"
         :lg="{span: 4, offset: 3}"
         :md="{span: 6, offset: 4}"
-        :style="{
-          'background': list.bgColor,
-          'background': '-webkit-linear-gradient(left top, ' + gradientColor + ' , ' + list.bgColor + ')',
-          'background': '-o-linear-gradient(bottom right, ' + gradientColor + ', ' + list.bgColor + ')',
-          'background': '-moz-linear-gradient(bottom right, ' + gradientColor + ', ' + list.bgColor + ')',
-          'background': 'linear-gradient(to bottom right, ' + gradientColor + ' , ' + list.bgColor + ')',
-        }"
         :key="index"
         class="exhibition-list">
         <div class="exhibition-cont">
@@ -122,12 +108,52 @@ export default {
       transition: transform .6s;
       margin-top: 4vh;
       &:nth-of-type(1){
+        background: rgb(5, 171, 191);
+        background: -webkit-linear-gradient(left top, #ccc,rgb(5, 171, 191));
+        background: -o-linear-gradient(bottom right,#ccc,rgb(5, 171, 191));
+        background: -moz-linear-gradient(bottom right,#ccc, rgb(5, 171, 191));
+        background: linear-gradient(to bottom right,#ccc,rgb(5, 171, 191));
         &:after{
           opacity: 0;
           transition: opacity .6s;
           background: url("/static/images/rotate-bg.png") center center;
           background-size: cover;
         }
+      }
+      &:nth-of-type(2){
+        background: rgb(94, 90, 226);
+        background: -webkit-linear-gradient(left top, #ccc,rgb(94, 90, 226));
+        background: -o-linear-gradient(bottom right,#ccc,rgb(94, 90, 226));
+        background: -moz-linear-gradient(bottom right,#ccc, rgb(94, 90, 226));
+        background: linear-gradient(to bottom right,#ccc,rgb(94, 90, 226));
+      }
+      &:nth-of-type(3){
+        background: rgb(54, 59, 61);
+        background: -webkit-linear-gradient(left top, #ccc,rgb(54, 59, 61));
+        background: -o-linear-gradient(bottom right,#ccc,rgb(54, 59, 61));
+        background: -moz-linear-gradient(bottom right,#ccc, rgb(54, 59, 61));
+        background: linear-gradient(to bottom right,#ccc,rgb(54, 59, 61));
+      }
+      &:nth-of-type(4){
+        background: rgb(122, 46, 30);
+        background: -webkit-linear-gradient(left top, #ccc,rgb(122, 46, 30));
+        background: -o-linear-gradient(bottom right,#ccc,rgb(122, 46, 30));
+        background: -moz-linear-gradient(bottom right,#ccc, rgb(122, 46, 30));
+        background: linear-gradient(to bottom right,#ccc,rgb(122, 46, 30));
+      }
+      &:nth-of-type(5){
+        background: rgb(12, 202, 120);
+        background: -webkit-linear-gradient(left top, #ccc,rgb(12, 202, 120));
+        background: -o-linear-gradient(bottom right,#ccc,rgb(12, 202, 120));
+        background: -moz-linear-gradient(bottom right,#ccc, rgb(12, 202, 120));
+        background: linear-gradient(to bottom right,#ccc,rgb(12, 202, 120));
+      }
+      &:nth-of-type(6){
+        background: rgb(160, 90, 226);
+        background: -webkit-linear-gradient(left top, #ccc,rgb(160, 90, 226));
+        background: -o-linear-gradient(bottom right,#ccc,rgb(160, 90, 226));
+        background: -moz-linear-gradient(bottom right,#ccc, rgb(160, 90, 226));
+        background: linear-gradient(to bottom right,#ccc,rgb(160, 90, 226));
       }
       &:after{
         content: '';
