@@ -88,7 +88,7 @@ export default {
   mounted() {
     const _this = this
     let timer = null
-    _this.getPosition()
+    // _this.getPosition()
     _this.appDownInfo()
     window.onresize = function() {
       clearTimeout(timer)

@@ -217,7 +217,7 @@
             </el-col>
           </el-row>
         </el-tab-pane>
-        <el-tab-pane name="tap5" label="数据分析">
+        <!--<el-tab-pane name="tap5" label="数据分析">
           <div class="down-trend chart-box">
             <p class="top">
               下载趋势图
@@ -245,7 +245,7 @@
                 label="下载数量"/>
             </el-table>
           </div>
-        </el-tab-pane>
+        </el-tab-pane>-->
       </el-tabs>
     </div>
     <component :is="currentRole" :dialog-visible="dialogVisible" :app-id="appId" @handleClose="handleClose"/>

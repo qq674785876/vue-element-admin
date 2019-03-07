@@ -62,31 +62,32 @@ export const constantRouterMap = [
     component: () => import('@/views/errorPage/401'),
     hidden: true
   },
+  // {
+  //   path: '',
+  //   component: Layout,
+  //   redirect: 'dashboard',
+  //   children: [
+  //     {
+  //       path: 'dashboard',
+  //       component: () => import('@/views/dashboard/index'),
+  //       name: 'Dashboard',
+  //       meta: { title: 'dashboard', icon: 'index', noCache: true }
+  //     }
+  //   ]
+  // },
   {
     path: '',
     component: Layout,
-    redirect: 'dashboard',
+    redirect: 'app/index',
     children: [
       {
-        path: 'dashboard',
-        component: () => import('@/views/dashboard/index'),
-        name: 'Dashboard',
-        meta: { title: 'dashboard', icon: 'index', noCache: true }
-      }
-    ]
-  },
-  {
-    path: '/app',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
+        path: 'app/index',
         component: () => import('@/views/app/index'),
         name: 'App',
         meta: { title: '应用管理', icon: 'app', noCache: true }
       },
       {
-        path: 'detail/:id',
+        path: 'app/detail/:id',
         component: () => import('@/views/app/detail'),
         name: 'Detail',
         meta: { title: '应用详情', noCache: true },
@@ -110,6 +111,18 @@ export const constantRouterMap = [
         component: () => import('@/views/set/index'),
         name: 'Set',
         meta: { title: '通知设置', icon: 'set', noCache: true }
+      }
+    ]
+  },
+  {
+    path: '/ad',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/advertisement/index'),
+        name: 'Ad',
+        meta: { title: '广告列表', icon: 'ad', noCache: true }
       }
     ]
   },
