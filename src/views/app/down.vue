@@ -37,7 +37,7 @@
       <div v-if="versions().weixin" class="pop">
         <p>请点击右上角选择用浏览器打开</p>
       </div>
-      <el-row v-if="!versions().mobile" class="copyright">copyright © 2018 TaPK内测侠 All rights Reserved</el-row>
+      <el-row v-if="!versions().mobile" class="copyright">copyright © 2018 火柴内测分发 All rights Reserved</el-row>
       <el-row v-if="appInfo.describe || appInfo.appImage.length !== 0" class="detailBox">
         <div v-if="appInfo.describe">
           <p class="title">应用描述</p>
@@ -51,6 +51,19 @@
         </div>
       </el-row>
     </div>
+    <div class="ad-box" v-if="!isShowFine && versions().mobile">
+      <img :src="advertList[0].appIcon" alt="">
+      <span>{{advertList[0].description}}</span>
+      <el-button size="mini" type="primary" @click="getPreview(advertList[0].sortUrl)">查看</el-button>
+    </div>
+    <div class="ad-container" v-if="versions().mobile && isShowFine">
+      <p class="title">精品推荐</p>
+      <div class="ad-list" v-for="(ad, index) in advertList" @click="getPreview(ad.sortUrl)">
+        <img :src="ad.appIcon" alt="">
+        <p class="name">{{ad.appName}}</p>
+        <p class="desc">{{ad.description}}</p>
+      </div>
+    </div>
     <el-dialog :visible.sync="dialogImageVisible" class="imgDialog" height="500">
       <img :src="dialogImageUrl" width="100%" alt="">
     </el-dialog>
@@ -58,7 +71,7 @@
 </template>
 
 <script>
-import { appDownInfo, appDownUrl } from '@/api/index'
+import { appDownInfo, appDownUrl,advert } from '@/api/index'
 
 export default {
   name: 'Down',
@@ -70,6 +83,7 @@ export default {
       loading: false,
       btnLoading: false,
       isDown: false,
+      isShowFine: false,
       type: '',
       cert: '',
       appId: this.$route.params.id,
@@ -77,6 +91,7 @@ export default {
       appInfo: {
         appImage: []
       },
+      advertList: [],
       lat: '',
       lng: '',
       isShowButton: false,
@@ -96,8 +111,14 @@ export default {
         window.location.reload()
       }, 100)
     }
+    _this.advert(4);
   },
   methods: {
+    getPreview(sortUrl) {
+      // this.$router.push('/' + sortUrl)
+      window.location.href = '/#/' + sortUrl;
+      window.location.reload();
+    },
     handlePictureCardPreview(img) {
       this.dialogImageUrl = img
       this.dialogImageVisible = true
@@ -184,6 +205,7 @@ export default {
         _this.cert = result.cert
         if (_this.appType === 'ios') {
           _this.btnLoading = true
+          _this.isShowFine = true
           clearTimeout(timer)
           timer = setTimeout(function() {
             _this.btnLoading = false
@@ -228,6 +250,29 @@ export default {
           _this.type = 'custom'
         }
         _this.isShowButton = _this.appInfo.platform.indexOf(_this.appType) > -1
+      }).catch(error => {
+        console.log(error)
+      })
+    },
+    advert(number) {
+      const _this = this
+      _this.loading = true
+      advert({
+        appId: _this.appId,
+        number: number
+      }).then(res => {
+        _this.loading = false
+        const data = res.data
+        const result = data.result
+        if (data.error !== 0) {
+          _this.$notify({
+            title: '查询失败',
+            message: data.reason,
+            type: 'error'
+          })
+          return
+        }
+        _this.advertList = result
       }).catch(error => {
         console.log(error)
       })
@@ -355,6 +400,70 @@ html,body{
         z-index: 99;
         transition: .4s;
       }
+    }
+  }
+  .ad-container{
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    padding: 15px 30px;
+    background-color: rgba(0, 0, 0, .6);
+    .title{
+      font-size: 20px;
+      text-align: center;
+      padding-bottom: 15px;
+    }
+    .ad-list{
+      float: left;
+      width: calc(50% - 15px);
+      margin-bottom: 15px;
+      padding: 15px 0;
+      border-radius: 10px;
+      background-color: #eee;
+      &:nth-of-type(2n+1){
+        margin-right: 30px;
+      }
+      & > img{
+        width: 30%;
+      }
+      .name{
+        margin: 5px 0;
+        font-size: 16px;
+        color: #333;
+      }
+      .desc{
+        margin: 5px 0;
+        font-size: 12px;
+        color: #666;
+      }
+    }
+  }
+  .ad-box{
+    position: fixed;
+    bottom: 0;
+    padding: 10px;
+    height: 60px;
+    line-height: 60px;
+    width: 100%;
+    background-color: rgba(0,0,0,.3);
+    text-align: left;
+    & > img{
+      height: 100%;
+    }
+    & > .el-button{
+      position: absolute;
+      right: 10px;
+      top: -5px;
+    }
+    & > span{
+      line-height: 40px;
+      padding-left: 10px;
+      display: inline-block;
+      vertical-align: top;
+      width: calc(100% - 80px);
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
     }
   }
   .copyright{

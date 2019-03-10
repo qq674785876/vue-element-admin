@@ -306,3 +306,54 @@ export function appSplit(data) {
     params: data
   })
 }
+
+export function seoList(data) {
+  return request({
+    url: '/v1/seoList',
+    method: 'get',
+    headers: { 'token': getUserInfo().token },
+    params: data
+  })
+}
+
+/* 广告套餐列表 */
+export function packageInfo(data) {
+  return request({
+    url: '/v1/PackageInfo',
+    method: 'get',
+    headers: { 'token': getUserInfo().token },
+    params: data
+  })
+}
+export function seoPackageBuy(obj) {
+  const data = obj
+  return request({
+    url: '/v1/seoPackageBuy',
+    method: 'post',
+    headers: { 'token': getUserInfo().token },
+    params: data
+  })
+}
+export function advert(data) {
+  return request({
+    url: '/v1/advert',
+    method: 'get',
+    params: data
+  })
+}
+export function checkBuySeo() {
+  return request({
+    url: '/v1/checkBuySeo',
+    method: 'get',
+    headers: { 'token': getUserInfo().token },
+  })
+}
+export function updateApp(obj) {
+  const data = obj
+  return request({
+    url: '/v1/updateApp',
+    method: 'post',
+    headers: { 'token': getUserInfo().token },
+    params: data
+  })
+}

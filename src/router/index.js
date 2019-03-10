@@ -122,7 +122,7 @@ export const constantRouterMap = [
         path: 'index',
         component: () => import('@/views/advertisement/index'),
         name: 'Ad',
-        meta: { title: '广告列表', icon: 'ad', noCache: true }
+        meta: { title: '推广列表', icon: 'ad', noCache: true }
       }
     ]
   },

@@ -122,11 +122,17 @@
       @handleClose="handleClose"
       @submitUpload="submitUpload"/>
     <iframe-loading v-show="isLoading" :loading-src="loadingSrc" :progress-bar="uploadPercent"/>
+    <div class="seo-tips" v-if="isShowSeo">
+      您还没有体验平台的推广，您可以马上设置您的专属推广，让您的应用获得更多展现机会
+      <router-link :to="'/ad/index'">
+        <a href="javascript:;" class="user-set">立即设置</a>
+      </router-link>
+    </div>
   </div>
 </template>
 
 <script>
-import { getAppList, appDelete, getUserDetails } from '@/api/index'
+import { getAppList, appDelete, getUserDetails,checkBuySeo  } from '@/api/index'
 import { getUserInfo } from '@/utils/auth'
 import IframeLoading from '@/components/Loading/index'
 import Preview from './preview'
@@ -138,6 +144,7 @@ export default {
   data() {
     return {
       loading: false,
+      isShowSeo: false,
       currentRole: '',
       userInfo: {},
       dialogTitle: '',
@@ -167,6 +174,7 @@ export default {
     // },1000)
     this.getAppList()
     this.getUserDetails()
+    this.checkBuySeo()
   },
   methods: {
     // handleSizeChange() {
@@ -175,6 +183,20 @@ export default {
     // handleCurrentChange() {
     //   this.getAppList()
     // },
+    checkBuySeo(){
+      const _this = this
+      _this.loading = true
+      checkBuySeo().then(res => {
+        const data = res.data
+        const result = data.result
+        if (data.error !== 0) {
+          _this.isShowSeo = true
+          return
+        }
+      }).catch(error => {
+        console.log(error)
+      })
+    },
     getUserDetails() {
       const _this = this
       _this.loading = true
@@ -341,6 +363,21 @@ export default {
 .app-container {
   height: calc(100vh - 85px);
   overflow: hidden;
+  .seo-tips{
+    position: fixed;
+    top: 0;
+    height: 30px;
+    line-height: 30px;
+    color: #fff;
+    background-color: rgba(0,0,0,.3);
+    width: 100%;
+    left: 0;
+    z-index: 9999;
+    text-align: center;
+    a{
+      color: blue;
+    }
+  }
   .svg-container.android{
   }
   .searchAndInfo{
