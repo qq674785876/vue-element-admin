@@ -51,14 +51,14 @@
         </div>
       </el-row>
     </div>
-    <div class="ad-box" v-if="!isShowFine && versions().mobile">
+    <div class="ad-box" v-if="advertList.length > 0 && !isShowFine && versions().mobile">
       <img :src="advertList[0].appIcon" alt="">
       <span>{{advertList[0].description}}</span>
       <el-button size="mini" type="primary" @click="getPreview(advertList[0].sortUrl)">查看</el-button>
     </div>
     <div class="ad-container" v-if="versions().mobile && isShowFine">
       <p class="title">精品推荐</p>
-      <div class="ad-list" v-for="(ad, index) in advertList" @click="getPreview(ad.sortUrl)">
+      <div class="ad-list" v-for="(ad, index) in advertList" :key="index" @click="getPreview(ad.sortUrl)">
         <img :src="ad.appIcon" alt="">
         <p class="name">{{ad.appName}}</p>
         <p class="desc">{{ad.description}}</p>
@@ -100,6 +100,11 @@ export default {
       appType: this.versions().ios ? 'ios' : 'android'
     }
   },
+  watch:{
+    $route(to,from){
+      window.location.reload()
+    }
+  },
   mounted() {
     const _this = this
     let timer = null
@@ -112,6 +117,7 @@ export default {
       }, 100)
     }
     _this.advert(4);
+    // _this.isShowFine = true
   },
   methods: {
     getPreview(sortUrl) {
@@ -404,10 +410,12 @@ html,body{
   }
   .ad-container{
     position: fixed;
+    left: 0;
     bottom: 0;
     width: 100%;
     padding: 15px 30px;
     background-color: rgba(0, 0, 0, .6);
+    z-index: 999999;
     .title{
       font-size: 20px;
       text-align: center;
@@ -435,11 +443,13 @@ html,body{
         margin: 5px 0;
         font-size: 12px;
         color: #666;
+        min-height: 14px;
       }
     }
   }
   .ad-box{
     position: fixed;
+    left: 0;
     bottom: 0;
     padding: 10px;
     height: 60px;
@@ -447,6 +457,7 @@ html,body{
     width: 100%;
     background-color: rgba(0,0,0,.3);
     text-align: left;
+    z-index: 999999;
     & > img{
       height: 100%;
     }
