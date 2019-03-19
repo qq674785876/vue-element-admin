@@ -72,7 +72,10 @@
       :dialog-title="dialogTitle"
       :dialog-visible="dialogVisible"
       :oldId="oldId"
-      :oldFrequency="oldFrequency"
+      :oldType="oldType"
+      :oldEndTime="oldEndTime"
+      :oldPackageType="oldPackageType"
+      :oldTotal="oldTotal"
       @handleClose="handleClose"/>
     <el-dialog
       :title="setTitle"
@@ -123,7 +126,11 @@ export default {
       setDialogVisible: false,
       applist: [],
       oldId: '',
-      oldFrequency: 0,
+      oldPackageType: '',
+      oldEndTime: '',
+      oldTotal: 0,
+      oldType: 0,
+      // oldFrequency: '',
       noticeList: [],
       setListId: '',
       form: {
@@ -186,7 +193,11 @@ export default {
       _this.dialogVisible = true;
       if(row){
         _this.oldId = row.id.toString();
-        _this.oldFrequency = row.frequency;
+        _this.oldEndTime = row.endTime;
+        _this.oldPackageType = row.packageType;
+        _this.oldTotal = row.total
+        _this.oldType = row.type
+        // _this.oldFrequency = row.frequency;
       }
     },
     saveSet(){
