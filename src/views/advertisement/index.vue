@@ -191,6 +191,7 @@ export default {
       var _this = this;
       _this.currentRole = 'adPackage';
       _this.dialogVisible = true;
+      _this.oldId = '';
       if(row){
         _this.oldId = row.id.toString();
         _this.oldEndTime = row.endTime;
