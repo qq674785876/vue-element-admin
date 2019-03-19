@@ -19,7 +19,7 @@
             <el-radio-button label="1">屏蔽广告</el-radio-button>
           </el-radio-group>
         </el-row>
-        <el-row class="package-info" v-if="adType == 0">
+        <el-row class="package-info" v-if="adType !== 2">
           <div>
             <span class="title">展示预览图</span>
             <div>
@@ -41,7 +41,7 @@
                 </div>
               </el-card>
             </div>
-            <p style="color: red;" v-if="adType === 0 && adModel && adModelId === adModel[0].propertyId">温馨提示：模式一无法提供安卓应用的推广，如果只有安卓应用，选择模式一则没有效果。请谨慎选择。</p>
+            <p style="color: red;" v-if="adType !==2 && adModel && adModelId === adModel[0].propertyId">温馨提示：模式一无法提供安卓应用的推广，如果只有安卓应用，选择模式一则没有效果。请谨慎选择。</p>
           </div>
           <div>
             <span class="title">展示时间</span>
@@ -83,7 +83,7 @@
       </div>
       <div v-if="isPuySuccess" align="center"><i class="el-icon-success" style="font-size: 50px;color: green;"/><p>套餐购买成功</p></div>
       <span slot="footer" class="dialog-footer">
-        <p v-if="!isGet && adType === 0">{{adModelPrice + '+' + monthPrice + '+' + frequencyPrice + '=' + buyPrice}}</p>
+        <p v-if="!isGet && adType !== 2">{{adModelPrice + '+' + monthPrice + '+' + frequencyPrice + '=' + buyPrice}}</p>
         <el-button v-if="!isGet" @click="handleClose">取 消</el-button>
         <el-button v-if="!isGet" type="primary" @click="getPackage">确 定</el-button>
         <el-button v-if="isGet" @click="prev">返 回</el-button>
@@ -290,9 +290,9 @@ export default {
       //   this.$message('无法降低套餐频率等级，请重新选择')
       //   return;
       // }
-      if (!_this.monthId && _this.adType === 0) {
+      if (!_this.monthId && _this.adType !== 2) {
         this.$message('请选择套餐时间')
-      } else if(!_this.frequencyId && _this.adType === 0) {
+      } else if(!_this.frequencyId && _this.adType !== 2) {
         this.$message('请选择套餐频率')
       }else{
         _this.seoPackageBuy()
