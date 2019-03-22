@@ -116,7 +116,7 @@ export default {
         window.location.reload()
       }, 100)
     }
-    _this.advert(4);
+    _this.advert(1);
     // _this.isShowFine = true
   },
   methods: {
@@ -210,8 +210,8 @@ export default {
         location.href = result.url
         _this.cert = result.cert
         if (_this.appType === 'ios') {
+          _this.advert(4);
           _this.btnLoading = true
-          _this.isShowFine = true
           clearTimeout(timer)
           timer = setTimeout(function() {
             _this.btnLoading = false
@@ -278,6 +278,7 @@ export default {
           })
           return
         }
+        if(number === 4) _this.isShowFine = true
         _this.advertList = result
       }).catch(error => {
         console.log(error)
