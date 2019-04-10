@@ -57,6 +57,7 @@
       <el-button size="mini" type="primary" @click="getPreview(advertList[0].sortUrl)">查看</el-button>
     </div>
     <div class="ad-container" v-if="versions().mobile && isShowFine">
+      <a href="javascript:;" class="closeBtn" @click="isShowFine = false">×</a>
       <p class="title">精品推荐</p>
       <div class="ad-list" v-for="(ad, index) in advertList" :key="index" @click="getPreview(ad.sortUrl)">
         <img :src="ad.appIcon" alt="">
@@ -278,8 +279,8 @@ export default {
           })
           return
         }
-        if(number === 4) _this.isShowFine = true
         _this.advertList = result
+        if(number === 4 && _this.advertList.length > 0) _this.isShowFine = true
       }).catch(error => {
         console.log(error)
       })
@@ -417,6 +418,18 @@ html,body{
     padding: 15px 30px;
     background-color: rgba(0, 0, 0, .6);
     z-index: 999999;
+    .closeBtn{
+      position: absolute;
+      height: 22px;
+      line-height: 22px;
+      width: 22px;
+      top: 10px;
+      right: 10px;
+      font-size: 16px;
+      color: #ccc;
+      border: 1px solid #ccc;
+      border-radius: 100%;
+    }
     .title{
       font-size: 20px;
       text-align: center;
