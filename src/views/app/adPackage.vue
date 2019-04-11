@@ -282,6 +282,12 @@ export default {
       const _this = this;
       _this.isGet = false;
       _this.loading = true;
+      _this.adModelId = [];
+      _this.adModelPrice = 0;
+      _this.monthId = '';
+      _this.monthPrice = 0;
+      _this.frequencyId = 0;
+      _this.frequencyPrice = 0;
       _this.buyPrice = 0;
       packageInfo({ type: _this.adType })
         .then(res => {
@@ -373,9 +379,9 @@ export default {
       //   this.$message('无法降低套餐频率等级，请重新选择')
       //   return;
       // }
-      if(_this.adModelId.length === 0){
+      if(_this.adModelId.length === 0 && _this.adType == 0){
         this.$message("请选择套餐模式");
-      }else if (!_this.monthId && _this.adType == 0) {
+      } else if (!_this.monthId) {
         this.$message("请选择套餐时间");
       } else if (!_this.frequencyId && _this.adType == 0) {
         this.$message("请选择套餐频率");
