@@ -111,12 +111,12 @@ export default {
     let timer = null
     // _this.getPosition()
     _this.appDownInfo()
-    window.onresize = function() {
-      clearTimeout(timer)
-      timer = setTimeout(function() {
-        window.location.reload()
-      }, 100)
-    }
+    // window.onresize = function() {
+    //   clearTimeout(timer)
+    //   timer = setTimeout(function() {
+    //     window.location.reload()
+    //   }, 100)
+    // }
     _this.advert(1);
     // _this.isShowFine = true
   },
