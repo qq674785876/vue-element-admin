@@ -20,16 +20,8 @@ router.beforeEach((to, from, next) => {
   NProgress.start() // start progress bar
   const userInfo = getUserInfo()
   // console.log(to.path, window.location.href)
-  console.log(to.path)
-  if (window.location.href.split('/#/')[1] !== 'login' && (to.path.split('/')[1] !== window.location.href.split('/#/')[1]) && !(userInfo !== undefined && userInfo && userInfo !== 'undefined' && userInfo !== '')) {
-    window.location.href = '/main.html'
-    return
-  }
-  if (to.name === 'Down') {
-    next()
-    return
-  }
-  document.title = '火柴内测分发'
+  // console.log(to.path)
+  document.title = '定制宝管理平台'
   if (userInfo !== undefined && userInfo && userInfo !== 'undefined' && userInfo !== '') {
     if (to.path === '/login') {
       next()

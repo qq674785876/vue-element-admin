@@ -1,15 +1,19 @@
 import request from '@/utils/request'
 import { getUserInfo } from '@/utils/auth'
+import Qs from 'qs'
 
 // 用户相关
 
-export function loginByUsername(email, password) {
-  const data = {
-    email,
-    password
-  }
+export function loginByUsername(username, password) {
+  // let data = new FormData()
+  // data.append('username',username)
+  // data.append('password',password)
+  const data = Qs.stringify({
+    username: username,
+    password: password
+  })
   return request({
-    url: '/v1/login',
+    url: '/login',
     method: 'post',
     data
   })

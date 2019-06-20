@@ -22,16 +22,16 @@
               &nbsp;
               <a :class="{active: selectType === 'login'}" href="javascript:;" @click="selectType = 'login'">登录</a>
               &emsp;
-              <a :class="{active: selectType === 'register'}" href="javascript:;" @click="selectType = 'register',currentRole = 'register'">注册</a>
+              <!-- <a :class="{active: selectType === 'register'}" href="javascript:;" @click="selectType = 'register',currentRole = 'register'">注册</a> -->
             </div>
-            <el-form-item prop="email">
+            <el-form-item prop="username">
               <span class="svg-container">
                 <svg-icon icon-class="user" />
               </span>
               <el-input
-                v-model="loginForm.email"
+                v-model="loginForm.username"
                 :placeholder="$t('login.username')"
-                name="email"
+                name="username"
                 type="text"
                 auto-complete="on"
               />
@@ -106,7 +106,7 @@
 </template>
 
 <script>
-import { validateEmail } from '@/utils/validate'
+// import { validateEmail } from '@/utils/validate'
 import { loginByUsername } from '@/api/index'
 import { setUserInfo } from '@/utils/auth'
 import LangSelect from '@/components/LangSelect'
@@ -121,8 +121,8 @@ export default {
   components: { LangSelect, SocialSign, SIdentify, Register, RealName, ForgetPass },
   data() {
     const validateUsername = (rule, value, callback) => {
-      if (!validateEmail(value)) {
-        callback(new Error('请输入正确邮箱'))
+      if (!value) {
+        callback(new Error('请输入用户名'))
       } else {
         callback()
       }
@@ -152,16 +152,16 @@ export default {
       logoimgs: ['/static/images/login-banner-1.jpg', '/static/images/login-banner-2.jpg', '/static/images/login-banner-3.jpg', '/static/images/login-banner-4.jpg'],
       eyeClass: 'eye-close',
       registerForm: {
-        email: '',
+        username: '',
         password: ''
       },
       loginForm: {
-        email: '',
+        username: '',
         password: '',
         pin: ''
       },
       loginRules: {
-        email: [{ required: true, trigger: 'blur', validator: validateUsername }],
+        username: [{ required: true, trigger: 'blur', validator: validateUsername }],
         password: [{ required: true, trigger: 'blur', validator: validatePassword }],
         pin: [{ required: true, trigger: 'blur', validator: validatepin }]
       },
@@ -183,7 +183,7 @@ export default {
   created() {
     this.refreshCode()
     this.getCookie()
-    if (this.loginForm.email && this.loginForm.password) {
+    if (this.loginForm.username && this.loginForm.password) {
       this.checked = true
     }
     // window.addEventListener('hashchange', this.afterQRScan)
@@ -231,7 +231,7 @@ export default {
           // 判断复选框是否被勾选 勾选则调用配置cookie方法
           if (self.checked === true) {
             // 传入账号名，密码，和保存天数3个参数
-            self.setCookie(self.loginForm.email, self.loginForm.password, 7)
+            self.setCookie(self.loginForm.username, self.loginForm.password, 7)
           } else {
             console.log('清空Cookie')
             // 清空Cookie
@@ -253,7 +253,7 @@ export default {
       // })
       const self = this
       return new Promise((resolve, reject) => {
-        loginByUsername(loginForm.email, loginForm.password).then(response => {
+        loginByUsername(loginForm.username, loginForm.password).then(response => {
           self.loading = false
           const data = response.data
           const result = data.result
@@ -268,7 +268,7 @@ export default {
           this.$store.commit('SET_USERINFO', result)
           setUserInfo(result)
           // setToken(result.token)
-          // setName(result.email)
+          // setName(result.username)
           self.$router.push({ path: self.redirect || '/' })
           // commit('SET_TOKEN', data.token)
           // setToken(response.data.token)
@@ -301,7 +301,7 @@ export default {
       var exdate = new Date() // 获取时间
       exdate.setTime(exdate.getTime() + 24 * 60 * 60 * 1000 * exdays) // 保存的天数
       // 字符串拼接cookie
-      window.document.cookie = 'email' + '=' + c_name + ';path=/;expires=' + exdate.toGMTString()
+      window.document.cookie = 'username' + '=' + c_name + ';path=/;expires=' + exdate.toGMTString()
       window.document.cookie = 'userPwd' + '=' + c_pwd + ';path=/;expires=' + exdate.toGMTString()
     },
     // 读取cookie
@@ -311,8 +311,8 @@ export default {
         for (var i = 0; i < arr.length; i++) {
           var arr2 = arr[i].split('=') // 再次切割
           // 判断查找相对应的值
-          if (arr2[0] === 'email') {
-            this.loginForm.email = arr2[1] // 保存到保存数据的地方
+          if (arr2[0] === 'username') {
+            this.loginForm.username = arr2[1] // 保存到保存数据的地方
           } else if (arr2[0] === 'userPwd') {
             this.loginForm.password = arr2[1]
           }
