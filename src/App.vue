@@ -38,14 +38,6 @@ export default{
     if (_this.notify) _this.notify.close()
   },
   mounted() {
-    const _this = this
-    // _this.messageFind()
-    clearInterval(top.messageTimer)
-    top.messageTimer = setInterval(function() {
-  	if (_this.$route.name !== 'Down' && _this.$route.path !== '/login') {
-        _this.messageFind()
-      }
-    }, 60000)
   },
   methods: {
     messageFind() {

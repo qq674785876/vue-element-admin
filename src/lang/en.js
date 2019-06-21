@@ -73,7 +73,7 @@ export default {
     size: 'Global Size'
   },
   login: {
-    title: '柴火内侧专家',
+    title: '定制宝',
     logIn: 'Log in',
     username: '请输入邮箱',
     password: '请输入登陆密码',
