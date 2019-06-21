@@ -1,14 +1,14 @@
 <template>
   <div class="advertisement-container">
-    <el-row style="padding: 15px;">
+<!--     <el-row style="padding: 15px;">
       <el-button type="primary" size="mini" @click="AdInfo()">新建</el-button>
-    </el-row>
+    </el-row> -->
     <el-row>
       <el-table
         ref="multipleTable"
         :data="noticeList"
         tooltip-effect="dark"
-        height="calc(100vh - 180px)"
+        height="calc(100vh - 120px)"
         style="width: 100%"
         @selection-change="handleSelectionChange">
         <el-table-column
