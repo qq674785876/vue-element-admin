@@ -21,7 +21,7 @@
             size="mini"
             :disabled="oldId !== ''"
           >
-            <el-radio-button label="0">开启广告</el-radio-button>
+            <!-- <el-radio-button label="0">开启广告</el-radio-button> -->
             <el-radio-button label="1">屏蔽广告</el-radio-button>
           </el-radio-group>
         </el-row>
@@ -227,7 +227,7 @@ export default {
     };
   },
   mounted() {
-    this.adType = this.oldType;
+    this.adType = 1 || this.oldType;
     this.packageInfo();
   },
   methods: {
