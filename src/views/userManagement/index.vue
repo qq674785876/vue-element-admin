@@ -106,12 +106,11 @@
 </template>
 
 <script>
-import AdPackage from '@/views/app/adPackage'
 import { seoList, updateApp } from '@/api/index'
 
 export default {
   name: 'User',
-  components: { AdPackage },
+  components: { },
   data() {
     return {
       pageNum: 1,
@@ -167,7 +166,7 @@ export default {
     },
     AdInfo(row) {
       var _this = this
-      _this.currentRole = 'adPackage'
+      _this.currentRole = ''
       _this.dialogVisible = true
       _this.oldId = ''
       if (row) {

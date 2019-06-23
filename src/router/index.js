@@ -68,9 +68,9 @@ export const constantRouterMap = [
     redirect: 'userManagement',
     children: [
       {
-        path: 'index',
-        component: () => import('@/views/dashboard/index'),
-        name: 'Dashboard',
+        path: 'userManagement',
+        component: () => import('@/views/userManagement/index'),
+        name: 'userManagement',
         meta: { title: '用户管理', icon: 'index', noCache: true }
       }
     ]
