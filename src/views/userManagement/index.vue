@@ -6,7 +6,7 @@
     <el-row>
       <el-table
         ref="multipleTable"
-        :data="noticeList"
+        :data="userList"
         tooltip-effect="dark"
         height="calc(100vh - 120px)"
         style="width: 100%"
@@ -20,34 +20,42 @@
           label="编号"
           width="100"/>
         <el-table-column
-          prop="startTime"
-          label="开始时间"
+          prop="user_name"
+          label="用户名"
           width="220"/>
         <el-table-column
-          prop="endTime"
-          label="到期时间"
+          prop="last_login_date"
+          label="上次登陆时间"
           show-overflow-tooltip/>
         <el-table-column
-          prop="packageType"
-          label="套餐类型"
+          prop="create_date"
+          label="创建时间"
           show-overflow-tooltip/>
         <el-table-column
-          prop="appName"
-          label="推广的包"
+          prop="update_date"
+          label="登陆时间"
           show-overflow-tooltip/>
         <el-table-column
-          prop="total"
-          label="期间展现总次数"
+          prop="user_real_name"
+          label="真实姓名"
           show-overflow-tooltip/>
         <el-table-column
-          prop="today"
-          label="本日展现次数"
+          prop="phone"
+          label="电话"
           show-overflow-tooltip/>
         <el-table-column
-          prop="state"
-          label="操作"
+          prop="role"
+          label="权限"
+          show-overflow-tooltip/>
+        <el-table-column
+          prop="login_times"
+          label="登陆次数"
+          show-overflow-tooltip/>
+        <el-table-column
+          prop="is_use"
+          label="是否使用"
           show-overflow-tooltip>
-          <template slot-scope="scope">
+          <!--           <template slot-scope="scope">
             <el-button
               type="primary"
               size="mini"
@@ -56,7 +64,7 @@
               type="primary"
               size="mini"
               @click="setApp(scope.$index, scope.row)">设置APP</el-button>
-          </template>
+          </template> -->
         </el-table-column>
       </el-table>
       <el-pagination
@@ -71,42 +79,12 @@
       :is="currentRole"
       :dialog-title="dialogTitle"
       :dialog-visible="dialogVisible"
-      :old-id="oldId"
-      :old-type="oldType"
-      :old-end-time="oldEndTime"
-      :old-package-type="oldPackageType"
-      :old-total="oldTotal"
       @handleClose="handleClose"/>
-    <el-dialog
-      :title="setTitle"
-      :visible.sync="setDialogVisible"
-      :set-loading="setLoading"
-      width="30%"
-      @handleClose="setClose">
-      <el-form ref="form" :model="form" label-width="80px">
-        <el-form-item label="推广APP">
-          <el-select v-model="form.appId" placeholder="请选择推广的APP">
-            <el-option
-              v-for="item in applist"
-              :key="item.appId"
-              :label="item.appName"
-              :value="item.appId"/>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="描述">
-          <el-input v-model="form.description"/>
-        </el-form-item>
-      </el-form>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="setDialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="saveSet">设 置</el-button>
-      </span>
-    </el-dialog>
   </div>
 </template>
 
 <script>
-import { seoList, updateApp } from '@/api/index'
+import { webUserList } from '@/api/index'
 
 export default {
   name: 'User',
@@ -116,20 +94,15 @@ export default {
       pageNum: 1,
       pageSize: 10,
       total: 9,
+      startTime: '',
+      endtime: '',
+      isuse: '',
       currentRole: '',
       dialogTitle: '购买套餐',
       dialogVisible: false,
-      setLoading: false,
-      setTitle: '设置APP',
       setDialogVisible: false,
-      applist: [],
-      oldId: '',
-      oldPackageType: '',
-      oldEndTime: '',
-      oldTotal: 0,
-      oldType: 0,
       // oldFrequency: '',
-      noticeList: [],
+      userList: [],
       setListId: '',
       form: {
         appId: '',
@@ -139,14 +112,21 @@ export default {
   },
   mounted() {
     var _this = this
-    _this.seoList()
+    _this.webUserList()
   },
   methods: {
-    seoList() {
+    webUserList() {
       const _this = this
-      seoList({
-        pageNum: _this.pageNum,
-        pageSize: _this.pageSize
+      const userInfo = _this.$store.getters.userInfo
+      console.log(userInfo)
+      webUserList({
+        username: userInfo.username,
+        password: userInfo.password,
+        pagesize: _this.pageSize,
+        pagenum: _this.pageNum,
+        starttime: _this.starttime,
+        endtime: _this.endtime,
+        isuse: _this.isuse
       }).then(response => {
         const data = response.data
         const result = data.result
@@ -158,8 +138,8 @@ export default {
           })
           return
         }
-        _this.total = result.total
-        _this.noticeList = result.row
+        _this.total = result.allcount
+        _this.userList = result.list
       }).catch(error => {
         console.log(error)
       })
@@ -168,22 +148,13 @@ export default {
       var _this = this
       _this.currentRole = ''
       _this.dialogVisible = true
-      _this.oldId = ''
-      if (row) {
-        _this.oldId = row.id.toString()
-        _this.oldEndTime = row.endTime
-        _this.oldPackageType = row.packageType
-        _this.oldTotal = row.total
-        _this.oldType = row.type
-        // _this.oldFrequency = row.frequency;
-      }
     },
     saveSet() {
       const _this = this
       if (!_this.form.appId) {
         this.$message('请选择推广APP')
       } else {
-        updateApp({
+        webUserList({
           id: _this.setListId,
           appId: _this.form.appId,
           description: _this.form.description

@@ -253,7 +253,7 @@ export default {
       // })
       const self = this
       return new Promise((resolve, reject) => {
-        loginByUsername(loginForm.username, loginForm.password).then(response => {
+        loginByUsername(loginForm.username, self.$md5(loginForm.password)).then(response => {
           self.loading = false
           const data = response.data
           const result = data.result
@@ -265,7 +265,10 @@ export default {
             })
             return
           }
-          this.$store.commit('SET_USERINFO', result)
+          this.$store.commit('SET_USERINFO', Object.assign(result, {
+            username: loginForm.username,
+            password: self.$md5(loginForm.password)
+          }))
           setUserInfo(result)
           // setToken(result.token)
           // setName(result.username)
