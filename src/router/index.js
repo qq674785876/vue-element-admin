@@ -71,54 +71,62 @@ export const constantRouterMap = [
         path: 'userManagement',
         component: () => import('@/views/userManagement/index'),
         name: 'userManagement',
+        meta: { title: '后台用户管理', icon: 'index', noCache: true }
+      }
+    ]
+  },
+  {
+    path: '/wechartUser',
+    component: Layout,
+    redirect: 'userManagement_wx',
+    children: [
+      {
+        path: 'userManagement_wx',
+        component: () => import('@/views/userManagement/index_wx'),
+        name: 'userManagement',
         meta: { title: '用户管理', icon: 'index', noCache: true }
       }
     ]
   },
   {
-    path: '/dashboard',
+    path: '/goodsManagement',
     component: Layout,
-    redirect: 'dashboard',
+    redirect: 'goodsManagement',
     children: [
       {
-        path: 'dashboard',
-        component: () => import('@/views/dashboard/index'),
-        name: 'Dashboard',
-        meta: { title: 'dashboard', icon: 'index', noCache: true }
+        path: 'goodsManagement',
+        component: () => import('@/views/goodsManagement/index'),
+        name: 'goodsManagement',
+        meta: { title: '商品管理', icon: 'index', noCache: true }
       }
     ]
   },
-  {
-    path: '/app',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/app/index'),
-        name: 'App',
-        meta: { title: '应用管理', icon: 'app', noCache: true }
-      },
-      {
-        path: 'detail/:id',
-        component: () => import('@/views/app/detail'),
-        name: 'Detail',
-        meta: { title: '应用详情', noCache: true },
-        hidden: true
-      }
-    ]
-  },
-  {
-    path: '/set',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/set/index'),
-        name: 'Set',
-        meta: { title: '通知设置', icon: 'set', noCache: true }
-      }
-    ]
-  },
+
+  // {
+  //   path: '/dashboard',
+  //   component: Layout,
+  //   redirect: 'dashboard',
+  //   children: [
+  //     {
+  //       path: 'dashboard',
+  //       component: () => import('@/views/dashboard/index'),
+  //       name: 'Dashboard',
+  //       meta: { title: '首页', icon: 'index', noCache: true }
+  //     }
+  //   ]
+  // },
+  // {
+  //   path: '/set',
+  //   component: Layout,
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       component: () => import('@/views/set/index'),
+  //       name: 'Set',
+  //       meta: { title: '通知设置', icon: 'set', noCache: true }
+  //     }
+  //   ]
+  // },
   { path: '*', redirect: '/404', hidden: true }
   // {
   //   path: '/icon',

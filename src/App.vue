@@ -134,54 +134,12 @@ export default{
 </script>
 
 <style rel="stylesheet/scss" lang="scss">
-.zz-message-notice{
-	width: auto;
-	padding: 0;
-	border: 0;
-	.el-notification__group{
-		margin: 0;
-		.el-notification__closeBtn{
-			display: none;
-		}
-	}
-	.message-notice-box{
-		width: 180px;
-		height: 160px;
-		.header{
-			position: absolute;
-			left: 0;
-			top: 0;
-			height: 80px;
-			width: 100%;
-			background: url('/static/images/message.jpg');
-			.svg-container{
-				font-size: 30px;
-				color: #fff;
-			}
-		}
-		.cont-box{
-			margin-top: 80px;
-			height: 120px;
-			text-align: center;
-			padding: 0 20px;
-			overflow: auto;
-			h1{
-				font-size: 18px;
-				padding-top: 15px;
-			}
-			p{
-				font-size: 12px;
-				color: #ccc;
-			}
-		}
-		.btn-box{
-			border-top: 1px solid #eee;
-			height: 40px;
-			line-height: 40px;
-			text-align: center;
-			color: blue;
-		}
-	}
+.el-pagination{
+  padding-top: 10px;
+}
+.el-dialog__body{
+  padding-top: 10px;
+  padding-bottom: 10px;
 }
 .mobile{
 	.message-box{

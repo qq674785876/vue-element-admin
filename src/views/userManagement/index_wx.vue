@@ -1,7 +1,7 @@
 <template>
   <div class="user-container">
     <el-row style="padding: 15px;">
-      <el-button type="primary" size="mini" @click="setUserInfo()">新建</el-button>
+      <!-- <el-button type="primary" size="mini" @click="setUserInfo()">新建</el-button> -->
       <!-- <el-button type="primary" size="mini" @click="deleteList()">删除</el-button> -->
     </el-row>
     <el-row v-loading="loading">
@@ -9,7 +9,7 @@
         ref="multipleTable"
         :data="userList"
         tooltip-effect="dark"
-        height="calc(100vh - 180px)"
+        height="calc(100vh - 160px)"
         style="width: 100%"
         @selection-change="handleSelectionChange">
         <el-table-column
@@ -18,18 +18,14 @@
         <el-table-column
           :index="indexMethod"
           type="index"
-          label="编号"
-          width="100"/>
+          label="编号"/>
         <el-table-column
-          prop="User_name"
-          label="用户名"
-          width="220">
-          <!-- <template slot-scope="scope">
-            <el-button
-              type="text"
-              @click="setUserInfo(scope.row)">{{scope.row.User_name}}</el-button>
-          </template> -->
-        </el-table-column>
+          prop="User_real_name"
+          label="真实姓名"
+          show-overflow-tooltip/>
+        <el-table-column
+          prop="User_nick_name"
+          label="昵称"/>
         <el-table-column
           prop="Last_login_date"
           label="上次登陆时间"
@@ -43,16 +39,12 @@
           label="登陆时间"
           show-overflow-tooltip/>
         <el-table-column
-          prop="User_real_name"
-          label="真实姓名"
-          show-overflow-tooltip/>
-        <el-table-column
           prop="Phone"
           label="电话"
           show-overflow-tooltip/>
         <el-table-column
-          prop="Role"
-          label="权限"
+          prop="Create_date"
+          label="创建时间"
           show-overflow-tooltip/>
         <el-table-column
           prop="Login_times"
@@ -61,11 +53,17 @@
         <el-table-column
           prop="set"
           label="操作"
-          show-overflow-tooltip>
+          width="200">
           <template slot-scope="scope">
             <el-button
               type="text"
+              @click="seeAddr(scope.row)">查看地址</el-button>
+            <el-button
+              type="text"
               @click="setUseStatus(scope.row)">{{ scope.row.Is_use ? '禁用' : '启用' }}</el-button>
+            <el-button
+              type="text"
+              @click="setProxy(scope.row)">{{ scope.row.Is_proxy ? '取消代理' : '设为代理' }}</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -87,12 +85,13 @@
 </template>
 
 <script>
-import { webUserList, deleteoruse } from '@/api/index'
+import { wxUserList, deleteoruse, setuserproxy } from '@/api/index'
 import userInfo from '@/views/userManagement/userInfo'
+import addrInfo from '@/views/userManagement/addrInfo'
 
 export default {
   name: 'User',
-  components: { userInfo },
+  components: { userInfo, addrInfo },
   data() {
     return {
       loading: false,
@@ -116,14 +115,14 @@ export default {
     }
   },
   mounted() {
-    var _this = this
-    _this.webUserList()
+    const _this = this
+    _this.wxUserList()
   },
   methods: {
-    webUserList() {
+    wxUserList() {
       const _this = this
       const userInfo = _this.$store.getters.userInfo
-      webUserList({
+      wxUserList({
         username: userInfo.username,
         password: userInfo.password,
         pagesize: _this.pageSize,
@@ -146,6 +145,57 @@ export default {
         _this.userList = result.list
       }).catch(error => {
         console.log(error)
+      })
+    },
+    seeAddr(row) {
+      const _this = this
+      _this.dialogTitle = '查看地址'
+      _this.dialogId = row.User_id
+      _this.currentRole = 'addrInfo'
+      _this.dialogVisible = true
+    },
+    setProxy(row) {
+      const _this = this
+      let setTips = ''
+      let state = 0
+      if (row.Is_proxy) {
+        setTips = '是否取消代理'
+        state = 0
+      } else {
+        setTips = '是否设为代理'
+        state = 1
+      }
+      _this.$confirm(setTips, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        _this.loading = true
+        setuserproxy({
+          userid: row.User_id,
+          isproxy: state
+        }).then(res => {
+          _this.loading = false
+          const data = res.data
+          if (data.error !== 0) {
+            _this.$notify({
+              title: '查询失败',
+              message: data.reason,
+              type: 'error'
+            })
+            return
+          }
+          _this.$notify({
+            title: '操作成功',
+            message: data.reason,
+            type: 'success'
+          })
+          _this.wxUserList()
+        }).catch(error => {
+          console.log(error)
+        })
+      }).catch(() => {
+
       })
     },
     setUseStatus(row) {
@@ -182,10 +232,10 @@ export default {
           }
           _this.$notify({
             title: '操作成功',
-            message: '操作成功!',
+            message: data.reason,
             type: 'success'
           })
-          _this.webUserList()
+          _this.wxUserList()
         }).catch(error => {
           console.log(error)
         })
@@ -213,7 +263,7 @@ export default {
       if (!_this.form.appId) {
         this.$message('请选择推广APP')
       } else {
-        webUserList({
+        wxUserList({
           id: _this.setListId,
           appId: _this.form.appId,
           description: _this.form.description
@@ -229,7 +279,7 @@ export default {
             return
           }
           _this.setDialogVisible = false
-          _this.seoList()
+          _this.wxUserList()
         }).catch(error => {
           console.log(error)
         })
@@ -244,10 +294,10 @@ export default {
       _this.selectRecIds = arr.join(',')
     },
     handleSizeChange() {
-      this.seoList()
+      this.wxUserList()
     },
     handleCurrentChange() {
-      this.seoList()
+      this.wxUserList()
     },
     handlePictureCardPreview(img) {
       this.dialogImageUrl = img
@@ -259,11 +309,11 @@ export default {
     handleClose() {
       this.dialogVisible = false
       this.currentRole = ''
-      this.webUserList()
+      this.wxUserList()
     },
     setClose() {
       this.setDialogVisible = false
-      this.webUserList()
+      this.wxUserList()
     },
     handleUpdate(index, row) {
       this.AdInfo(row)

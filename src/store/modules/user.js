@@ -105,14 +105,18 @@ const user = {
     // 登出
     LogOut({ commit, state }) {
       return new Promise((resolve, reject) => {
-        logout(state.token).then(() => {
-          commit('SET_USERINFO', '')
-          commit('SET_ROLES', [])
-          removeAllCookie()
-          resolve()
-        }).catch(error => {
-          reject(error)
-        })
+        // logout(state.token).then(() => {
+        //   commit('SET_USERINFO', '')
+        //   commit('SET_ROLES', [])
+        //   removeAllCookie()
+        //   resolve()
+        // }).catch(error => {
+        //   reject(error)
+        // })
+        commit('SET_USERINFO', '')
+        commit('SET_ROLES', [])
+        removeAllCookie()
+        resolve()
       })
     },
 

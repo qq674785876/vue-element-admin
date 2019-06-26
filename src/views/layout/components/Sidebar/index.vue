@@ -6,9 +6,7 @@
     <el-row class="user-info-box">
       <div :style="{'background-image': 'url('+ avatar +')'}" class="user-head"/>
       <p class="user-name">{{ userInfo.email }}</p>
-      <router-link :to="'/set/index'">
-        <a href="javascript:;" class="user-set">账号设置</a>
-      </router-link>
+      <a href="javascript:;" class="user-set" @click="editPassword">密码设置</a>
     </el-row>
     <el-menu
       :show-timeout="200"
@@ -20,18 +18,28 @@
     >
       <sidebar-item v-for="route in permission_routers" :key="route.path" :item="route" :base-path="route.path"/>
     </el-menu>
+    <component
+      :is="currentRole"
+      :dialog-id="dialogId"
+      :dialog-title="dialogTitle"
+      :dialog-visible="dialogVisible"
+      @handleClose="handleClose"/>
   </el-scrollbar>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
 import SidebarItem from './SidebarItem'
+import userInfo from '@/views/userManagement/userInfo'
 
 export default {
-  components: { SidebarItem },
+  components: { SidebarItem, userInfo },
   data() {
     return {
-
+      currentRole: '',
+      dialogId: 0,
+      dialogTitle: '用户信息',
+      dialogVisible: false
     }
   },
   computed: {
@@ -46,6 +54,20 @@ export default {
     }
   },
   mounted() {
+    // console.log(this.userInfo)
+  },
+  methods: {
+    editPassword(row) {
+      const _this = this
+      _this.dialogTitle = '修改密码'
+      _this.dialogId = row.Admin_id
+      _this.currentRole = 'userInfo'
+      _this.dialogVisible = true
+    },
+    handleClose() {
+      this.dialogVisible = false
+      this.currentRole = ''
+    }
   }
 }
 </script>
