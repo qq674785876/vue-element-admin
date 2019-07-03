@@ -84,7 +84,7 @@ export const constantRouterMap = [
         path: 'userManagement_wx',
         component: () => import('@/views/userManagement/index_wx'),
         name: 'userManagement',
-        meta: { title: '用户管理', icon: 'index', noCache: true }
+        meta: { title: '用户管理', icon: 'peoples', noCache: true }
       }
     ]
   },
@@ -97,11 +97,10 @@ export const constantRouterMap = [
         path: 'goodsManagement',
         component: () => import('@/views/goodsManagement/index'),
         name: 'goodsManagement',
-        meta: { title: '商品管理', icon: 'index', noCache: true }
+        meta: { title: '商品管理', icon: 'app', noCache: true }
       }
     ]
   },
-
   // {
   //   path: '/dashboard',
   //   component: Layout,
@@ -127,7 +126,7 @@ export const constantRouterMap = [
   //     }
   //   ]
   // },
-  { path: '*', redirect: '/404', hidden: true }
+  { path: '*', redirect: '/404', hidden: true },
   // {
   //   path: '/icon',
   //   component: Layout,

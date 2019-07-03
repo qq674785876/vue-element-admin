@@ -184,3 +184,35 @@ export function updateproductparam(data) {
     data
   })
 }
+
+
+// 新增代理商品参数
+export function addproductparamproxy(data) {
+  data = Qs.stringify(data)
+  return request({
+    url: '/addproductparamproxy',
+    method: 'post',
+    data
+  })
+}
+
+// 代理商品列表
+export function paramproxylist(data) {
+  data = Qs.stringify(data)
+  return request({
+    url: '/paramproxylist',
+    method: 'post',
+    data
+  })
+}
+
+// 更新代理商品参数
+export function updateproductparamproxy(data) {
+  data = Qs.stringify(data)
+  return request({
+    url: '/updateproductparamproxy',
+    method: 'post',
+    data
+  })
+}
+

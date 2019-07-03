@@ -1,7 +1,8 @@
 <template>
   <div>
     <el-dialog
-      :id="dialogId"
+      :paramid="paramid"
+      :userid="userid"
       :title="dialogTitle"
       :visible.sync="dialogVisible"
       :before-close="handleClose"
@@ -10,8 +11,9 @@
       <el-row v-loading="loading">
         <el-table
           ref="multipleTable"
-          :data="addrList"
+          :data="agentList"
           align="center"
+          height="500px"
           tooltip-effect="dark"
           style="width: 100%">
           <!-- @selection-change="handleSelectionChange" -->
@@ -23,19 +25,20 @@
             type="index"
             label="编号"/>
           <el-table-column
-            prop="Address_user_name"
-            label="收件人姓名"
+            prop="UserName"
+            label="用户名">
+          </el-table-column>
+          <el-table-column
+            prop="UserRealName"
+            label="真实姓名">
+          </el-table-column>
+          <el-table-column
+            prop="Product_param_Name"
+            label="代理商品参数名"
             show-overflow-tooltip/>
           <el-table-column
-            prop="Address_user_phone"
-            label="收件人电话"/>
-          <el-table-column
-            prop="Address_user_phone"
-            label="收件人地址">
-            <template slot-scope="scope">
-              {{ scope.row.Province + scope.row.City + scope.row.Regoin + scope.row.Detail_address }}
-            </template>
-          </el-table-column>
+            prop="Update_date"
+            label="更新时间"/>
           <el-table-column
             prop="set"
             label="操作"
@@ -43,7 +46,7 @@
             <template slot-scope="scope">
               <el-button
                 type="text"
-                @click="setUseStatus(scope.row)">{{ scope.row.Is_use ? '禁用' : '启用' }}</el-button>
+                @click="setList(scope.row)">修改</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -64,13 +67,17 @@
 </template>
 
 <script>
-import { addresslist, deleteoruse } from '@/api/index'
+import { paramproxylist } from '@/api/index'
 
 export default {
   name: 'UserInfo',
   components: {},
   props: {
-    dialogId: {
+    userid: {
+      type: Number,
+      default: 0
+    },
+    paramid: {
       type: Number,
       default: 0
     },
@@ -89,24 +96,27 @@ export default {
       pageNum: 1,
       pageSize: 10,
       total: 9,
-      addrList: [],
-      rules: {}
+      startTime: '',
+      endTime: '',
+      agentList: []
     }
   },
   mounted() {
-    this.addresslist()
+    this.paramproxylist()
   },
   methods: {
-    addresslist() {
+    paramproxylist() {
       const _this = this
-      addresslist({
-        userid: _this.dialogId,
+      const params = {
         pagesize: _this.pageSize,
         pagenum: _this.pageNum - 1,
         starttime: _this.startTime,
         endtime: _this.endTime,
-        isuse: _this.isuse
-      }).then(response => {
+      }
+      if(_this.userid) params.userid = _this.userid
+      if(_this.paramid) params.paramid = _this.paramid
+
+      paramproxylist(params).then(response => {
         const data = response.data
         const result = data.result
         if (data.error !== 0) {
@@ -118,54 +128,13 @@ export default {
           return
         }
         _this.total = result.allcount
-        _this.addrList = result.list
+        _this.agentList = result.list
       }).catch(error => {
         console.log(error)
       })
     },
-    setUseStatus(row) {
-      const _this = this
-      let setTips = '', state = 0
-      if (row.Is_use) {
-        setTips = '禁用'
-        state = 0
-      } else {
-        setTips = '启用'
-        state = 1
-      }
-      _this.$confirm('确定' + setTips + '该地址？', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        _this.loading = true
-        deleteoruse({
-          id: row.Address_id,
-          isuse: state,
-          idtype: 4 // 0 管理员 1 用户编辑  2 商品参数  3 商品参数 4 地址 5 商品详情
-        }).then(res => {
-          _this.loading = false
-          const data = res.data
-          if (data.error !== 0) {
-            _this.$notify({
-              title: '查询失败',
-              message: data.reason,
-              type: 'error'
-            })
-            return
-          }
-          _this.$notify({
-            title: '操作成功',
-            message: data.reason,
-            type: 'success'
-          })
-          _this.addresslist()
-        }).catch(error => {
-          console.log(error)
-        })
-      }).catch(() => {
+    setList(){
 
-      })
     },
     handleClose() {
       this.$emit('handleClose')
@@ -174,10 +143,10 @@ export default {
 
     },
     handleSizeChange() {
-      this.wxUserList()
+      this.paramproxylist()
     },
     handleCurrentChange() {
-      this.wxUserList()
+      this.paramproxylist()
     },
     indexMethod(index) {
       return this.pageSize * (this.pageNum - 1) + index + 1
