@@ -21,7 +21,7 @@
             size="mini"
             :disabled="oldId !== ''"
           >
-            <!-- <el-radio-button label="0">开启广告</el-radio-button> -->
+            <el-radio-button label="0">开启广告</el-radio-button>
             <el-radio-button label="1">屏蔽广告</el-radio-button>
           </el-radio-group>
         </el-row>
@@ -42,7 +42,7 @@
               v-if="adType == 0 && adModelId.indexOf(adModel[0].propertyId) > -1"
             >温馨提示：模式一无法提供安卓应用的推广，如果只有安卓应用，选择模式一则没有效果。请谨慎选择。</p>
           </div>
-          <div>
+          <div style="display: inline-block;width: 50%;">
             <span class="title">选择模式</span>
             <div>
               <el-checkbox-group v-model="adModelId" @change="modeChange">
@@ -66,7 +66,23 @@
               </el-radio-group>-->
             </div>
           </div>
-          <div>
+          <div style="display: inline-block;width: 40%;">
+            <span class="title">展示模式</span>
+            <el-select
+              v-model='chargeType'
+              @change="showTypeChange()"
+              placeholder='请选择展示模式'
+              :disabled="oldId != ''"
+            >
+              <el-option
+                v-for='(item,index) in showArr'
+                :key='index'
+                :label='item.name'
+                :value='item.value'
+              ></el-option>
+            </el-select>
+          </div>
+          <div v-if="chargeType == 0">
             <span class="title">展示时间</span>
             <el-radio-group
               v-model="monthId"
@@ -78,6 +94,22 @@
                 :label="list.propertyId"
                 border
                 v-for="(list,index) in packageObj.package"
+                :key="index"
+              >{{list.name}}</el-radio-button>
+            </el-radio-group>
+          </div>
+          <div v-else>
+            <span class="title">展示次数</span>
+            <el-radio-group
+              v-model="numberId"
+              size="mini"
+              @change="selectRow('number', packageObj.number, numberId)"
+              :disabled="adModelId.length === 0"
+            >
+              <el-radio-button
+                :label="list.propertyId"
+                border
+                v-for="(list,index) in packageObj.number"
                 :key="index"
               >{{list.name}}</el-radio-button>
             </el-radio-group>
@@ -139,7 +171,7 @@
       <span slot="footer" class="dialog-footer">
         <p
           v-if="!isGet && adType == 0"
-        >{{adModelPrice + '+' + monthPrice + '+' + frequencyPrice + '=' + buyPrice}}</p>
+        >{{adModelPrice + '+' + (monthPrice || numberPrice) + '+' + frequencyPrice + '=' + buyPrice}}</p>
         <el-button v-if="!isGet" @click="handleClose">取 消</el-button>
         <el-button v-if="!isGet" type="primary" @click="getPackage">确 定</el-button>
         <el-button v-if="isGet" @click="prev">返 回</el-button>
@@ -200,6 +232,14 @@ export default {
       isGet: false,
       timer: null,
       loading: false,
+      chargeType: 0,
+      showArr: [{
+        name: '时间',
+        value: 0
+      },{
+        name: '次数',
+        value: 1
+      }],
       adModelId: [],
       adModel: [
         {
@@ -209,6 +249,8 @@ export default {
       adModelPrice: 0,
       monthId: "",
       monthPrice: 0,
+      numberId: "",
+      numberPrice: 0,
       frequencyId: "",
       frequencyPrice: 0,
       appImage: ["static/images/appImg-1.jpg", "static/images/appImg-2.jpg"],
@@ -227,7 +269,7 @@ export default {
     };
   },
   mounted() {
-    this.adType = 1 || this.oldType;
+    this.adType = this.oldType;
     this.packageInfo();
   },
   methods: {
@@ -244,6 +286,7 @@ export default {
       _this.buyPrice = (
         Number(_this.adModelPrice) +
         Number(_this.monthPrice) +
+        Number(_this.numberPrice) +
         Number(_this.frequencyPrice)
       ).toFixed(2);
     },
@@ -278,6 +321,10 @@ export default {
           console.log(error);
         });
     },
+    showTypeChange(){
+      let _this = this;
+      _this.packageInfo();
+    },
     packageInfo() {
       const _this = this;
       _this.isGet = false;
@@ -286,10 +333,12 @@ export default {
       _this.adModelPrice = 0;
       _this.monthId = '';
       _this.monthPrice = 0;
+      _this.numberId = '';
+      _this.numberPrice = 0;
       _this.frequencyId = 0;
       _this.frequencyPrice = 0;
       _this.buyPrice = 0;
-      packageInfo({ type: _this.adType })
+      packageInfo({ type: _this.adType, chargeType: _this.chargeType })
         .then(res => {
           _this.loading = false;
           const data = res.data;
@@ -305,7 +354,8 @@ export default {
           _this.adModel = result.mode;
           _this.packageObj = {
             package: result.month,
-            frequency: result.frequency
+            frequency: result.frequency,
+            number: result.number
           };
         })
         .catch(error => {
@@ -317,6 +367,8 @@ export default {
       _this.loading = true;
       seoPackageBuy({
         frequency: _this.frequencyId,
+        chargeType: _this.chargeType,
+        number: _this.numberId,
         month: _this.monthId,
         mode: _this.adModelId,
         payType: _this.payType,
@@ -358,12 +410,15 @@ export default {
         _this.adModelPrice = price;
       } else if (type === "month") {
         _this.monthPrice = price;
-      } else {
+      } else if(type === "number") {
+        _this.numberPrice = price;
+      }else{
         _this.frequencyPrice = price;
       }
       _this.buyPrice = (
         Number(_this.adModelPrice) +
         Number(_this.monthPrice) +
+        Number(_this.numberPrice) +
         Number(_this.frequencyPrice)
       ).toFixed(2);
     },
@@ -381,8 +436,10 @@ export default {
       // }
       if(_this.adModelId.length === 0 && _this.adType == 0){
         this.$message("请选择套餐模式");
-      } else if (!_this.monthId) {
+      } else if (!_this.monthId && _this.chargeType == 0) {
         this.$message("请选择套餐时间");
+      } else if (!_this.numberId && _this.chargeType == 1) {
+        this.$message("请选择套餐次数");
       } else if (!_this.frequencyId && _this.adType == 0) {
         this.$message("请选择套餐频率");
       } else {
@@ -418,7 +475,7 @@ export default {
     color: #333;
     & > div {
       padding-left: 20px;
-      margin: 30px 0;
+      margin: 20px 0;
       position: relative;
       &::after {
         content: "";

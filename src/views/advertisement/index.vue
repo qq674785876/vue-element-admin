@@ -44,6 +44,10 @@
           label="本日展现次数"
           show-overflow-tooltip/>
         <el-table-column
+          prop="audit"
+          label="审核状态"
+          show-overflow-tooltip/>
+        <el-table-column
           prop="state"
           label="操作"
           show-overflow-tooltip>
@@ -84,8 +88,8 @@
       width="30%"
       @handleClose="setClose">
       <el-form ref="form" :model="form" label-width="80px">
-        <el-form-item label="推广APP">
-          <el-select v-model="form.appId" placeholder="请选择推广的APP">
+        <el-form-item label="APP">
+          <el-select v-model="form.appId" placeholder="请选择设置的APP">
             <el-option
               v-for="item in applist"
               :key="item.appId"
@@ -94,7 +98,7 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="描述">
+        <el-form-item label="描述" v-if="currentType != 2">
           <el-input v-model="form.description"></el-input>
         </el-form-item>
       </el-form>
@@ -119,6 +123,7 @@ export default {
       pageSize: 10,
       total: 9,
       currentRole: '',
+      currentType: '',
       dialogTitle: '购买套餐',
       dialogVisible: false,
       setLoading: false,
@@ -232,6 +237,7 @@ export default {
     setApp(index, row){
       this.setDialogVisible = true
       this.setListId = row.id
+      this.currentType = row.type
       this.form = {
         appId: '',
         description: ''
