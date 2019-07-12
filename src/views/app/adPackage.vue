@@ -9,6 +9,7 @@
       :oldTotal="oldTotal"
       :oldId="oldId"
       :oldType="oldType"
+      :oldChargeType="oldChargeType"
       class="packageDialog"
       width="40%"
     >
@@ -25,7 +26,7 @@
             <el-radio-button label="1">屏蔽广告</el-radio-button>
           </el-radio-group>
         </el-row>
-        <el-row class="package-info" v-if="adType == 0">
+        <el-row class="package-info" v-if="oldType != 2 && adType == 0">
           <div>
             <span class="title">展示预览图</span>
             <div class="appScreenshot">
@@ -221,6 +222,10 @@ export default {
     oldType: {
       type: Number,
       default: 0
+    },
+    oldChargeType: {
+      type: Number,
+      default: 0
     }
     // oldFrequency: {
     //   type: String,
@@ -269,7 +274,12 @@ export default {
     };
   },
   mounted() {
-    this.adType = this.oldType;
+    if(this.oldType != 2){
+      this.adType = 0;
+    }else{
+      this.adType = 1;
+    }
+    this.chargeType = this.oldChargeType;
     this.packageInfo();
   },
   methods: {
@@ -338,7 +348,8 @@ export default {
       _this.frequencyId = 0;
       _this.frequencyPrice = 0;
       _this.buyPrice = 0;
-      packageInfo({ type: _this.adType, chargeType: _this.chargeType })
+      
+      packageInfo({ type: _this.adType == 1 ? 2 : 0, chargeType: _this.chargeType })
         .then(res => {
           _this.loading = false;
           const data = res.data;
@@ -351,7 +362,13 @@ export default {
             });
             return;
           }
-          _this.adModel = result.mode;
+          if(result.mode.length > 0){
+            _this.adModel = result.mode;
+          }else{
+            _this.adModel = [{
+              propertyId: ''
+            }]
+          }
           _this.packageObj = {
             package: result.month,
             frequency: result.frequency,

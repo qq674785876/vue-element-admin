@@ -77,6 +77,7 @@
       :dialog-visible="dialogVisible"
       :oldId="oldId"
       :oldType="oldType"
+      :oldChargeType="oldChargeType"
       :oldEndTime="oldEndTime"
       :oldPackageType="oldPackageType"
       :oldTotal="oldTotal"
@@ -135,6 +136,7 @@ export default {
       oldEndTime: '',
       oldTotal: 0,
       oldType: 0,
+      oldChargeType: 0,
       // oldFrequency: '',
       noticeList: [],
       setListId: '',
@@ -197,12 +199,14 @@ export default {
       _this.currentRole = 'adPackage';
       _this.dialogVisible = true;
       _this.oldId = '';
+      _this.oldType = 0;
       if(row){
         _this.oldId = row.id.toString();
         _this.oldEndTime = row.endTime;
         _this.oldPackageType = row.packageType;
         _this.oldTotal = row.total
         _this.oldType = row.type
+        _this.oldChargeType = row.chargeType
         // _this.oldFrequency = row.frequency;
       }
     },
