@@ -185,10 +185,10 @@
               label="父参数名称"
               show-overflow-tooltip>
             </el-table-column>
-            <el-table-column
+            <!-- <el-table-column
               prop="Image"
               label="图片"
-              show-overflow-tooltip/>
+              show-overflow-tooltip/> -->
             <el-table-column
               prop="Old_price"
               label="原价"

@@ -1,5 +1,5 @@
 <template>
-  <div class="user-container">
+  <div class="order-container">
     <el-row style="padding: 15px;">
       <el-button type="primary" size="mini" @click="setUserInfo()">新建</el-button>
       <!-- <el-button type="primary" size="mini" @click="deleteList()">删除</el-button> -->
@@ -21,8 +21,8 @@
           label="编号"
           width="100"/>
         <el-table-column
-          prop="User_name"
-          label="用户名"
+          prop="order_num"
+          label="订单号"
           width="220">
           <!-- <template slot-scope="scope">
             <el-button
@@ -31,32 +31,40 @@
           </template> -->
         </el-table-column>
         <el-table-column
-          prop="Last_login_date"
-          label="上次登陆时间"
+          prop="product_num"
+          label="商品数量"
           show-overflow-tooltip/>
         <el-table-column
-          prop="Create_date"
-          label="创建时间"
+          prop="pay_state"
+          label="支付状态"
           show-overflow-tooltip/>
         <el-table-column
-          prop="Update_date"
-          label="登陆时间"
+          prop="pay_money"
+          label="实际支付金额"
           show-overflow-tooltip/>
         <el-table-column
-          prop="User_real_name"
-          label="真实姓名"
+          prop="pay_date"
+          label="支付时间"
           show-overflow-tooltip/>
         <el-table-column
-          prop="Phone"
-          label="电话"
+          prop="design_image_url"
+          label="效果图url"
           show-overflow-tooltip/>
         <el-table-column
-          prop="Role"
-          label="权限"
+          prop="image_url"
+          label="原图"
           show-overflow-tooltip/>
         <el-table-column
-          prop="Login_times"
-          label="登陆次数"
+          prop="order_state"
+          label="订单状态"
+          show-overflow-tooltip>
+          <template slot-scope="scope">
+            {{scope.row.order_state == 0 ? '未发货' : '已发货'}}
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="express_number"
+          label="快递单号"
           show-overflow-tooltip/>
         <el-table-column
           prop="set"
@@ -65,7 +73,7 @@
           <template slot-scope="scope">
             <el-button
               type="text"
-              @click="setUseStatus(scope.row)">{{ scope.row.Is_use ? '禁用' : '启用' }}</el-button>
+              @click="setUseStatus(scope.row)">查看内容</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -87,7 +95,7 @@
 </template>
 
 <script>
-import { webUserList, deleteoruse } from '@/api/index'
+import { orderlist, deleteoruse } from '@/api/index'
 import userInfo from '@/views/userManagement/userInfo'
 
 export default {
@@ -101,7 +109,11 @@ export default {
       total: 9,
       startTime: '',
       endTime: '',
-      isuse: '',
+      pay_state: '',
+      search: '',
+      order_state: '',
+      sorttype: '',
+      is_proxy: '',
       currentRole: '',
       dialogId: 0,
       dialogTitle: '用户信息',
@@ -117,20 +129,24 @@ export default {
   },
   mounted() {
     var _this = this
-    _this.webUserList()
+    _this.orderlist()
   },
   methods: {
-    webUserList() {
+    orderlist() {
       const _this = this
       const userInfo = _this.$store.getters.userInfo
-      webUserList({
+      orderlist({
         username: userInfo.username,
         password: userInfo.password,
         pagesize: _this.pageSize,
         pagenum: _this.pageNum - 1,
         starttime: _this.startTime,
         endtime: _this.endTime,
-        isuse: _this.isuse
+        pay_state: _this.pay_state,
+        search: _this.search,
+        order_state: _this.order_state,
+        sorttype: _this.sorttype,
+        is_proxy: _this.is_proxy
       }).then(response => {
         const data = response.data
         const result = data.result

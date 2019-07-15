@@ -28,7 +28,7 @@
               auto-complete="on"
             />
           </el-form-item>
-          <el-form-item label="商品图:">
+          <!-- <el-form-item label="商品图:">
             <el-upload
               class="avatar-uploader"
               ref="upload"
@@ -41,7 +41,7 @@
               <img v-if="imageUrl" :src="imageUrl" class="avatar">
               <i v-else class="el-icon-plus avatar-uploader-icon" ></i>
             </el-upload>
-          </el-form-item>
+          </el-form-item> -->
           <el-form-item prop="" label="折前价:">
             <el-input
               v-model="formData.old_price"
@@ -130,11 +130,11 @@ export default {
   },
   mounted() {
     const _this = this
-    if(_this.dialogTitle === '商品参数编辑'){
-      _this.action = 'http://106.13.66.152:8686/updateproductparam'
-    }else{
-      _this.action = 'http://106.13.66.152:8686/addproductparam'
-    }
+    // if(_this.dialogTitle === '商品参数编辑'){
+    //   _this.action = 'http://106.13.66.152:8686/updateproductparam'
+    // }else{
+    //   _this.action = 'http://106.13.66.152:8686/addproductparam'
+    // }
   },
   methods: {
     handleClose() {
@@ -148,14 +148,57 @@ export default {
       }else{
         _this.formData.productid = _this.dialogId
       }
-      _this.$refs.upload.submit()
+      if(_this.formData.image){
+        _this.$refs.upload.submit()
+      }else{
+        if(_this.dialogTitle === '商品参数编辑'){
+          _this.updateproductparam()
+        }else{
+          _this.addproductparam()
+        }
+      }
+    },
+    addproductparam(){
+      const _this = this
+      addproductparam(_this.formData).then(response => {
+        const data = response.data
+        const result = data.result
+        if (data.error !== 0) {
+          _this.$notify({
+            title: '操作失败',
+            message: data.reason,
+            type: 'error'
+          })
+          return
+        }
+        _this.handleClose()
+      }).catch(error => {
+        console.log(error)
+      })
+    },
+    updateproductparam(){
+      const _this = this
+      updateproductparam(_this.formData).then(response => {
+        const data = response.data
+        const result = data.result
+        if (data.error !== 0) {
+          _this.$notify({
+            title: '操作失败',
+            message: data.reason,
+            type: 'error'
+          })
+          return
+        }
+        _this.handleClose()
+      }).catch(error => {
+        console.log(error)
+      })
     },
     handleRemove(file, fileList) {
       console.log(file, fileList)
     },
     handleSuccess(response, file, fileList){
       const _this = this
-      console.log(response)
       const data = response
       _this.loading = false
       if (data.error !== 0) {
