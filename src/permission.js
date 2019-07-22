@@ -2,10 +2,11 @@ import router from './router'
 import store from './store'
 // import { Message } from 'element-ui'
 import NProgress from 'nprogress' // progress bar
-import 'nprogress/nprogress.css'// progress bar style
+import 'nprogress/nprogress.css' // progress bar style
 import { getUserInfo } from '@/utils/auth' // getToken from cookie
+import { webState } from '@/api/index'
 
-NProgress.configure({ showSpinner: false })// NProgress Configuration
+NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
 // permission judge function
 // function hasPermission(roles, permissionRoles) {
@@ -17,81 +18,96 @@ NProgress.configure({ showSpinner: false })// NProgress Configuration
 // const whiteList = ['/login', '/auth-redirect']// no redirect whitelist
 
 router.beforeEach((to, from, next) => {
-  NProgress.start() // start progress bar
-  const userInfo = getUserInfo()
-  // console.log(to.path, window.location.href)
-  console.log(to.path)
-  if (window.location.href.split('/#/')[1] !== 'login' && (to.path.split('/')[1] !== window.location.href.split('/#/')[1]) && !(userInfo !== undefined && userInfo && userInfo !== 'undefined' && userInfo !== '')) {
-    window.location.href = '/main.html'
-    return
-  }
-  if (to.name === 'Down') {
-    next()
-    return
-  }
-  document.title = '火柴内测分发'
-  if (userInfo !== undefined && userInfo && userInfo !== 'undefined' && userInfo !== '') {
-    if (to.path === '/login') {
-      next()
-    } else {
-      const roles = store.getters.roles
-      store.dispatch('GenerateRoutes', { roles }).then(() => { // 根据roles权限生成可访问的路由表
-        router.addRoutes(store.getters.addRouters) // 动态添加可访问路由表
-        // next({ ...to, replace: true }) // hack方法 确保addRoutes已完成 ,set the replace: true so the navigation will not leave a history record
-      })
-      next()
+    NProgress.start() // start progress bar
+    if (to.path == '/404') {
+        next()
+        return
     }
-  } else {
-    if (to.path === '/login') {
-      next()
-    } else {
-      next('/login')
-      NProgress.done()
-    }
-  }
+    webState().then(res => {
+        _this.loading = false
+        const data = res.data
+        const result = data.result
+        if (result.open && result.open == 1) {
+            next('/404')
+        } else {
+            const userInfo = getUserInfo()
+                // console.log(to.path, window.location.href)
+            console.log(to.path)
+            if (window.location.href.split('/#/')[1] !== 'login' && (to.path.split('/')[1] !== window.location.href.split('/#/')[1]) && !(userInfo !== undefined && userInfo && userInfo !== 'undefined' && userInfo !== '')) {
+                window.location.href = '/main.html'
+                return
+            }
+            if (to.name === 'Down') {
+                next()
+                return
+            }
+            document.title = '火柴内测分发'
+            if (userInfo !== undefined && userInfo && userInfo !== 'undefined' && userInfo !== '') {
+                if (to.path === '/login') {
+                    next()
+                } else {
+                    const roles = store.getters.roles
+                    store.dispatch('GenerateRoutes', { roles }).then(() => { // 根据roles权限生成可访问的路由表
+                        router.addRoutes(store.getters.addRouters) // 动态添加可访问路由表
+                            // next({ ...to, replace: true }) // hack方法 确保addRoutes已完成 ,set the replace: true so the navigation will not leave a history record
+                    })
+                    next()
+                }
+            } else {
+                if (to.path === '/login') {
+                    next()
+                } else {
+                    next('/login')
+                    NProgress.done()
+                }
+            }
+        }
+    }).catch(error => {
+        console.log(error)
+    })
 
-  // if (getToken()) { // determine if there has token
-  //   /* has token*/
-  //   if (to.path === '/login') {
-  //     next({ path: '/' })
-  //     NProgress.done() // if current page is dashboard will not trigger afterEach hook, so manually handle it
-  //   } else {
-  //     console.log(store.getters);
-  //     const roles = store.getters.roles // note: roles must be a array! such as: ['editor','develop']
-  //     store.dispatch('GenerateRoutes', { roles }).then(() => { // 根据roles权限生成可访问的路由表
-  //       router.addRoutes(store.getters.addRouters) // 动态添加可访问路由表
-  //       next({ ...to, replace: true }) // hack方法 确保addRoutes已完成 ,set the replace: true so the navigation will not leave a history record
-  //     })
-  //     next()
-  //     // if (store.getters.roles.length === 0) { // 判断当前用户是否已拉取完user_info信息
-  //     //   store.dispatch('GetUserInfo').then(res => { // 拉取user_info
-  //     //   }).catch((err) => {
-  //     //     store.dispatch('FedLogOut').then(() => {
-  //     //       Message.error(err || 'Verification failed, please login again')
-  //     //       next({ path: '/' })
-  //     //     })
-  //     //   })
-  //     // } else {
-  //     //   // 没有动态改变权限的需求可直接next() 删除下方权限判断 ↓
-  //     //   if (hasPermission(store.getters.roles, to.meta.roles)) {
-  //     //     next()
-  //     //   } else {
-  //     //     next({ path: '/401', replace: true, query: { noGoBack: true }})
-  //     //   }
-  //     //   // 可删 ↑
-  //     // }
-  //   }
-  // } else {
-  //   /* has no token*/
-  //   if (whiteList.indexOf(to.path) !== -1) { // 在免登录白名单，直接进入
-  //     next()
-  //   } else {
-  //     next(`/login?redirect=${to.path}`) // 否则全部重定向到登录页
-  //     NProgress.done() // if current page is login will not trigger afterEach hook, so manually handle it
-  //   }
-  // }
+    // if (getToken()) { // determine if there has token
+    //   /* has token*/
+    //   if (to.path === '/login') {
+    //     next({ path: '/' })
+    //     NProgress.done() // if current page is dashboard will not trigger afterEach hook, so manually handle it
+    //   } else {
+    //     console.log(store.getters);
+    //     const roles = store.getters.roles // note: roles must be a array! such as: ['editor','develop']
+    //     store.dispatch('GenerateRoutes', { roles }).then(() => { // 根据roles权限生成可访问的路由表
+    //       router.addRoutes(store.getters.addRouters) // 动态添加可访问路由表
+    //       next({ ...to, replace: true }) // hack方法 确保addRoutes已完成 ,set the replace: true so the navigation will not leave a history record
+    //     })
+    //     next()
+    //     // if (store.getters.roles.length === 0) { // 判断当前用户是否已拉取完user_info信息
+    //     //   store.dispatch('GetUserInfo').then(res => { // 拉取user_info
+    //     //   }).catch((err) => {
+    //     //     store.dispatch('FedLogOut').then(() => {
+    //     //       Message.error(err || 'Verification failed, please login again')
+    //     //       next({ path: '/' })
+    //     //     })
+    //     //   })
+    //     // } else {
+    //     //   // 没有动态改变权限的需求可直接next() 删除下方权限判断 ↓
+    //     //   if (hasPermission(store.getters.roles, to.meta.roles)) {
+    //     //     next()
+    //     //   } else {
+    //     //     next({ path: '/401', replace: true, query: { noGoBack: true }})
+    //     //   }
+    //     //   // 可删 ↑
+    //     // }
+    //   }
+    // } else {
+    //   /* has no token*/
+    //   if (whiteList.indexOf(to.path) !== -1) { // 在免登录白名单，直接进入
+    //     next()
+    //   } else {
+    //     next(`/login?redirect=${to.path}`) // 否则全部重定向到登录页
+    //     NProgress.done() // if current page is login will not trigger afterEach hook, so manually handle it
+    //   }
+    // }
 })
 
 router.afterEach(() => {
-  NProgress.done() // finish progress bar
+    NProgress.done() // finish progress bar
 })
