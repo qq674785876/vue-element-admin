@@ -24,7 +24,6 @@ router.beforeEach((to, from, next) => {
         return
     }
     webState().then(res => {
-        _this.loading = false
         const data = res.data
         const result = data.result
         if (result.open && result.open == 1) {
